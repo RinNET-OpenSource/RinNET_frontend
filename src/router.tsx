@@ -27,6 +27,7 @@ import { OngekiUserRankingPage } from '@/features/ongeki/OngekiUserRankingPage';
 import { OngekiRecentPage } from '@/features/ongeki/OngekiRecentPage';
 import { OngekiSettingPage } from '@/features/ongeki/OngekiSettingPage';
 import { OngekiRatingPage } from '@/features/ongeki/OngekiRatingPage';
+import { OngekiSongListPage } from '@/features/ongeki/OngekiSongListPage';
 
 /** Auth guards (equivalent to legacy auth-guard/login-guard services) */
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -80,7 +81,7 @@ export const router = createBrowserRouter([
           { index: true, element: <Navigate to="profile" replace /> },
           { path: 'profile', element: <OngekiProfilePage />, handle: { title: 'Profile' } },
           { path: 'recent', element: <OngekiRecentPage />, handle: { title: 'PlayRecord' } },
-          { path: 'song', element: <PlaceholderPage title="Ongeki Song" />, handle: { title: 'MusicList' } },
+          { path: 'song', element: <OngekiSongListPage />, handle: { title: 'MusicList' } },
           { path: 'battle', element: <OngekiBattlePage />, handle: { title: 'BattlePoint' } },
           { path: 'rating', element: <OngekiRatingPage />, handle: { title: 'Rating' } },
           { path: 'card/gallery', element: <PlaceholderPage title="Ongeki Card Gallery" />, handle: { title: 'CardGallery' } },
