@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <title>RinNET</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link href="/assets/turtle.svg" rel="icon" type="image/x-icon">
+  <link href="/manifest.webmanifest" rel="manifest">
+  <meta name="theme-color" content="#2a2f33">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <script>
+    // 首屏前应用主题，避免暗色用户闪烁（键与旧版一致：localStorage.colorTheme）
+    (function () {
+      try {
+        var t = localStorage.getItem('colorTheme') || 'auto';
+        var dark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

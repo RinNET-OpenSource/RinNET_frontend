@@ -1,7 +1,0 @@
-/* Ensure the size of the image fit the container perfectly */
-img {
-  display: block;
-
-  /* This rule is very important, please don't ignore this */
-  max-width: 100%;
-}
