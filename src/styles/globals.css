@@ -230,6 +230,12 @@
     outline-color: color-mix(in srgb, var(--bs-primary) 50%, transparent);
   }
 
+  /* Tailwind preflight 将 img 设为 display:block，破坏旧模板的行内图片布局
+     （如卡牌攻击力数字），恢复 Bootstrap 时代的行内行为 */
+  img {
+    display: inline-block;
+  }
+
   html,
   body {
     height: 100%;

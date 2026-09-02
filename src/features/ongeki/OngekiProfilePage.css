@@ -1,4 +1,10 @@
 /* 等价旧版 ongeki-profile.component.css */
+/* 旧版组件样式相互隔离，此处覆盖 dashboard 共享样式的 max-width 限制 */
+.profile-table {
+  width: 100%;
+  max-width: none;
+}
+
 .user-data-container{
   position: relative;
   aspect-ratio: 4.6;

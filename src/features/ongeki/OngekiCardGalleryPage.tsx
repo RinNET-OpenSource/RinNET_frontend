@@ -123,6 +123,7 @@ export function OngekiCardGalleryPage() {
   const [picking, setPicking] = useState(false);
   const pickParams = useRef({ left: 0, top: 0, width: 0, height: 0, expandedWidth: 0, expandedHeight: 0 });
   const pickedParentRef = useRef<HTMLElement | null>(null);
+  const pickedElRef = useRef<HTMLElement | null>(null);
 
   const isSafari = useMemo(() => {
     const ua = window.navigator.userAgent;
@@ -345,19 +346,43 @@ export function OngekiCardGalleryPage() {
     pickParams.current.expandedWidth = maxWidth;
     pickParams.current.expandedHeight = maxWidth / 0.730038022813688;
     onMouseLeaveCard(cardCol);
+
+    // 两阶段动画：先把元素钉在原位（无过渡），再过渡到放大位置（等价旧版 Angular 动画）
+    const s = cardCol.style;
+    s.transition = 'none';
+    s.position = 'fixed';
+    s.top = `${pickParams.current.top}px`;
+    s.left = `${pickParams.current.left}px`;
+    s.width = `${pickParams.current.width}px`;
+    s.height = `${pickParams.current.height}px`;
+    s.transform = 'translate(-50%, -50%)';
+    s.zIndex = '1100';
+    void cardCol.offsetWidth; // 强制 reflow，使起始样式生效
+
+    s.transition = 'all 1s ease-in-out';
+    // 等价旧版 Angular 动画：从原位滑移到屏幕中央并同时放大
+    s.top = '50%';
+    s.left = '50%';
+    s.width = `${pickParams.current.expandedWidth}px`;
+    s.height = `${pickParams.current.expandedHeight}px`;
+
+    pickedElRef.current = cardCol;
     setPickedCardId(cardId);
     pickedParentRef.current = cardCol.parentElement;
     document.body.classList.add('overflow-hidden');
   }
 
   function unpickCard() {
+    const el = pickedElRef.current;
     const parent = pickedParentRef.current;
-    if (parent) {
+    if (el && parent) {
       const rect = parent.getBoundingClientRect();
-      pickParams.current.width = rect.width;
-      pickParams.current.height = rect.height;
-      pickParams.current.left = (rect.right + rect.left) / 2;
-      pickParams.current.top = (rect.bottom + rect.top) / 2;
+      const s = el.style;
+      s.transition = 'all 1s ease-in-out';
+      s.top = `${(rect.top + rect.bottom) / 2}px`;
+      s.left = `${(rect.left + rect.right) / 2}px`;
+      s.width = `${rect.width}px`;
+      s.height = `${rect.height}px`;
     }
     setPickedCardId(null);
   }
@@ -365,6 +390,9 @@ export function OngekiCardGalleryPage() {
   function onPickTransitionEnd() {
     setPicking(false);
     if (pickedCardId === null) {
+      const el = pickedElRef.current;
+      if (el) el.style.cssText = '';
+      pickedElRef.current = null;
       document.body.classList.remove('overflow-hidden');
     }
   }
@@ -483,7 +511,8 @@ export function OngekiCardGalleryPage() {
         </div>
       </div>
 
-      <div className={'collapse' + (filterCollapsed ? '' : ' show')} id="filterCollapse">
+      {!filterCollapsed && (
+      <div id="filterCollapse">
         <div className="row mb-2 g-1">
           <div className="col-12 col-sm-auto pt-1 me-3">{t('Ongeki.CardGallery.IsAcquired')}</div>
           <div className="col-12 col-sm">
@@ -582,6 +611,7 @@ export function OngekiCardGalleryPage() {
           </div>
         </div>
       </div>
+      )}
 
       {cardList && (
         <div className="mb-2">
@@ -621,20 +651,6 @@ export function OngekiCardGalleryPage() {
                       'cards-col' +
                       (pickedCardId === item.cardId ? ' card-picking' : '') +
                       (item.digitalStock < 1 ? ' grayscale' : '')
-                    }
-                    style={
-                      pickedCardId === item.cardId
-                        ? {
-                            position: 'fixed',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: pickParams.current.expandedWidth,
-                            height: pickParams.current.expandedHeight,
-                            zIndex: 1100,
-                            transition: 'all 1s ease-in-out',
-                          }
-                        : { transition: 'all 1s ease-in-out' }
                     }
                     onMouseMove={(e) => !picking && !isSafari && onMoveRotator(e.clientX, e.clientY, e.currentTarget)}
                     onMouseLeave={(e) => onMouseLeaveCard(e.currentTarget)}

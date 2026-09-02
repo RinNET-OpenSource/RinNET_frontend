@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ExclamationTriangleFill } from 'react-bootstrap-icons';
@@ -6,7 +6,7 @@ import { BModal } from '@/components/shared/BModal';
 import { Pagination } from '@/components/shared/Pagination';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
-import { dbGetByKey } from '@/lib/db/db';
+import { dbGetAll, dbGetByKey } from '@/lib/db/db';
 import { StatusCode } from '@/lib/models';
 import { OngekiCardItem } from './OngekiCardItem';
 import type { OngekiCard as OngekiCardModel, OngekiSkill, PlayerCard } from './models';
@@ -47,6 +47,8 @@ export function OngekiCardPage() {
   const [selecting, setSelecting] = useState<{ deckIndex: number } | null>(null);
   // 选卡弹窗（简化版画廊：搜索 + 分页；完整筛选面板随 gallery 页补齐）
   const [galleryCards, setGalleryCards] = useState<PlayerCard[]>([]);
+  const [galleryIds, setGalleryIds] = useState<number[]>([]);
+  const [galleryAllCards, setGalleryAllCards] = useState<OngekiCardModel[]>([]);
   const [gallerySearch, setGallerySearch] = useState('');
   const [galleryPage, setGalleryPage] = useState(1);
 
@@ -218,36 +220,99 @@ export function OngekiCardPage() {
     }
   }
 
-  // 打开选卡弹窗时加载卡牌列表
+  // 打开选卡弹窗时加载卡牌列表（等价旧版画廊 isModal 模式：cardIds → cardInfos）
   useEffect(() => {
     if (!selecting) return;
     setGallerySearch('');
     setGalleryPage(1);
+    setGalleryCards([]);
     void (async () => {
       try {
-        const cards: PlayerCard[] = await api.get('api/game/ongeki/cardInfos', { page: 0, size: 500 });
-        const list = cards ?? [];
-        for (const card of list) {
-          const c = await dbGetByKey<OngekiCardModel>('ongekiCard', card.cardId);
-          if (c) card.cardInfo = c;
-        }
-        setGalleryCards(list);
+        const ids: number[] = (await api.get('api/game/ongeki/cardIds')) ?? [];
+        setGalleryAllCards((await dbGetAll<OngekiCardModel>('ongekiCard')) ?? []);
+        // SKIN 模式旧版会插入 0 号占位卡（showDummyCard）
+        const list = type === CardType.SKIN ? [0, ...ids] : ids;
+        setGalleryIds(list);
+        // 页面内容随 galleryFilteredIds 变化在下方 effect 中加载
       } catch (error) {
         notice(String(error));
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selecting]);
 
-  const galleryFiltered = galleryCards.filter((c) => {
-    if (!gallerySearch) return true;
+  async function loadGalleryPage(page: number, ids: number[]) {
+    const start = Math.min((page - 1) * PAGE_SIZE, ids.length);
+    const end = Math.min(start + PAGE_SIZE, ids.length);
+    const pageIds = ids.slice(start, end);
+    const acquired = pageIds.filter((id) => id !== 0);
+    try {
+      const content: PlayerCard[] = acquired.length
+        ? ((await api.get('api/game/ongeki/cardInfos', { cardIds: acquired.join(',') })) ?? [])
+        : [];
+      const cards: PlayerCard[] = [];
+      for (const id of pageIds) {
+        let playerCard = content.find((c) => c.cardId === id);
+        if (!playerCard) {
+          const card = await dbGetByKey<OngekiCardModel>('ongekiCard', id);
+          const maxLevel = card?.rarity === 'N' ? 100 : 70;
+          playerCard = {
+            cardId: id,
+            digitalStock: 0,
+            analogStock: 0,
+            level: maxLevel,
+            maxLevel,
+            exp: 0,
+            printCount: 0,
+            useCount: 0,
+            kaikaDate: '2000-00-00 00:00:00.0',
+            choKaikaDate: '2000-00-00 00:00:00.0',
+            skillId: card?.choKaikaSkillId ?? 0,
+            created: '0000-00-00 00:00:00.0',
+            isNew: false,
+            isAcquired: false,
+          };
+        }
+        if (playerCard.cardId !== 0) {
+          const c = await dbGetByKey<OngekiCardModel>('ongekiCard', playerCard.cardId);
+          if (c) {
+            playerCard.cardInfo = c;
+            const skillId =
+              playerCard.choKaikaDate !== '0000-00-00 00:00:00.0' ? c.choKaikaSkillId : c.skillId;
+            playerCard.skillInfo = (await dbGetByKey<OngekiSkill>('ongekiSkill', skillId)) ?? undefined;
+          }
+        }
+        cards.push(playerCard);
+      }
+      setGalleryCards(cards);
+    } catch (error) {
+      notice(String(error));
+    }
+  }
+
+  // 搜索基于 IDB 全量卡数据过滤 ID 列表（等价旧版画廊搜索）
+  const galleryFilteredIds = useMemo(() => {
+    if (!gallerySearch) return galleryIds;
     const lower = gallerySearch.toLowerCase();
-    return (
-      String(c.cardId).includes(lower) ||
-      c.cardInfo?.name?.toLowerCase().includes(lower) ||
-      c.cardInfo?.nickName?.toLowerCase().includes(lower)
-    );
-  });
-  const galleryPageItems = galleryFiltered.slice((galleryPage - 1) * PAGE_SIZE, galleryPage * PAGE_SIZE);
+    return galleryIds.filter((id) => {
+      if (id === 0) return true;
+      const info = galleryAllCards.find((c) => c.id === id);
+      return (
+        String(id).includes(lower) ||
+        info?.name?.toLowerCase().includes(lower) ||
+        info?.nickName?.toLowerCase().includes(lower)
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [galleryIds, gallerySearch, galleryAllCards]);
+
+  // 弹窗打开或搜索变化时加载第一页
+  useEffect(() => {
+    if (!selecting) return;
+    setGalleryPage(1);
+    void loadGalleryPage(1, galleryFilteredIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [galleryFilteredIds]);
 
   const currentDeck = cardIDs.length > 0 ? cardIDs.slice((currentDeckID - 1) * 3, (currentDeckID - 1) * 3 + 3) : [];
 
@@ -349,7 +414,7 @@ export function OngekiCardPage() {
           }}
         />
         <div className="row row-cols-3 row-cols-md-4 row-cols-lg-6 g-2 mb-2">
-          {galleryPageItems.map((card) => (
+          {galleryCards.map((card) => (
             <div className="col" key={card.cardId}>
               <div
                 className="cursor-pointer"
@@ -366,8 +431,11 @@ export function OngekiCardPage() {
         <Pagination
           current={galleryPage}
           pageSize={PAGE_SIZE}
-          totalItems={galleryFiltered.length}
-          onPageChange={setGalleryPage}
+          totalItems={galleryFilteredIds.length}
+          onPageChange={(page) => {
+            setGalleryPage(page);
+            void loadGalleryPage(page, galleryFilteredIds);
+          }}
         />
       </BModal>
     </div>

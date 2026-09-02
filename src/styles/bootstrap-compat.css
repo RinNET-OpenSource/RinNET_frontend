@@ -16,6 +16,20 @@
   font-size: 1.25rem;
   font-weight: 300;
 }
+/* hstack/vstack（utilities 版不含，旧模板大量使用） */
+.hstack {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: row;
+  align-items: center;
+  align-self: stretch;
+}
+.vstack {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-self: stretch;
+}
 hr {
   margin: 1rem 0;
   color: inherit;
