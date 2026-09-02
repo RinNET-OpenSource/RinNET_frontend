@@ -1,0 +1,92 @@
+/* ongeki 页面共享样式（旧版 battle-point/rating 组件样式合并） */
+.rating-card {
+  min-width: 180px;
+}
+.jacket {
+  width: 5.6rem;
+  aspect-ratio: 1;
+}
+
+.new-jacket {
+  width: 3.6rem;
+  aspect-ratio: 1;
+  border-top-left-radius: var(--bs-border-radius) !important;
+}
+@media (min-width: 1400px) {
+  .col-xxl- {
+    flex: 0 0 auto;
+    width: 20%;
+  }
+}
+.difficulty {
+  font-size: 0.7em;
+}
+
+.difficulty-basic {
+  background: #2da060;
+  border: 1px solid #145830;
+  color: white;
+}
+
+.difficulty-advanced {
+  background: #e6a047;
+  border: 1px solid #995014;
+  color: white;
+}
+
+.difficulty-expert {
+  background: #e55353;
+  border: 1px solid #7b1f18;
+  color: white;
+}
+
+.difficulty-master {
+  background: #9d5cb9;
+  border: 1px solid #381c47;
+  color: white;
+}
+
+.difficulty-lunatic {
+  background: var(--bs-white);
+  border: 1px solid var(--bs-danger);
+  color: var(--bs-danger);
+}
+
+.attr-aqua {
+  background: #1399dc;
+  border: 1px solid #064488;
+  color: white;
+}
+
+.attr-leaf {
+  background: #00c122;
+  border: 1px solid #005810;
+  color: white;
+}
+
+.attr-fire {
+  background: #e22f5d;
+  border: 1px solid #701020;
+  color: white;
+}
+
+.honor-badge {
+  aspect-ratio: 1;
+  width: 28px;
+}
+
+.honor-star {
+  aspect-ratio: 4.5;
+  width: 3.6em;
+}
+
+.honor {
+  height: 28px;
+}
+
+@media (max-width: 380px) {
+  .row-cols-xxs-1 > * {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}

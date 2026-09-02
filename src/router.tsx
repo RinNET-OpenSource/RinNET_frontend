@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
-import { Navigate, createBrowserRouter, useLocation } from 'react-router-dom';
+import { Navigate, createBrowserRouter, useLocation, Outlet } from 'react-router-dom';
 import { AppShell } from '@/components/shell/AppShell';
 import { getAccount } from '@/lib/auth/account';
 import { restoreAccess } from '@/lib/auth/access';
@@ -19,6 +19,11 @@ import { KeychipPage } from '@/pages/KeychipPage';
 import { ImporterPage } from '@/pages/ImporterPage';
 import { AnnouncementsPage } from '@/pages/AnnouncementsPage';
 import { PlaceholderPage } from '@/pages/PlaceholderPage';
+import { OngekiProfilePage } from '@/features/ongeki/OngekiProfilePage';
+import { OngekiBattlePage } from '@/features/ongeki/OngekiBattlePage';
+import { OngekiRivalPage } from '@/features/ongeki/OngekiRivalPage';
+import { OngekiMusicRankingPage } from '@/features/ongeki/OngekiMusicRankingPage';
+import { OngekiUserRankingPage } from '@/features/ongeki/OngekiUserRankingPage';
 
 /** Auth guards (equivalent to legacy auth-guard/login-guard services) */
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -66,20 +71,20 @@ export const router = createBrowserRouter([
       // ongeki (canMatch: AuthGuard)
       {
         path: '/ongeki',
-        element: auth(<PlaceholderPage title="Ongeki" />),
+        element: auth(<Outlet />),
         handle: { title: 'Ongeki' },
         children: [
           { index: true, element: <Navigate to="profile" replace /> },
-          { path: 'profile', element: <PlaceholderPage title="Ongeki Profile" />, handle: { title: 'Profile' } },
+          { path: 'profile', element: <OngekiProfilePage />, handle: { title: 'Profile' } },
           { path: 'recent', element: <PlaceholderPage title="Ongeki Recent" />, handle: { title: 'PlayRecord' } },
           { path: 'song', element: <PlaceholderPage title="Ongeki Song" />, handle: { title: 'MusicList' } },
-          { path: 'battle', element: <PlaceholderPage title="Ongeki Battle" />, handle: { title: 'BattlePoint' } },
+          { path: 'battle', element: <OngekiBattlePage />, handle: { title: 'BattlePoint' } },
           { path: 'rating', element: <PlaceholderPage title="Ongeki Rating" />, handle: { title: 'Rating' } },
           { path: 'card/gallery', element: <PlaceholderPage title="Ongeki Card Gallery" />, handle: { title: 'CardGallery' } },
           { path: 'card', element: <PlaceholderPage title="Ongeki Card" />, handle: { title: 'Card' } },
-          { path: 'rival', element: <PlaceholderPage title="Ongeki Rival" />, handle: { title: 'Rival' } },
-          { path: 'musicRanking', element: <PlaceholderPage title="Ongeki Music Ranking" />, handle: { title: 'MusicRanking' } },
-          { path: 'userRanking', element: <PlaceholderPage title="Ongeki User Ranking" />, handle: { title: 'UserRanking' } },
+          { path: 'rival', element: <OngekiRivalPage />, handle: { title: 'Rival' } },
+          { path: 'musicRanking', element: <OngekiMusicRankingPage />, handle: { title: 'MusicRanking' } },
+          { path: 'userRanking', element: <OngekiUserRankingPage />, handle: { title: 'UserRanking' } },
           { path: 'settings', element: <PlaceholderPage title="Ongeki Settings" />, handle: { title: 'Setting' } },
         ],
       },
@@ -87,7 +92,7 @@ export const router = createBrowserRouter([
       // maimai2
       {
         path: '/mai2',
-        element: auth(<PlaceholderPage title="Mai2" />),
+        element: auth(<Outlet />),
         handle: { title: 'Mai2' },
         children: [
           { index: true, element: <Navigate to="profile" replace /> },
@@ -109,7 +114,7 @@ export const router = createBrowserRouter([
       // chunithm v2
       {
         path: '/chuni/v2',
-        element: auth(<PlaceholderPage title="ChuniV2" />),
+        element: auth(<Outlet />),
         handle: { title: 'ChuniV2' },
         children: [
           { index: true, element: <Navigate to="profile" replace /> },
