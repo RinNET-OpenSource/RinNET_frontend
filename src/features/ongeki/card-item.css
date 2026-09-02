@@ -1,0 +1,308 @@
+/* 等价旧版 ongeki-card-item.component.css */
+.card-rotator {
+  width: 100%;
+  height: 100%;
+  transition: var(--rotator-transition);
+  appearance: none;
+  will-change: transform;
+  transform: rotateX(var(--rotator-rotate-x)) rotateY(calc(var(--rotator-global-rotate-y) + var(--rotator-rotate-y)));
+  transform-style: preserve-3d;
+  border-radius: 3%;
+  box-shadow: 0px 0px 10px -5px rgb(128, 128, 128), 0 0px 15px -5px rgb(128, 128, 128);
+}
+
+.card-none {
+  position: absolute;
+  filter: brightness(0%) invert(50%);
+  background-size: cover;
+}
+
+.card-holo::after {
+  --space: 4%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-position: center center, calc(20% + var(--pseudo-left) * 0.6) calc(20% + var(--pseudo-top) * 0.6), center center;
+  background-size: cover, 400% 900%, cover;
+  will-change: background-image;
+  background-image: var(--holo-sheet-top), repeating-linear-gradient(75deg, hsl(53, 65%, 60%) calc(var(--space) * 1), hsl(93, 56%, 50%) calc(var(--space) * 2), hsl(176, 54%, 49%) calc(var(--space) * 3), hsl(228, 59%, 55%) calc(var(--space) * 4), hsl(283, 60%, 55%) calc(var(--space) * 5), hsl(326, 59%, 51%) calc(var(--space) * 6), hsl(326, 59%, 51%) calc(var(--space) * 7), hsl(283, 60%, 55%) calc(var(--space) * 8), hsl(228, 59%, 55%) calc(var(--space) * 9), hsl(176, 54%, 49%) calc(var(--space) * 10), hsl(93, 56%, 50%) calc(var(--space) * 11), hsl(53, 65%, 60%) calc(var(--space) * 12));
+  background-blend-mode: multiply, multiply;
+  filter: brightness(1.25) contrast(1.75) saturate(.8);
+  mix-blend-mode: multiply;
+  transition: var(--rotator-transition);
+}
+
+.card-holo::before {
+  --space: 4%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-position: center center, calc(15% + var(--pseudo-left) * 0.7) calc(15% + var(--pseudo-top) * 0.7), center center;
+  background-size: cover, 400% 900%, cover;
+  will-change: background-image;
+  background-image: var(--holo-sheet-middle), repeating-linear-gradient(75deg, hsl(53, 65%, 60%) calc(var(--space) * 1), hsl(93, 56%, 50%) calc(var(--space) * 2), hsl(176, 54%, 49%) calc(var(--space) * 3), hsl(228, 59%, 55%) calc(var(--space) * 4), hsl(283, 60%, 55%) calc(var(--space) * 5), hsl(326, 59%, 51%) calc(var(--space) * 6), hsl(326, 59%, 51%) calc(var(--space) * 7), hsl(283, 60%, 55%) calc(var(--space) * 8), hsl(228, 59%, 55%) calc(var(--space) * 9), hsl(176, 54%, 49%) calc(var(--space) * 10), hsl(93, 56%, 50%) calc(var(--space) * 11), hsl(53, 65%, 60%) calc(var(--space) * 12));
+  background-blend-mode: lighten, multiply;
+  filter: brightness(1.25) contrast(1.75) saturate(.8);
+  mix-blend-mode: overlay;
+  transition: var(--rotator-transition);
+}
+
+.card-holo {
+  --space: 4%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-position: center center, calc(10% + var(--pseudo-left) * 0.8) calc(10% + var(--pseudo-top) * 0.8), center center;
+  background-size: cover, 400% 900%, cover;
+  will-change: background-image;
+  background-image: var(--holo-sheet-bottom), repeating-linear-gradient(75deg, hsl(53, 65%, 60%) calc(var(--space) * 1), hsl(93, 56%, 50%) calc(var(--space) * 2), hsl(176, 54%, 49%) calc(var(--space) * 3), hsl(228, 59%, 55%) calc(var(--space) * 4), hsl(283, 60%, 55%) calc(var(--space) * 5), hsl(326, 59%, 51%) calc(var(--space) * 6), hsl(326, 59%, 51%) calc(var(--space) * 7), hsl(283, 60%, 55%) calc(var(--space) * 8), hsl(228, 59%, 55%) calc(var(--space) * 9), hsl(176, 54%, 49%) calc(var(--space) * 10), hsl(93, 56%, 50%) calc(var(--space) * 11), hsl(53, 65%, 60%) calc(var(--space) * 12));
+  background-blend-mode: color-burn, multiply;
+  filter: brightness(1.25) contrast(1.75) saturate(.8);
+  mix-blend-mode: color-dodge;
+  transition: var(--rotator-transition);
+  -webkit-mask-size: cover;
+  mask-composite: intersect, subtract;
+  -webkit-mask-composite: source-in, source-out;
+  overflow: hidden;
+}
+
+.card-holo-bg {
+  background-color: rgb(128, 128, 128);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-size: cover;
+  mask-mode: alpha, alpha;
+  mask-composite: intersect, subtract;
+  -webkit-mask-composite: source-in, source-out;
+}
+
+.card-frame {
+  position: absolute;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.card-chara {
+  position: absolute;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.card-holo-frame-bg {
+  background-color: rgb(128, 128, 128);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  -webkit-mask-size: cover;
+  mask-mode: alpha;
+}
+
+.card-highlight {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: var(--pseudo-left);
+  top: var(--pseudo-top);
+  width: 250%;
+  height: 250%;
+  background: radial-gradient(farthest-corner circle at 50% 50%, hsl(280, 100%, 96%) 5%, hsl(0, 0%, 10%) 60%);
+  pointer-events: none;
+  transition: var(--rotator-transition);
+  opacity: var(--pseudo-opacity);
+  filter: brightness(.75) contrast(2) saturate(2);
+  mix-blend-mode: soft-light;
+}
+
+.card-container {
+  aspect-ratio: 0.730038022813688;
+  width: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 3%;
+  overflow: hidden;
+  position: relative;
+  background-size: cover;
+  container: card-container / inline-size;
+}
+
+.card-attribute {
+  width: 17%;
+  top: 8%;
+  left: 12%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+.card-rare {
+  width: 26%;
+  top: 2.5%;
+  left: 16%;
+  position: absolute;
+}
+
+.card-gakunen {
+  width: 12%;
+  top: 0;
+  right: 3%;
+  position: absolute;
+}
+
+.card-kaika-state {
+  width: 22%;
+  top: 15%;
+  left: 3%;
+  position: absolute;
+}
+
+.card-skill-bg {
+  width: 85%;
+  top: 80%;
+  left: 4%;
+  position: absolute;
+}
+
+.card-info-footer {
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  color: white;
+  font-family: SEGA_Humming;
+  font-size: 3cqw;
+  background: rgba(0, 0, 0, .5);
+  position: absolute;
+  text-align: center;
+}
+
+.card-star-container {
+  width: 70%;
+  height: 4.7%;
+  top: 75%;
+  left: 21%;
+  position: absolute;
+}
+
+.card-star-container .card-star {
+  text-align: left;
+  height: 100%;
+  margin: 0 -1.2%;
+  float: left;
+}
+
+.card-qr-code-container {
+  width: 20%;
+  top: 80.5%;
+  right: 5%;
+  background: white;
+  position: absolute;
+}
+
+.card-qr-code {
+  width: 100%;
+}
+
+.card-max-atk {
+  width: 10%;
+}
+
+.card-max-atk-title {
+  width: 14%;
+  top: 70%;
+  left: 6%;
+  position: absolute;
+}
+
+.card-max-atk-value-container {
+  width: 25%;
+  height: 6.5%;
+  top: 73.5%;
+  left: 0;
+  position: absolute;
+  text-align: center;
+}
+
+.card-max-atk-value-number {
+  vertical-align: top;
+  height: 100%;
+  margin: 0 -8.2%;
+}
+
+.card-name {
+  color: #FFFFFF;
+  width: 100%;
+  height: 10%;
+  text-align: right;
+  top: 67%;
+  right: 7%;
+  position: absolute;
+  font-family: "SEGA_Humming";
+  rotate: -6deg;
+}
+
+.card-name .card-name-shadow {
+  position: absolute;
+  top: calc(50% + .3cqw);
+  right: -.3cqw;
+  color: #2592C1;
+  -webkit-text-stroke: .9cqw #2592C1;
+  transform: translate(0, -50%);
+}
+
+.card-name .card-name-shadow .card-name-text {
+  top: calc(50% + .2cqw);
+  right: -.2cqw;
+  -webkit-text-stroke: .9cqw #2592C1;
+}
+
+.card-name .card-name-shadow .card-name-chara {
+  top: calc(50% + .5cqw);
+  right: -.5cqw;
+  -webkit-text-stroke: 1.2cqw #2592C1;
+}
+
+
+.card-name .card-name-text {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(0, -50%);
+}
+
+.card-name .card-name-nick {
+  font-size: 2.8cqw;
+}
+
+.card-name .card-name-chara {
+  font-size: 5.4cqw;
+}
+
+.card-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  aspect-ratio: 0.730038022813688;
+  border-radius: 3%;
+  background-size: cover;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  background-position: center;
+}
+
+.card-empty {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  aspect-ratio: 0.730038022813688;
+  border-radius: 3%;
+  background-size: cover;
+  background-position: center;
+}
