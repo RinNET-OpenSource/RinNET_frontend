@@ -345,7 +345,6 @@ export function OngekiCardGalleryPage() {
     pickParams.current.expandedWidth = maxWidth;
     pickParams.current.expandedHeight = maxWidth / 0.730038022813688;
     onMouseLeaveCard(cardCol);
-    cardCol.classList.add('card-picking');
     setPickedCardId(cardId);
     pickedParentRef.current = cardCol.parentElement;
     document.body.classList.add('overflow-hidden');
@@ -363,8 +362,7 @@ export function OngekiCardGalleryPage() {
     setPickedCardId(null);
   }
 
-  function onPickTransitionEnd(el: HTMLElement) {
-    el.classList.remove('card-picking');
+  function onPickTransitionEnd() {
     setPicking(false);
     if (pickedCardId === null) {
       document.body.classList.remove('overflow-hidden');
@@ -640,7 +638,7 @@ export function OngekiCardGalleryPage() {
                     }
                     onMouseMove={(e) => !picking && !isSafari && onMoveRotator(e.clientX, e.clientY, e.currentTarget)}
                     onMouseLeave={(e) => onMouseLeaveCard(e.currentTarget)}
-                    onTransitionEnd={(e) => pickedCardId !== null && onPickTransitionEnd(e.currentTarget)}
+                    onTransitionEnd={() => onPickTransitionEnd()}
                     onClick={(e) => {
                       if (isSafari) {
                         if (!pickedCardId) setDetailsCard(item);
