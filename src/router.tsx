@@ -12,6 +12,12 @@ import { EulaPage } from '@/pages/EulaPage';
 import { BannedPage } from '@/pages/BannedPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { ContributorsPage } from '@/pages/ContributorsPage';
+import { DashboardPage } from '@/pages/DashboardPage';
+import { ProfilePage } from '@/pages/ProfilePage';
+import { CardsPage } from '@/pages/CardsPage';
+import { KeychipPage } from '@/pages/KeychipPage';
+import { ImporterPage } from '@/pages/ImporterPage';
+import { AnnouncementsPage } from '@/pages/AnnouncementsPage';
 import { PlaceholderPage } from '@/pages/PlaceholderPage';
 
 /** Auth guards (equivalent to legacy auth-guard/login-guard services) */
@@ -48,12 +54,12 @@ export const router = createBrowserRouter([
     element: <AppShell />,
     children: [
       { path: '/', element: <HomePage />, handle: { title: 'Home', disableSidebar: true } },
-      { path: '/profile', element: auth(<PlaceholderPage title="Profile" />), handle: { title: 'Profile' } },
-      { path: '/cards', element: auth(<PlaceholderPage title="Cards" />), handle: { title: 'Cards' } },
-      { path: '/keychip', element: auth(<PlaceholderPage title="Keychip" />), handle: { title: 'Keychip' } },
-      { path: '/dashboard', element: auth(<PlaceholderPage title="Dashboard" />), handle: { title: 'Dashboard' } },
-      { path: '/import', element: auth(<PlaceholderPage title="Import" />), handle: { title: 'Import' } },
-      { path: '/announcements', element: auth(<PlaceholderPage title="Announcements" />), handle: { title: 'Announcements' } },
+      { path: '/profile', element: auth(<ProfilePage />), handle: { title: 'Profile' } },
+      { path: '/cards', element: auth(<CardsPage />), handle: { title: 'Cards' } },
+      { path: '/keychip', element: auth(<KeychipPage />), handle: { title: 'Keychip' } },
+      { path: '/dashboard', element: auth(<DashboardPage />), handle: { title: 'Dashboard' } },
+      { path: '/import', element: auth(<ImporterPage />), handle: { title: 'Import' } },
+      { path: '/announcements', element: auth(<AnnouncementsPage />), handle: { title: 'Announcements' } },
       { path: '/announcements/edit', element: auth(<PlaceholderPage title="EditAnnouncements" />), handle: { title: 'EditAnnouncements' } },
       { path: '/contributors', element: <ContributorsPage />, handle: { title: 'Contributors', disableSidebar: true } },
 

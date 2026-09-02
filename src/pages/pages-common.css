@@ -1,0 +1,75 @@
+/* profile/dashboard 页共享样式（旧版组件样式移植） */
+.col-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.col-content {
+  flex-grow: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.2rem;
+}
+
+.col-lead {
+  display: flex;
+  align-items: center;
+  font-size: small;
+  --bs-text-opacity: 1;
+  width: 8em;
+}
+
+.col-value {
+  font-weight: bold;
+  font-size: small;
+  overflow: hidden;
+  width: 0em;
+}
+
+.col-action {
+  flex: 0 1 auto;
+  flex-shrink: 0;
+  font-size: small;
+  text-decoration: none;
+}
+
+.col-action:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.oauth-icon {
+  height: 1.4em;
+  width: 1.4em;
+  margin-inline-end: 0.6em;
+  color: var(--bs-body-color);
+}
+
+.profile-icon {
+  height: 5.4em;
+  width: 5.4em;
+}
+
+.profile-table {
+  font-size: 0.8em;
+  max-width: 20em;
+}
+
+.profile-table th {
+  width: 50%;
+}
+
+.profile-table td {
+  width: 50%;
+}
+
+.more-announcements {
+  text-decoration: none;
+  font-size: small;
+}
+
+.more-announcements:hover {
+  text-decoration: underline;
+}
