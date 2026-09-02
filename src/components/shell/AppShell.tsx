@@ -20,6 +20,11 @@ import { menu, showItem, showMenu } from '@/lib/menu';
 import { languages, languageKeys, langStore, setLang } from '@/lib/i18n';
 import { themeStore, setTheme, type Theme } from '@/lib/theme';
 import { assetsHost } from '@/lib/utils';
+import { setNavigator } from '@/lib/nav';
+import { getAccount } from '@/lib/auth/account';
+import { restoreAccess } from '@/lib/auth/access';
+import { loadUser } from '@/lib/user';
+import { checkDbUpdate } from '@/lib/db/preload';
 
 export interface RouteHandle {
   title?: string;
@@ -38,6 +43,50 @@ function useIsActive(): (url: string) => boolean {
 
 function doLogout() {
   void logout().then(() => location.assign(''));
+}
+
+/** 等价旧版 AppComponent 的启动逻辑（initializeApp / 标题拼接） */
+function BootEffects() {
+  const location = useLocation();
+  const routerNavigate = useNavigate();
+  const matches = useMatches() as Array<{ handle?: { title?: string } }>;
+
+  // 把 react-router 的 navigate 注入给非 React 模块（api client 等）
+  useEffect(() => {
+    setNavigator(routerNavigate);
+  }, [routerNavigate]);
+
+  // 等价：路由到 '/' 时 initializeApp
+  useEffect(() => {
+    if (!getAccount()) return;
+    void (async () => {
+      const status = await restoreAccess();
+      if (status?.banned) {
+        window.location.assign('/banned');
+        return;
+      }
+      if (status?.eulaRequired) {
+        window.location.assign('/eula');
+        return;
+      }
+      void checkDbUpdate();
+      await loadUser();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname === '/' ? 'home' : 'other']);
+
+  // 等价：标题拼接 "child - parent | RinNET"
+  useEffect(() => {
+    const titles = matches
+      .map((m) => m.handle?.title)
+      .filter((t): t is string => Boolean(t))
+      .reverse();
+    if (titles.length > 0) {
+      document.title = titles.join(' - ') + ' | RinNET';
+    }
+  }, [matches]);
+
+  return null;
 }
 
 /** 导航主体（桌面侧栏与移动抽屉共用），结构等价旧版 app.component.html 侧栏 */
@@ -265,6 +314,7 @@ export function AppShell() {
 
   return (
     <div className="app-container">
+      <BootEffects />
       <div className="flex-grow-1">
         {!accessLayout && (
           <nav className="app-navbar navbar navbar-expand-lg position-fixed shadow w-100">
@@ -327,11 +377,7 @@ export function AppShell() {
             )}
             <main
               className="order-1 ms-0"
-              style={{
-                marginTop: accessLayout ? '0' : '4.6rem',
-                gridArea: 'main',
-                marginInlineStart: accessLayout ? undefined : '',
-              }}
+              style={{ marginTop: accessLayout ? '0' : '4.6rem', gridArea: 'main' }}
             >
               <div className={accessLayout ? '' : 'ms-lg-3 me-lg-2'}>
                 <Outlet />

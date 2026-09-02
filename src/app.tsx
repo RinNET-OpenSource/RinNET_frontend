@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { BrowserRouter, useLocation, useNavigate, useMatches } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { registerSW } from 'virtual:pwa-register';
-import { AppRoutes } from '@/router';
+import { router } from '@/router';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initTheme } from '@/lib/theme';
-import { setNavigator, navigate } from '@/lib/nav';
+import { navigate } from '@/lib/nav';
 import { getAccount } from '@/lib/auth/account';
 import { restoreAccess } from '@/lib/auth/access';
 import { loadUser } from '@/lib/user';
@@ -17,36 +17,7 @@ import '@/lib/i18n';
 
 const queryClient = new QueryClient();
 
-/** 等价旧版 AppComponent 的启动逻辑（initializeApp / SW 更新 / 浏览器提示 / 标题） */
-function BootEffects() {
-  const location = useLocation();
-  const routerNavigate = useNavigate();
-  const matches = useMatches() as Array<{ handle?: { title?: string } }>;
-
-  // 把 react-router 的 navigate 注入给非 React 模块（api client 等）
-  useEffect(() => {
-    setNavigator(routerNavigate);
-  }, [routerNavigate]);
-
-  // 等价：路由到 '/' 时 initializeApp
-  useEffect(() => {
-    void initializeApp();
-  }, [location.pathname === '/' ? 'home' : 'other']);
-
-  // 等价：标题拼接 "child - parent | RinNET"
-  useEffect(() => {
-    const titles = matches
-      .map((m) => m.handle?.title)
-      .filter((t): t is string => Boolean(t))
-      .reverse();
-    if (titles.length > 0) {
-      document.title = titles.join(' - ') + ' | RinNET';
-    }
-  }, [location.pathname]);
-
-  return null;
-}
-
+/** 等价旧版 AppComponent 构造器/ngOnInit 的一次性启动逻辑 */
 async function initializeApp() {
   if (getAccount()) {
     const status = await restoreAccess();
@@ -77,10 +48,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter>
-          <BootEffects />
-          <AppRoutes />
-        </BrowserRouter>
+        <RouterProvider router={router} />
       </TooltipProvider>
     </QueryClientProvider>
   );

@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { AppShell, type RouteHandle } from '@/components/shell/AppShell';
+import { Navigate, createBrowserRouter, useLocation } from 'react-router-dom';
+import { AppShell } from '@/components/shell/AppShell';
 import { getAccount } from '@/lib/auth/account';
 import { restoreAccess } from '@/lib/auth/access';
 import { HomePage } from '@/pages/HomePage';
@@ -14,7 +14,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
 import { ContributorsPage } from '@/pages/ContributorsPage';
 import { PlaceholderPage } from '@/pages/PlaceholderPage';
 
-/** 等价旧版 auth-guard.service.ts / login-guard.service.ts */
+/** Auth guards (equivalent to legacy auth-guard/login-guard services) */
 function RequireAuth({ children }: { children: ReactNode }) {
   const location = useLocation();
   const account = getAccount();
@@ -41,144 +41,94 @@ function RequireGuest({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-export function AppRoutes() {
-  return (
-    <Routes>
-      <Route element={<AppShell />}>
-        <Route path="/" element={<HomePage />} handle={{ title: 'Home', disableSidebar: true }} />
-        <Route
-          path="/profile"
-          element={<RequireAuth><PlaceholderPage title="Profile" /></RequireAuth>}
-          handle={{ title: 'Profile' }}
-        />
-        <Route
-          path="/cards"
-          element={<RequireAuth><PlaceholderPage title="Cards" /></RequireAuth>}
-          handle={{ title: 'Cards' }}
-        />
-        <Route
-          path="/keychip"
-          element={<RequireAuth><PlaceholderPage title="Keychip" /></RequireAuth>}
-          handle={{ title: 'Keychip' }}
-        />
-        <Route
-          path="/dashboard"
-          element={<RequireAuth><PlaceholderPage title="Dashboard" /></RequireAuth>}
-          handle={{ title: 'Dashboard' }}
-        />
-        <Route
-          path="/import"
-          element={<RequireAuth><PlaceholderPage title="Import" /></RequireAuth>}
-          handle={{ title: 'Import' }}
-        />
-        <Route
-          path="/announcements"
-          element={<RequireAuth><PlaceholderPage title="Announcements" /></RequireAuth>}
-          handle={{ title: 'Announcements' }}
-        />
-        <Route
-          path="/announcements/edit"
-          element={<RequireAuth><PlaceholderPage title="EditAnnouncements" /></RequireAuth>}
-          handle={{ title: 'EditAnnouncements' }}
-        />
-        <Route
-          path="/contributors"
-          element={<ContributorsPage />}
-          handle={{ title: 'Contributors', disableSidebar: true }}
-        />
+const auth = (el: ReactNode) => <RequireAuth>{el}</RequireAuth>;
 
-        {/* ongeki（canMatch: AuthGuard） */}
-        <Route
-          path="/ongeki"
-          element={<RequireAuth><PlaceholderPage title="Ongeki" /></RequireAuth>}
-          handle={{ title: 'Ongeki' }}
-        >
-          <Route index element={<Navigate to="profile" replace />} />
-          <Route path="profile" element={<PlaceholderPage title="Ongeki Profile" />} handle={{ title: 'Profile' }} />
-          <Route path="recent" element={<PlaceholderPage title="Ongeki Recent" />} handle={{ title: 'PlayRecord' }} />
-          <Route path="song" element={<PlaceholderPage title="Ongeki Song" />} handle={{ title: 'MusicList' }} />
-          <Route path="battle" element={<PlaceholderPage title="Ongeki Battle" />} handle={{ title: 'BattlePoint' }} />
-          <Route path="rating" element={<PlaceholderPage title="Ongeki Rating" />} handle={{ title: 'Rating' }} />
-          <Route path="card/gallery" element={<PlaceholderPage title="Ongeki Card Gallery" />} handle={{ title: 'CardGallery' }} />
-          <Route path="card" element={<PlaceholderPage title="Ongeki Card" />} handle={{ title: 'Card' }} />
-          <Route path="rival" element={<PlaceholderPage title="Ongeki Rival" />} handle={{ title: 'Rival' }} />
-          <Route path="musicRanking" element={<PlaceholderPage title="Ongeki Music Ranking" />} handle={{ title: 'MusicRanking' }} />
-          <Route path="userRanking" element={<PlaceholderPage title="Ongeki User Ranking" />} handle={{ title: 'UserRanking' }} />
-          <Route path="settings" element={<PlaceholderPage title="Ongeki Settings" />} handle={{ title: 'Setting' }} />
-        </Route>
+export const router = createBrowserRouter([
+  {
+    element: <AppShell />,
+    children: [
+      { path: '/', element: <HomePage />, handle: { title: 'Home', disableSidebar: true } },
+      { path: '/profile', element: auth(<PlaceholderPage title="Profile" />), handle: { title: 'Profile' } },
+      { path: '/cards', element: auth(<PlaceholderPage title="Cards" />), handle: { title: 'Cards' } },
+      { path: '/keychip', element: auth(<PlaceholderPage title="Keychip" />), handle: { title: 'Keychip' } },
+      { path: '/dashboard', element: auth(<PlaceholderPage title="Dashboard" />), handle: { title: 'Dashboard' } },
+      { path: '/import', element: auth(<PlaceholderPage title="Import" />), handle: { title: 'Import' } },
+      { path: '/announcements', element: auth(<PlaceholderPage title="Announcements" />), handle: { title: 'Announcements' } },
+      { path: '/announcements/edit', element: auth(<PlaceholderPage title="EditAnnouncements" />), handle: { title: 'EditAnnouncements' } },
+      { path: '/contributors', element: <ContributorsPage />, handle: { title: 'Contributors', disableSidebar: true } },
 
-        {/* maimai2 */}
-        <Route
-          path="/mai2"
-          element={<RequireAuth><PlaceholderPage title="Mai2" /></RequireAuth>}
-          handle={{ title: 'Mai2' }}
-        >
-          <Route index element={<Navigate to="profile" replace />} />
-          <Route path="profile" element={<PlaceholderPage title="Mai2 Profile" />} handle={{ title: 'Profile' }} />
-          <Route path="setting" element={<PlaceholderPage title="Mai2 Setting" />} handle={{ title: 'Setting' }} />
-          <Route path="recent" element={<PlaceholderPage title="Mai2 Recent" />} handle={{ title: 'PlayRecord' }} />
-          <Route path="rating" element={<PlaceholderPage title="Mai2 Rating" />} handle={{ title: 'Rating' }} />
-          <Route path="photos" element={<PlaceholderPage title="Mai2 Photos" />} handle={{ title: 'Photos' }} />
-          <Route path="dxpass" element={<PlaceholderPage title="Mai2 DxPass" />} handle={{ title: 'Dxpass' }} />
-          <Route path="servermissions" element={<PlaceholderPage title="Mai2 Server Missions" />} handle={{ title: 'ServerMissions' }} />
-          <Route path="pointexchanges" element={<PlaceholderPage title="Mai2 Point Exchanges" />} handle={{ title: 'PointExchanges' }} />
-          <Route path="circle" element={<PlaceholderPage title="Mai2 Circle" />} handle={{ title: 'Circle' }} />
-          <Route path="festa" element={<PlaceholderPage title="Mai2 Festa" />} handle={{ title: 'Festa' }} />
-          <Route path="songlist" element={<PlaceholderPage title="Mai2 Songlist" />} handle={{ title: 'MusicList' }} />
-          <Route path="rival" element={<PlaceholderPage title="Mai2 Rival" />} handle={{ title: 'Rival' }} />
-        </Route>
+      // ongeki (canMatch: AuthGuard)
+      {
+        path: '/ongeki',
+        element: auth(<PlaceholderPage title="Ongeki" />),
+        handle: { title: 'Ongeki' },
+        children: [
+          { index: true, element: <Navigate to="profile" replace /> },
+          { path: 'profile', element: <PlaceholderPage title="Ongeki Profile" />, handle: { title: 'Profile' } },
+          { path: 'recent', element: <PlaceholderPage title="Ongeki Recent" />, handle: { title: 'PlayRecord' } },
+          { path: 'song', element: <PlaceholderPage title="Ongeki Song" />, handle: { title: 'MusicList' } },
+          { path: 'battle', element: <PlaceholderPage title="Ongeki Battle" />, handle: { title: 'BattlePoint' } },
+          { path: 'rating', element: <PlaceholderPage title="Ongeki Rating" />, handle: { title: 'Rating' } },
+          { path: 'card/gallery', element: <PlaceholderPage title="Ongeki Card Gallery" />, handle: { title: 'CardGallery' } },
+          { path: 'card', element: <PlaceholderPage title="Ongeki Card" />, handle: { title: 'Card' } },
+          { path: 'rival', element: <PlaceholderPage title="Ongeki Rival" />, handle: { title: 'Rival' } },
+          { path: 'musicRanking', element: <PlaceholderPage title="Ongeki Music Ranking" />, handle: { title: 'MusicRanking' } },
+          { path: 'userRanking', element: <PlaceholderPage title="Ongeki User Ranking" />, handle: { title: 'UserRanking' } },
+          { path: 'settings', element: <PlaceholderPage title="Ongeki Settings" />, handle: { title: 'Setting' } },
+        ],
+      },
 
-        {/* chunithm v2 */}
-        <Route
-          path="/chuni/v2"
-          element={<RequireAuth><PlaceholderPage title="ChuniV2" /></RequireAuth>}
-          handle={{ title: 'ChuniV2' }}
-        >
-          <Route index element={<Navigate to="profile" replace />} />
-          <Route path="profile" element={<PlaceholderPage title="Chuni Profile" />} handle={{ title: 'Profile' }} />
-          <Route path="rating" element={<PlaceholderPage title="Chuni Rating" />} handle={{ title: 'Rating' }} />
-          <Route path="recent" element={<PlaceholderPage title="Chuni Recent" />} handle={{ title: 'PlayRecord' }} />
-          <Route path="song" element={<PlaceholderPage title="Chuni Song" />} handle={{ title: 'MusicList' }} />
-          <Route path="song/ranking/:id/:level" element={<PlaceholderPage title="Chuni Song Ranking" />} handle={{ title: 'SongRanking' }} />
-          <Route path="character" element={<PlaceholderPage title="Chuni Character" />} handle={{ title: 'Character' }} />
-          <Route path="rival" element={<PlaceholderPage title="Chuni Rival" />} handle={{ title: 'Rival' }} />
-          <Route path="userRanking" element={<PlaceholderPage title="Chuni User Ranking" />} handle={{ title: 'UserRanking' }} />
-          <Route path="setting" element={<PlaceholderPage title="Chuni Setting" />} handle={{ title: 'Setting' }} />
-          <Route path="userbox" element={<PlaceholderPage title="Chuni UserBox" />} handle={{ title: 'UserBox' }} />
-        </Route>
+      // maimai2
+      {
+        path: '/mai2',
+        element: auth(<PlaceholderPage title="Mai2" />),
+        handle: { title: 'Mai2' },
+        children: [
+          { index: true, element: <Navigate to="profile" replace /> },
+          { path: 'profile', element: <PlaceholderPage title="Mai2 Profile" />, handle: { title: 'Profile' } },
+          { path: 'setting', element: <PlaceholderPage title="Mai2 Setting" />, handle: { title: 'Setting' } },
+          { path: 'recent', element: <PlaceholderPage title="Mai2 Recent" />, handle: { title: 'PlayRecord' } },
+          { path: 'rating', element: <PlaceholderPage title="Mai2 Rating" />, handle: { title: 'Rating' } },
+          { path: 'photos', element: <PlaceholderPage title="Mai2 Photos" />, handle: { title: 'Photos' } },
+          { path: 'dxpass', element: <PlaceholderPage title="Mai2 DxPass" />, handle: { title: 'Dxpass' } },
+          { path: 'servermissions', element: <PlaceholderPage title="Mai2 Server Missions" />, handle: { title: 'ServerMissions' } },
+          { path: 'pointexchanges', element: <PlaceholderPage title="Mai2 Point Exchanges" />, handle: { title: 'PointExchanges' } },
+          { path: 'circle', element: <PlaceholderPage title="Mai2 Circle" />, handle: { title: 'Circle' } },
+          { path: 'festa', element: <PlaceholderPage title="Mai2 Festa" />, handle: { title: 'Festa' } },
+          { path: 'songlist', element: <PlaceholderPage title="Mai2 Songlist" />, handle: { title: 'MusicList' } },
+          { path: 'rival', element: <PlaceholderPage title="Mai2 Rival" />, handle: { title: 'Rival' } },
+        ],
+      },
 
-        <Route
-          path="/oauth-callback/:type"
-          element={<OauthCallbackPage />}
-          handle={{ title: 'OAuthCallback', disableSidebar: true }}
-        />
-        <Route
-          path="/sign-in"
-          element={<RequireGuest><SignInPage /></RequireGuest>}
-          handle={{ title: 'SignIn', disableSidebar: true }}
-        />
-        <Route
-          path="/sign-up"
-          element={<RequireGuest><SignUpPage /></RequireGuest>}
-          handle={{ title: 'SignUp', disableSidebar: true }}
-        />
-        <Route
-          path="/password-reset"
-          element={<RequireGuest><PasswordResetPage /></RequireGuest>}
-          handle={{ title: 'ResetPassword', disableSidebar: true }}
-        />
-        <Route path="/eula" element={<EulaPage />} handle={{ title: 'EULA', disableSidebar: true }} />
-        <Route path="/banned" element={<BannedPage />} handle={{ title: 'Account Banned', disableSidebar: true }} />
-        <Route
-          path="/admin"
-          element={<RequireAuth><PlaceholderPage title="Admin" /></RequireAuth>}
-          handle={{ title: 'Admin' }}
-        />
-        <Route path="/not-found" element={<NotFoundPage />} handle={{ title: 'NotFound', disableSidebar: true }} />
-        <Route path="*" element={<Navigate to="/not-found" replace />} />
-      </Route>
-    </Routes>
-  );
-}
+      // chunithm v2
+      {
+        path: '/chuni/v2',
+        element: auth(<PlaceholderPage title="ChuniV2" />),
+        handle: { title: 'ChuniV2' },
+        children: [
+          { index: true, element: <Navigate to="profile" replace /> },
+          { path: 'profile', element: <PlaceholderPage title="Chuni Profile" />, handle: { title: 'Profile' } },
+          { path: 'rating', element: <PlaceholderPage title="Chuni Rating" />, handle: { title: 'Rating' } },
+          { path: 'recent', element: <PlaceholderPage title="Chuni Recent" />, handle: { title: 'PlayRecord' } },
+          { path: 'song', element: <PlaceholderPage title="Chuni Song" />, handle: { title: 'MusicList' } },
+          { path: 'song/ranking/:id/:level', element: <PlaceholderPage title="Chuni Song Ranking" />, handle: { title: 'SongRanking' } },
+          { path: 'character', element: <PlaceholderPage title="Chuni Character" />, handle: { title: 'Character' } },
+          { path: 'rival', element: <PlaceholderPage title="Chuni Rival" />, handle: { title: 'Rival' } },
+          { path: 'userRanking', element: <PlaceholderPage title="Chuni User Ranking" />, handle: { title: 'UserRanking' } },
+          { path: 'setting', element: <PlaceholderPage title="Chuni Setting" />, handle: { title: 'Setting' } },
+          { path: 'userbox', element: <PlaceholderPage title="Chuni UserBox" />, handle: { title: 'UserBox' } },
+        ],
+      },
 
-export type { RouteHandle };
+      { path: '/oauth-callback/:type', element: <OauthCallbackPage />, handle: { title: 'OAuthCallback', disableSidebar: true } },
+      { path: '/sign-in', element: <RequireGuest><SignInPage /></RequireGuest>, handle: { title: 'SignIn', disableSidebar: true } },
+      { path: '/sign-up', element: <RequireGuest><SignUpPage /></RequireGuest>, handle: { title: 'SignUp', disableSidebar: true } },
+      { path: '/password-reset', element: <RequireGuest><PasswordResetPage /></RequireGuest>, handle: { title: 'ResetPassword', disableSidebar: true } },
+      { path: '/eula', element: <EulaPage />, handle: { title: 'EULA', disableSidebar: true } },
+      { path: '/banned', element: <BannedPage />, handle: { title: 'Account Banned', disableSidebar: true } },
+      { path: '/admin', element: auth(<PlaceholderPage title="Admin" />), handle: { title: 'Admin' } },
+      { path: '/not-found', element: <NotFoundPage />, handle: { title: 'NotFound', disableSidebar: true } },
+      { path: '*', element: <Navigate to="/not-found" replace /> },
+    ],
+  },
+]);
