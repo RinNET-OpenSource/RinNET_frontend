@@ -24,6 +24,8 @@ import { OngekiBattlePage } from '@/features/ongeki/OngekiBattlePage';
 import { OngekiRivalPage } from '@/features/ongeki/OngekiRivalPage';
 import { OngekiMusicRankingPage } from '@/features/ongeki/OngekiMusicRankingPage';
 import { OngekiUserRankingPage } from '@/features/ongeki/OngekiUserRankingPage';
+import { OngekiRecentPage } from '@/features/ongeki/OngekiRecentPage';
+import { OngekiSettingPage } from '@/features/ongeki/OngekiSettingPage';
 
 /** Auth guards (equivalent to legacy auth-guard/login-guard services) */
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -76,7 +78,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to="profile" replace /> },
           { path: 'profile', element: <OngekiProfilePage />, handle: { title: 'Profile' } },
-          { path: 'recent', element: <PlaceholderPage title="Ongeki Recent" />, handle: { title: 'PlayRecord' } },
+          { path: 'recent', element: <OngekiRecentPage />, handle: { title: 'PlayRecord' } },
           { path: 'song', element: <PlaceholderPage title="Ongeki Song" />, handle: { title: 'MusicList' } },
           { path: 'battle', element: <OngekiBattlePage />, handle: { title: 'BattlePoint' } },
           { path: 'rating', element: <PlaceholderPage title="Ongeki Rating" />, handle: { title: 'Rating' } },
@@ -85,7 +87,7 @@ export const router = createBrowserRouter([
           { path: 'rival', element: <OngekiRivalPage />, handle: { title: 'Rival' } },
           { path: 'musicRanking', element: <OngekiMusicRankingPage />, handle: { title: 'MusicRanking' } },
           { path: 'userRanking', element: <OngekiUserRankingPage />, handle: { title: 'UserRanking' } },
-          { path: 'settings', element: <PlaceholderPage title="Ongeki Settings" />, handle: { title: 'Setting' } },
+          { path: 'settings', element: <OngekiSettingPage />, handle: { title: 'Setting' } },
         ],
       },
 
