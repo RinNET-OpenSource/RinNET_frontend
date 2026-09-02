@@ -1,0 +1,18 @@
+.ban-page {
+  min-height: 100vh;
+  color: white;
+  background: radial-gradient(circle at top, #a20d24, #180207 70%);
+}
+.ban-title {
+  font-size: clamp(3rem, 10vw, 8rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+.ban-title.chinese {
+  margin-top: 1rem;
+}
+.appeal {
+  font-family: monospace;
+  letter-spacing: 0.08em;
+}

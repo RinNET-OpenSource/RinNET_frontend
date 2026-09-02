@@ -1,0 +1,9 @@
+.form-label {
+  margin-inline-start: 0.2em;
+}
+
+.oauth-icon {
+  height: 1.4em;
+  width: 1.4em;
+  margin-inline: 1em;
+}

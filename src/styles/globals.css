@@ -1,5 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* Bootstrap 工具类（栅格/间距/排版/显示等，无任何组件外观）。
+   视觉令牌与组件样式由本文件与 bootstrap-compat 提供。 */
+@import "bootstrap/dist/css/bootstrap-grid.css";
+@import "bootstrap/dist/css/bootstrap-utilities.css";
+@import "./bootstrap-compat.css";
 
 /*
  * 主题基座：Bootstrap 5.3 观感 = 第一套主题（未来多主题体系的一号成员）。
@@ -58,6 +63,7 @@
   --bs-warning-bg-subtle: #fff3cd;
   --bs-warning-border-subtle: #ffe69c;
   --bs-danger: #dc3545;
+  --bs-danger-rgb: 220, 53, 69;
   --bs-danger-text-emphasis: #842029;
   --bs-danger-bg-subtle: #f8d7da;
   --bs-danger-border-subtle: #f1aeb5;
@@ -120,6 +126,8 @@
   --bs-btn-hover-bg-primary: #0b5ed7;
   --bs-btn-hover-border-primary: #0a58ca;
   --bs-btn-active-bg-primary: #0a58ca;
+
+  --bs-progress-bar-bg: #0d6efd;
 
   /* 旧版顶部进度条 */
   --app-progress-bar-color: var(--bs-primary);
@@ -717,8 +725,38 @@ input[type="checkbox"]:checked + .checkbox-label {
 
 /* 全局请求进行中：顶部 2px 双层不定进度条 */
 .progress {
+  display: flex;
+  height: 1rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  background-color: var(--bs-secondary-bg);
+  border-radius: var(--bs-border-radius-sm);
+}
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: var(--bs-progress-bar-bg);
+  transition: width 0.6s ease;
+}
+
+.progress {
   border-radius: 0;
   height: 2px;
+}
+
+/* Bootstrap 兼容定位类（旧模板保留用法） */
+.fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
 }
 
 .progress-bar.indeterminate-front {
