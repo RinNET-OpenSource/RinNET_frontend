@@ -83,6 +83,48 @@ const ratingItems = [
   },
 ];
 
+const chuniMusicCatalog = [1, 2, 11, 12].map((musicId) => ({
+  musicId,
+  name: `Sample Music ${musicId}`,
+  sotrName: `SAMPLE MUSIC ${musicId}`,
+  artistName: `Artist ${musicId}`,
+  genre: 'ORIGINAL',
+  releaseVersion: 'v2 2.30.00',
+  levels: {
+    0: { enable: true, level: 3, levelDecimal: 0, diff: 30 },
+    1: { enable: true, level: 7, levelDecimal: 5, diff: 75 },
+    2: { enable: true, level: 11, levelDecimal: 2, diff: 112 },
+    3: { enable: true, level: 14, levelDecimal: 7, diff: 147 },
+    4: { enable: true, level: 15, levelDecimal: 0, diff: 150 },
+    5: { enable: false, level: 0, levelDecimal: 0, diff: 0 },
+  },
+}));
+
+const chuniSongRecords = Array.from({ length: 5 }, (_, level) => ({
+  musicId: 1,
+  level,
+  playCount: level + 1,
+  scoreMax: 1_005_000 + level * 1_000,
+  missCount: 0,
+  maxComboCount: 500 + level,
+  isFullCombo: true,
+  isAllJustice: level >= 3,
+  isSuccess: 1,
+  fullChain: 0,
+  maxChain: 0,
+  scoreRank: 13,
+  isLock: false,
+  theoryCount: 0,
+  ext1: 0,
+  ranking: { rank: level + 1, playedCount: 42 },
+}));
+
+const chuniSongRanking = [
+  { username: 'RANK ONE', score: 1_010_000 },
+  { username: 'RANK TWO', score: 1_009_500 },
+  { username: 'RANK THREE', score: 1_009_000 },
+];
+
 const ongekiProfile = {
   userName: 'ＦＩＸＴＵＲＥ',
   level: 75,
@@ -350,6 +392,9 @@ const routes: readonly SecondaryRoute[] = [
     ready: { count: 4, selector: '.rating-card' },
     responses: {
       '/api/game/chuni/v2/profile': chuniProfile,
+      '/api/game/chuni/v2/data/music': chuniMusicCatalog,
+      '/api/game/chuni/v2/song/1': chuniSongRecords,
+      '/api/game/chuni/v2/musicScoreRanking': chuniSongRanking,
       '/api/game/chuni/v2/verse-rating': {
         new: ratingItems,
         old: ratingItems.map((item, index) => ({ ...item, musicId: item.musicId + 10, rating: item.rating - index * 5 })),
@@ -542,6 +587,17 @@ test.describe('newly migrated secondary-page visual parity', () => {
           await expect(details).toBeVisible();
           await expect(details).toContainText('获得时间');
           await expect.poll(() => details.evaluate((element) => getComputedStyle(element).visibility)).toBe('visible');
+        }
+        if (route.name === 'chuni-rating') {
+          const firstRating = newPage.locator('.rating-card.card-btn').first();
+          await firstRating.click();
+          const detail = newPage.locator('.chuni-v2-song-score-ranking-panel[data-state="open"]');
+          await expect(detail).toBeVisible();
+          await expect(detail).toContainText('Sample Music 1');
+          await expect(detail.locator('.music-img')).toHaveAttribute('src', /CHU_UI_Jacket_0001\.webp$/);
+          await expect(detail.getByRole('tab', { name: 'MA', exact: true })).toHaveClass(/active/);
+          expect(blockedBusinessWrites, 'Rating details must remain read-only').toEqual([]);
+          expect(unexpectedBusinessGets, 'Rating details must use fixture-backed GETs').toEqual([]);
         }
         await context.close();
       });
