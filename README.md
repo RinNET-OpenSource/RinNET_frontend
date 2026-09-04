@@ -39,3 +39,8 @@ src/
   features/          # 按功能域：ongeki / chuni / mai2 / admin ...
   pages/             # 路由页面组件
 ```
+
+## 许可证
+
+本项目采用 GNU Affero General Public License v3.0 或更高版本（AGPL-3.0-or-later）授权。
+完整许可条款见 [LICENSE](LICENSE)。
