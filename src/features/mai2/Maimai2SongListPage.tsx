@@ -95,7 +95,12 @@ export function Maimai2SongListPage() {
     if (!catalogReady) return;
     let active = true;
     void dbGetAll<Maimai2Music>('maimai2Music')
-      .then((items) => active && setSongs(items))
+      .then((items) => active && setSongs(items.filter((song) => song && Number.isFinite(song.musicId)).map((song) => ({
+        ...song,
+        name: typeof song.name === 'string' ? song.name : '',
+        artistName: typeof song.artistName === 'string' ? song.artistName : '',
+        details: Array.isArray(song.details) ? song.details : [],
+      }))))
       .catch((error) => active && notice(`数据加载失败: ${String(error)}`));
     return () => {
       active = false;

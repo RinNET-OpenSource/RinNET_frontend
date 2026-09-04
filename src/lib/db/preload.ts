@@ -45,7 +45,11 @@ async function loader(store: StoreName, url: string) {
       return;
     }
     preloadStates.set({ ...preloadStates.get(), [store]: 'Downloading' });
-    const data = await api.get(url);
+    const response = await api.get(url);
+    // API endpoints are inconsistent across deployments: static catalogs may
+    // be returned directly or wrapped in a `{ data: [...] }` envelope.
+    const data = Array.isArray(response) ? response : response?.data;
+    if (!Array.isArray(data)) throw new Error(`Invalid ${store} catalog response`);
     await dbBulkAdd(store, data);
     preloadStates.set({ ...preloadStates.get(), [store]: 'OK' });
   } catch (error) {

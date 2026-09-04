@@ -188,14 +188,22 @@ export function Maimai2CirclePage() {
       notice(`${t('Maimai2.CirclePage.LoadUserCircleInfoFailed')}: [${response?.status?.code}] ${response?.status?.message}`);
       return;
     }
-    setUserCircleInfo(response.data);
-    const musicId = response.data?.circleChallenge?.musicId ?? response.data?.userCircleChallenge?.musicId ?? 0;
+    const info = response.data ?? (response as unknown as Maimai2UserCircleInfo);
+    setUserCircleInfo(info);
+    const musicId = info?.circleChallenge?.musicId ?? info?.userCircleChallenge?.musicId ?? 0;
     if (!musicId) {
       setChallengeMusic(null);
       return;
     }
     try {
-      setChallengeMusic((await api.get('api/game/maimai2/data/music', { id: musicId })) as Maimai2Music);
+      const musicResponse = await api.get('api/game/maimai2/data/music', { id: musicId });
+      const music = musicResponse?.data ?? musicResponse;
+      setChallengeMusic(music && typeof music === 'object' ? {
+        ...music,
+        name: typeof music.name === 'string' ? music.name : '',
+        artistName: typeof music.artistName === 'string' ? music.artistName : '',
+        details: Array.isArray(music.details) ? music.details : [],
+      } as Maimai2Music : null);
     } catch {
       setChallengeMusic(null);
     }
