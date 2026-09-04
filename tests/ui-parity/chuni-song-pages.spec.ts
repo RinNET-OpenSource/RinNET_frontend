@@ -115,10 +115,10 @@ const songRecords = [0, 1, 2, 3, 4].map((difficulty) => ({
 }));
 
 const ranking = [
-  { username: 'RANK ONE', score: 1_010_000 },
-  { username: 'RANK TWO', score: 1_009_500 },
-  { username: 'RANK THREE', score: 1_009_000 },
-  { username: 'RANK FOUR', score: 1_008_000 },
+  ...Array.from({ length: 20 }, (_, index) => ({
+    username: `RANK ${String(index + 1).padStart(2, '0')}`,
+    score: 1_010_000 - index * 500,
+  })),
 ];
 
 async function installFixtureApi(context: BrowserContext) {
@@ -344,6 +344,8 @@ test.describe('Chunithm v2 song pages visual parity', () => {
       const newRoot = newPage.locator('.chuni-v2-song-score-ranking-panel[data-state="open"]');
       const musicInfo = newRoot.locator('.music-info-container');
       await expect(musicInfo).toHaveCount(1);
+      await expect(newRoot.locator('.music-img')).toHaveClass(/\bms-4\b/);
+      await expect(newRoot.locator('.music-img')).toHaveClass(/\bmt-4\b/);
       const backgroundStyle = await musicInfo.evaluate((element) => {
         const style = getComputedStyle(element, '::before');
         return { backgroundImage: style.backgroundImage, filter: style.filter };
@@ -359,6 +361,17 @@ test.describe('Chunithm v2 song pages visual parity', () => {
         expect(oldRoot.getByRole('tab', { name: 'BA', exact: true })).toHaveClass(/active/),
         expect(newRoot.getByRole('tab', { name: 'BA', exact: true })).toHaveClass(/active/),
       ]);
+      const scrollState = await newRoot.locator('.offcanvas-body').evaluate((element) => {
+        const body = element as HTMLElement;
+        body.scrollTop = body.scrollHeight;
+        return { before: body.scrollTop, max: body.scrollHeight - body.clientHeight };
+      });
+      await newRoot.getByRole('tab', { name: 'MA', exact: true }).evaluate((element) => element.click());
+      await expect(newRoot.getByRole('tab', { name: 'MA', exact: true })).toHaveClass(/active/);
+      await newPage.waitForTimeout(50);
+      await expect.poll(async () => newRoot.locator('.offcanvas-body').evaluate((element) => (element as HTMLElement).scrollTop)).toBe(
+        scrollState.before,
+      );
       expect(blockedBusinessWrites, 'Difficulty-tab interaction must remain read-only').toEqual([]);
 
       const newSheet = newPage.locator('.chuni-v2-song-score-ranking-panel');

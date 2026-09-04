@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { StopFill } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
-import { Sheet, SheetClose, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import { getCurrentUser } from '@/lib/user';
@@ -153,7 +153,6 @@ export function ChuniV2SongScoreRanking({
 
   function selectDifficulty(level: number) {
     setCurrentLevel(level);
-    setRanking([]);
     void api
       .get('api/game/chuni/v2/musicScoreRanking', { musicId: music!.musicId, level })
       .then((response) => setRanking((response ?? []) as ChuniV2SongRankingRow[]))
@@ -189,34 +188,37 @@ export function ChuniV2SongScoreRanking({
         className="chuni-v2-song-score-ranking-panel chuni-v2-song-score-ranking-sheet w-[400px] max-w-full p-0 text-sm outline-none sm:max-w-[400px]"
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
-        <div className="offcanvas-header position-absolute end-0 z-3">
-          <SheetClose asChild>
-            <button type="button" className="btn-close" aria-label="Close" />
-          </SheetClose>
-        </div>
         <SheetTitle className="visually-hidden">{music.name}</SheetTitle>
-        <div className="offcanvas-body pt-0 px-0">
+        <div
+          className="offcanvas-body"
+          style={{ maxHeight: '100vh', overflowY: 'scroll', boxSizing: 'border-box', margin: 0, padding: 0 }}
+        >
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            style={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 1000 }}
+            onClick={requestClose}
+          />
           <div
-            className="music-info-container row pb-3 pt-3 gap-3 px-3 m-0"
-            style={
-              {
-                '--jacket-img': `url(${assetsHost}assets/chuni/jacket/CHU_UI_Jacket_${padDigits(music.musicId, 4)}.webp)`,
-              } as React.CSSProperties
-            }
+            className="music-info-container position-relative"
+            style={{
+              '--jacket-img': `url(${assetsHost}assets/chuni/jacket/CHU_UI_Jacket_${padDigits(music.musicId, 4)}.webp)`,
+            } as React.CSSProperties}
           >
-            <div className="col-12 p-0">
-              {enableImages && (
-                <img
-                  className="music-img"
-                  src={`${assetsHost}assets/chuni/jacket/CHU_UI_Jacket_${padDigits(music.musicId, 4)}.webp`}
-                  alt=""
-                />
-              )}
-            </div>
-            <div className="col-12 music-info">
-              <h4 className="music-title">「{music.name}」</h4>
-              <div className="mb-1">{music.artistName}</div>
-              <div className="text-secondary">{music.genre}</div>
+            {enableImages && (
+              <img
+                className="card-img mb-3 music-img sm ms-4 mt-4 rounded"
+                src={`${assetsHost}assets/chuni/jacket/CHU_UI_Jacket_${padDigits(music.musicId, 4)}.webp`}
+                alt=""
+              />
+            )}
+            <div className="position-relative">
+              <h5 className="card-title mb-1 fw-bold ms-4">{music.name}</h5>
+              <span className="card-subtitle music-artistName ms-4" style={{ fontSize: 12 }}>
+                {music.artistName}
+              </span>
+              <hr className="mb-0" />
             </div>
           </div>
 
