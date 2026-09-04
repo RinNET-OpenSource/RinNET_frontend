@@ -164,7 +164,11 @@ async function installFixtureApi(context: BrowserContext) {
       body = { data: null, status: { code: 92001 } };
     }
 
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(body),
+    });
   });
 
   return blockedBusinessWrites;
@@ -218,12 +222,16 @@ async function waitForCatalog(page: Page) {
 
 async function settleList(page: Page) {
   await page.locator('h1.page-heading').waitFor({ state: 'visible', timeout: 30_000 });
-  await expect(page.locator('.card-btn.card')).toHaveCount(musicCatalog.length, { timeout: 30_000 });
+  await expect(page.locator('.card-btn.card')).toHaveCount(musicCatalog.length, {
+    timeout: 30_000,
+  });
   await expect(page.locator('.placeholder')).toHaveCount(0);
   await expect(page.locator('.progress.fixed-top')).toHaveCount(0, { timeout: 30_000 });
   await page.evaluate(async () => {
     await document.fonts.ready;
-    await Promise.all(Array.from(document.images, (image) => image.decode().catch(() => undefined)));
+    await Promise.all(
+      Array.from(document.images, (image) => image.decode().catch(() => undefined)),
+    );
     window.scrollTo(0, 0);
   });
 }
@@ -239,7 +247,9 @@ async function settleDetail(page: Page, legacy: boolean) {
   });
   await page.evaluate(async () => {
     await document.fonts.ready;
-    await Promise.all(Array.from(document.images, (image) => image.decode().catch(() => undefined)));
+    await Promise.all(
+      Array.from(document.images, (image) => image.decode().catch(() => undefined)),
+    );
   });
 }
 
@@ -288,7 +298,9 @@ test.describe('Chunithm v2 song pages visual parity', () => {
   test.describe.configure({ timeout: 120_000 });
 
   for (const theme of themes) {
-    test(`list and read-only ranking match Angular in ${theme} mode`, async ({ browser }, testInfo) => {
+    test(`list and read-only ranking match Angular in ${theme} mode`, async ({
+      browser,
+    }, testInfo) => {
       const context = await browser.newContext({
         colorScheme: theme,
         deviceScaleFactor: 1,
@@ -328,14 +340,17 @@ test.describe('Chunithm v2 song pages visual parity', () => {
       await Promise.all([settleDetail(oldPage, true), settleDetail(newPage, false)]);
       expect(blockedBusinessWrites, 'Ranking interaction must remain read-only').toEqual([]);
 
-      const [oldDetail, newDetail] = await Promise.all([
-        oldPage.screenshot({ animations: 'disabled', caret: 'hide' }),
-        newPage.screenshot({ animations: 'disabled', caret: 'hide' }),
-      ]);
-      await saveComparison(oldDetail, newDetail, testInfo, 'ranking');
-
       const oldRoot = oldPage.locator('.offcanvas.show');
       const newRoot = newPage.locator('.chuni-v2-song-score-ranking-panel[data-state="open"]');
+      const musicInfo = newRoot.locator('.music-info-container');
+      await expect(musicInfo).toHaveCount(1);
+      const backgroundStyle = await musicInfo.evaluate((element) => {
+        const style = getComputedStyle(element, '::before');
+        return { backgroundImage: style.backgroundImage, filter: style.filter };
+      });
+      expect(backgroundStyle.backgroundImage).toContain('CHU_UI_Jacket_0001.webp');
+      expect(backgroundStyle.filter).toContain('blur');
+
       await Promise.all([
         oldRoot.getByRole('tab', { name: 'BA', exact: true }).click(),
         newRoot.getByRole('tab', { name: 'BA', exact: true }).click(),
@@ -345,6 +360,11 @@ test.describe('Chunithm v2 song pages visual parity', () => {
         expect(newRoot.getByRole('tab', { name: 'BA', exact: true })).toHaveClass(/active/),
       ]);
       expect(blockedBusinessWrites, 'Difficulty-tab interaction must remain read-only').toEqual([]);
+
+      const newSheet = newPage.locator('.chuni-v2-song-score-ranking-panel');
+      await newSheet.locator('.btn-close').click();
+      await expect(newSheet).toHaveAttribute('data-state', 'closed');
+      await expect(newSheet).toHaveCount(0, { timeout: 1_000 });
       await context.close();
     });
   }
