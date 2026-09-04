@@ -124,11 +124,46 @@ function CharacterDetailsModal({
   onUnlock: (character: ChuniV2Character) => void;
 }) {
   const { t } = useTranslation();
+  const [renderedCharacter, setRenderedCharacter] = useState(character);
+  const [dialogOpen, setDialogOpen] = useState(character !== null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (character) {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+      setRenderedCharacter(character);
+      setDialogOpen(true);
+    } else {
+      setDialogOpen(false);
+    }
+  }, [character]);
+
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    },
+    [],
+  );
+
+  function requestClose() {
+    if (closeTimerRef.current) return;
+    setDialogOpen(false);
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      onClose();
+    }, 300);
+  }
 
   return (
     <DialogPrimitive.Root
-      open={character !== null}
-      onOpenChange={(open) => !open && onClose()}
+      open={dialogOpen}
+      onOpenChange={(open) => {
+        if (open) setDialogOpen(true);
+        else requestClose();
+      }}
     >
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="chuni-v2-character-dialog-overlay modal-backdrop" />
@@ -146,53 +181,53 @@ function CharacterDetailsModal({
                   <button type="button" className="btn-close shadow-none" aria-label="Close" />
                 </DialogPrimitive.Close>
               </div>
-              {character && (
+              {renderedCharacter && (
                 <div className="modal-body">
                   <table className="card-details-table table table-borderless table-sm table-striped align-middle text-center small">
                     <tbody>
                       <tr>
                         <td>ID</td>
-                        <td>{character.characterId}</td>
-                      </tr>
-                      {character.isValid && (
+                            <td>{renderedCharacter.characterId}</td>
+                          </tr>
+                      {renderedCharacter.isValid && (
                         <>
                           <tr>
                             <td>{t('ChuniV2.CharacterPage.Rank')}</td>
-                            <td>{character.level}</td>
+                            <td>{renderedCharacter.level}</td>
                           </tr>
                           <tr>
                             <td>{t('ChuniV2.CharacterPage.PlayCount')}</td>
-                            <td>{character.playCount}</td>
+                            <td>{renderedCharacter.playCount}</td>
                           </tr>
                         </>
                       )}
                       <tr>
                         <td>{t('ChuniV2.CharacterPage.Name')}</td>
-                        <td>{displayedCharacterName(character)}</td>
+                        <td>{displayedCharacterName(renderedCharacter)}</td>
                       </tr>
                       <tr>
                         <td>{t('ChuniV2.CharacterPage.WorksName')}</td>
-                        <td>{character.characterInfo.worksName}</td>
+                        <td>{renderedCharacter.characterInfo.worksName}</td>
                       </tr>
-                      {character.characterInfo.illustratorName && (
+                      {renderedCharacter.characterInfo.illustratorName && (
                         <tr>
                           <td>{t('ChuniV2.CharacterPage.Illustrator')}</td>
-                          <td>{character.characterInfo.illustratorName}</td>
+                            <td>{renderedCharacter.characterInfo.illustratorName}</td>
                         </tr>
                       )}
                       <tr>
                         <td>{t('ChuniV2.CharacterPage.Version')}</td>
-                        <td>{chuniV2ReleaseName(character.characterInfo.releaseTag)}</td>
+                        <td>{chuniV2ReleaseName(renderedCharacter.characterInfo.releaseTag)}</td>
                       </tr>
                     </tbody>
                   </table>
                   <div className="hstack gap-1 float-end">
-                    {character.isValid ? (
+                    {renderedCharacter.isValid ? (
                       <button
                         type="button"
                         className="btn btn-sm btn-primary"
-                        disabled={character.characterId === equippedIllustrationId}
-                        onClick={() => onSet(character)}
+                        disabled={renderedCharacter.characterId === equippedIllustrationId}
+                        onClick={() => onSet(renderedCharacter)}
                       >
                         {t('ChuniV2.CharacterPage.Set')}
                       </button>
@@ -200,7 +235,7 @@ function CharacterDetailsModal({
                       <button
                         type="button"
                         className="btn btn-sm btn-primary"
-                        onClick={() => onUnlock(character)}
+                        onClick={() => onUnlock(renderedCharacter)}
                       >
                         {t('ChuniV2.CharacterPage.Unlock')}
                       </button>
