@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Outlet, useLocation, useNavigate, Link, useMatches } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { List, Person, CircleHalf, Sun, Stars, Translate } from 'react-bootstrap-icons';
+import { List, Person, Translate } from 'react-bootstrap-icons';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,19 +12,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Toasts } from '@/components/shell/Toasts';
 import { LoadingBar } from '@/components/shell/LoadingBar';
+import { ThemeMenu } from '@/components/theme/ThemeMenu';
 import { accountStore } from '@/lib/auth/account';
 import { userStore } from '@/lib/user';
 import { logout } from '@/lib/auth/auth';
 import { useStore } from '@/lib/store';
 import { menu, showItem, showMenu } from '@/lib/menu';
 import { languages, languageKeys, langStore, setLang } from '@/lib/i18n';
-import { themeStore, setTheme, type Theme } from '@/lib/theme';
 import { assetsHost } from '@/lib/utils';
 import { setNavigator } from '@/lib/nav';
-import { getAccount } from '@/lib/auth/account';
-import { restoreAccess } from '@/lib/auth/access';
-import { loadUser } from '@/lib/user';
-import { checkDbUpdate } from '@/lib/db/preload';
 
 export interface RouteHandle {
   title?: string;
@@ -45,9 +41,8 @@ function doLogout() {
   void logout().then(() => location.assign(''));
 }
 
-/** 等价旧版 AppComponent 的启动逻辑（initializeApp / 标题拼接） */
+/** 等价旧版 AppComponent 的路由桥接与标题拼接。 */
 function BootEffects() {
-  const location = useLocation();
   const routerNavigate = useNavigate();
   const matches = useMatches() as Array<{ handle?: { title?: string } }>;
 
@@ -55,25 +50,6 @@ function BootEffects() {
   useEffect(() => {
     setNavigator(routerNavigate);
   }, [routerNavigate]);
-
-  // 等价：路由到 '/' 时 initializeApp
-  useEffect(() => {
-    if (!getAccount()) return;
-    void (async () => {
-      const status = await restoreAccess();
-      if (status?.banned) {
-        window.location.assign('/banned');
-        return;
-      }
-      if (status?.eulaRequired) {
-        window.location.assign('/eula');
-        return;
-      }
-      void checkDbUpdate();
-      await loadUser();
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname === '/' ? 'home' : 'other']);
 
   // 等价：标题拼接 "child - parent | RinNET"
   useEffect(() => {
@@ -109,7 +85,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         <div className="d-flex mb-2 ps-1 gap-2">
           <div>
             <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
-              <use href={`assets/${icon}.svg#icon`} />
+              <use href={`/assets/${icon}.svg#icon`} />
             </svg>
           </div>
           <strong className="w-100 fw-semibold">{t(label)}</strong>
@@ -133,7 +109,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
     );
 
   return (
-    <nav className="user-select-none">
+    <nav className="shell-sidebar-nav user-select-none">
       <ul className="list-unstyled mt-2">
         <li>
           <ul className="list-unstyled pb-2 ps-3 small">
@@ -190,7 +166,7 @@ function UserPopover() {
           <Person size="1.4rem" />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" side="bottom" className="w-40 p-2">
+      <PopoverContent align="end" side="bottom" sideOffset={0} className="shell-user-popover">
         <div className="vstack user-popover">
           <label className="text-start mx-2 h5">{user.name}</label>
           <hr className="my-2 border" />
@@ -212,17 +188,9 @@ function UserPopover() {
   );
 }
 
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
 function Footer() {
   const { t } = useTranslation();
   const currentLang = useStore(langStore);
-  const theme = useStore(themeStore);
-  const themes: Theme[] = ['auto', 'light', 'dark'];
-
-  const themeIcon = theme === 'auto' ? <CircleHalf /> : theme === 'light' ? <Sun /> : <Stars />;
 
   return (
     <footer className="footer container-xxl mb-2">
@@ -232,16 +200,19 @@ function Footer() {
           <div className="col-auto">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <a className="d-flex align-items-center cursor-pointer">
+                <a className="dropdown-toggle d-flex align-items-center cursor-pointer">
                   <Translate />
                   <span className="ms-1">{languages.get(currentLang)}</span>
                 </a>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
+              <DropdownMenuContent align="start" sideOffset={2} className="shell-legacy-dropdown">
                 {languageKeys.map((key) => (
                   <DropdownMenuItem
                     key={key}
-                    className={'small my-1' + (currentLang === key ? ' bg-[var(--bs-tertiary-bg)] font-bold' : '')}
+                    className={
+                      'shell-dropdown-item small my-1' +
+                      (currentLang === key ? ' active bg-[var(--bs-tertiary-bg)] font-bold' : '')
+                    }
                     onClick={() => setLang(key)}
                   >
                     {languages.get(key)}
@@ -252,25 +223,7 @@ function Footer() {
           </div>
 
           <div className="col-auto">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <a className="d-flex align-items-center cursor-pointer">
-                  {themeIcon}
-                  <span className="ms-1">{t('App.Footer.' + capitalize(theme))}</span>
-                </a>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                {themes.map((item) => (
-                  <DropdownMenuItem
-                    key={item}
-                    className={'small my-1' + (theme === item ? ' bg-[var(--bs-tertiary-bg)] font-bold' : '')}
-                    onClick={() => setTheme(item)}
-                  >
-                    {t('App.Footer.' + capitalize(item))}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ThemeMenu />
           </div>
         </div>
         <div className="row my-2">
@@ -318,7 +271,7 @@ export function AppShell() {
       <div className="flex-grow-1">
         {!accessLayout && (
           <nav className="app-navbar navbar navbar-expand-lg position-fixed shadow w-100">
-            <div className="container-xxl d-flex align-items-center h-100">
+            <div className="container-xxl">
               <button
                 className={`navbar-toggler btn btn-icon d-lg-none ${togglerHidden} ${togglerNotLogin}`}
                 type="button"
@@ -328,7 +281,7 @@ export function AppShell() {
                   <List size="1.4rem" />
                 </div>
               </button>
-              <Link to="/" className="navbar-brand d-flex align-items-center gap-2">
+              <Link to="/" className="navbar-brand sm-center">
                 <img
                   src={assetsHost + 'assets/turtle.svg'}
                   alt="turtle"
@@ -364,22 +317,25 @@ export function AppShell() {
               <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                 <SheetContent
                   side="left"
-                  className="w-[400px] max-w-[85vw] overflow-y-auto p-0 sm:max-w-[400px] bg-[var(--bs-body-bg)]"
+                  className="shell-mobile-sheet"
+                  overlayClassName="shell-mobile-sheet-overlay"
                 >
-                  <SheetHeader style={{ height: '3.6rem' }}>
-                    <SheetTitle>{t('App.Sidebar.Navigation')}</SheetTitle>
+                  <SheetHeader className="shell-mobile-sheet-header">
+                    <SheetTitle className="shell-mobile-sheet-title">
+                      {t('App.Sidebar.Navigation')}
+                    </SheetTitle>
                   </SheetHeader>
-                  <div className="px-3 pb-4">
+                  <div className="shell-mobile-sheet-body">
                     <SidebarNav onNavigate={() => setSheetOpen(false)} />
                   </div>
                 </SheetContent>
               </Sheet>
             )}
             <main
-              className="order-1 ms-0"
+              className={'order-1 ms-0' + (accessLayout ? '' : ' ms-lg-3 me-lg-2')}
               style={{ marginTop: accessLayout ? '0' : '4.6rem', gridArea: 'main' }}
             >
-              <div className={accessLayout ? '' : 'ms-lg-3 me-lg-2'}>
+              <div>
                 <Outlet />
               </div>
             </main>

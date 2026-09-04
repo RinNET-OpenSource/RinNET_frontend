@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetClose, SheetContent } from '@/components/ui/sheet';
 import { StopFill } from 'react-bootstrap-icons';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
@@ -40,6 +40,8 @@ interface ISongData {
   ranking?: { rank: number; playedCount: number };
 }
 
+const SHEET_EXIT_DURATION_MS = 300;
+
 function isLunatic(song: OngekiMusic): boolean {
   return (
     song.level0 === '0,0' && song.level1 === '0,0' && song.level2 === '0,0' && song.level3 === '0,0'
@@ -66,7 +68,7 @@ const DIFF_META: Record<number, { name: string; color: string; lunatic?: boolean
 
 /** 等价旧版 ongeki-song-score-ranking.component（成绩排名 offcanvas） */
 export function OngekiSongScoreRanking({
-  music,
+  music: selectedMusic,
   open,
   onClose,
 }: {
@@ -75,11 +77,47 @@ export function OngekiSongScoreRanking({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
+  const [renderedMusic, setRenderedMusic] = useState<OngekiMusic | null>(selectedMusic);
+  const [sheetOpen, setSheetOpen] = useState(open);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const music = selectedMusic ?? renderedMusic;
   const [ranking, setRanking] = useState<Ranking[]>([]);
   const [songData, setSongData] = useState<Record<number, ISongData> | null>(null);
   const [loadingSongData, setLoadingSongData] = useState(true);
   const [bossCard, setBossCard] = useState<OngekiCard | null>(null);
   const [activeTab, setActiveTab] = useState<number>(3);
+
+  useEffect(() => {
+    if (selectedMusic) setRenderedMusic(selectedMusic);
+  }, [selectedMusic]);
+
+  useEffect(() => {
+    if (open) {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+      setSheetOpen(true);
+    } else {
+      setSheetOpen(false);
+    }
+  }, [open]);
+
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    },
+    [],
+  );
+
+  function requestClose() {
+    if (closeTimerRef.current) return;
+    setSheetOpen(false);
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      onClose();
+    }, SHEET_EXIT_DURATION_MS);
+  }
 
   useEffect(() => {
     if (!music || !open) return;
@@ -241,12 +279,31 @@ export function OngekiSongScoreRanking({
   const tabName: Record<number, string> = { 0: 'BA', 1: 'AD', 2: 'EX', 3: 'MA', 10: 'LUNATIC' };
 
   return (
-    <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
+    <Sheet
+      open={sheetOpen}
+      onOpenChange={(v) => {
+        if (v) {
+          if (closeTimerRef.current) {
+            clearTimeout(closeTimerRef.current);
+            closeTimerRef.current = null;
+          }
+          setSheetOpen(true);
+        } else {
+          requestClose();
+        }
+      }}
+    >
       <SheetContent
         side="right"
-        className="ongeki-song-score-ranking ongeki-song-score-ranking-sheet w-[35vw] max-w-full sm:max-w-[35vw] p-0 bg-[var(--bs-body-bg)] overflow-y-auto"
+        showCloseButton={false}
+        className="ongeki-song-score-ranking ongeki-song-score-ranking-sheet z-[1045] w-[400px] max-w-full sm:max-w-[400px] p-0 text-sm bg-[var(--bs-body-bg)] outline-none"
       >
-        <div className="offcanvas-body pt-0 px-0 ongeki-song-score-ranking-sheet">
+        <div className="offcanvas-header position-absolute end-0 z-3">
+          <SheetClose asChild>
+            <button type="button" className="btn-close" aria-label="Close" />
+          </SheetClose>
+        </div>
+        <div className="offcanvas-body pt-0 px-0">
           <div
             className="music-info-container row pb-3 pt-3 gap-3 px-3 m-0"
             style={

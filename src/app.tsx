@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { registerSW } from 'virtual:pwa-register';
 import { router } from '@/router';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { initTheme } from '@/lib/theme';
 import { navigate } from '@/lib/nav';
 import { getAccount } from '@/lib/auth/account';
 import { restoreAccess } from '@/lib/auth/access';
@@ -16,27 +15,32 @@ import supportedBrowsers from '@/lib/supportedBrowsers';
 import '@/lib/i18n';
 
 const queryClient = new QueryClient();
+let initializationPromise: Promise<void> | null = null;
 
 /** 等价旧版 AppComponent 构造器/ngOnInit 的一次性启动逻辑 */
-async function initializeApp() {
-  if (getAccount()) {
-    const status = await restoreAccess();
-    if (status?.banned) {
-      navigate('/banned');
-      return;
-    }
-    if (status?.eulaRequired) {
-      navigate('/eula');
-      return;
-    }
-    void checkDbUpdate();
-    await loadUser();
+function initializeApp(): Promise<void> {
+  if (!initializationPromise) {
+    initializationPromise = (async () => {
+      if (!getAccount()) return;
+
+      const status = await restoreAccess();
+      if (status?.banned) {
+        navigate('/banned');
+        return;
+      }
+      if (status?.eulaRequired) {
+        navigate('/eula');
+        return;
+      }
+      void checkDbUpdate();
+      await loadUser();
+    })();
   }
+  return initializationPromise;
 }
 
 export default function App() {
   useEffect(() => {
-    initTheme();
     // SW 静默自动更新（等价旧版 VERSION_READY → activateUpdate → reload）
     registerSW();
     void initializeApp();

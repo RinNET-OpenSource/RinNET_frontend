@@ -49,8 +49,8 @@ export function OngekiRecentItem({ playLog }: { playLog: PlayerPlaylog }) {
   const platinumStars = playLog.platinumScoreStar ?? 0;
 
   return (
-    <div className="card">
-      <div className="song-info card-header hstack gap-2">
+    <div className="card ongeki-recent-item">
+      <div className="recent-song-info card-header hstack gap-2">
         <div className="jacket-container ratio ratio-1x1">
           {enableImages && (
             <img
@@ -174,7 +174,7 @@ export function OngekiRecentItem({ playLog }: { playLog: PlayerPlaylog }) {
           <div className="col-12 col-md-6">
             <div className="battle-area row">
               <div className="col-6">
-                <div className="chara-container">
+                <div className="recent-chara-container">
                   <div className="chara-center position-relative">
                     <img
                       className="chara-center-img position-absolute"

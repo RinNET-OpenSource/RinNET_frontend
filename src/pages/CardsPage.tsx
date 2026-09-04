@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExclamationTriangleFill, Eye, EyeSlash, PencilSquare, Trash, PlusSquareDotted } from 'react-bootstrap-icons';
+import {
+  ExclamationTriangleFill,
+  Eye,
+  EyeSlash,
+  InfoCircleFill,
+  PencilSquare,
+  PlusSquareDotted,
+  Trash,
+} from 'react-bootstrap-icons';
 import { BModal } from '@/components/shared/BModal';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
@@ -287,12 +295,15 @@ export function CardsPage() {
         </div>
       )}
       <div className="hstack alert alert-info" role="alert">
+        <InfoCircleFill className="me-2" />
         <div>{t('CardsPage.Warning2')}</div>
       </div>
       <div className="hstack alert alert-info" role="alert">
+        <InfoCircleFill className="me-2" />
         <div>{t('CardsPage.Warning3')}</div>
       </div>
       <div className="hstack alert alert-info" role="alert">
+        <InfoCircleFill className="me-2" />
         <div>{t('CardsPage.Warning4')}</div>
       </div>
 

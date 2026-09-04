@@ -282,7 +282,7 @@ export function SignUpPage() {
                       )}
                     </div>
                   )}
-                  <button className="btn btn-primary" type="button" onClick={() => void doCheckUsername()}>
+                  <button className="input-group-btn btn btn-primary" type="button" onClick={() => void doCheckUsername()}>
                     {t('SignUpPage.Check')}
                   </button>
                 </div>
@@ -313,7 +313,7 @@ export function SignUpPage() {
                       )}
                     </div>
                   )}
-                  <button className="btn btn-primary" type="button" disabled={emailLocked} onClick={() => void doCheckEmail()}>
+                  <button className="input-group-btn btn btn-primary" type="button" disabled={emailLocked} onClick={() => void doCheckEmail()}>
                     {t('SignUpPage.Check')}
                   </button>
                 </div>
@@ -338,7 +338,7 @@ export function SignUpPage() {
                       <div>{t('SignUpPage.VerificationCodeErrors.Length')}</div>
                     </div>
                   )}
-                  <button className="btn btn-primary" type="button" onClick={() => void sendCode()} disabled={cooldown > 0}>
+                  <button className="input-group-btn btn btn-primary" type="button" onClick={() => void sendCode()} disabled={cooldown > 0}>
                     {cooldown > 0 ? cooldown : t('SignUpPage.Send')}
                   </button>
                 </div>

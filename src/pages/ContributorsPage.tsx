@@ -60,7 +60,7 @@ export function ContributorsPage() {
   }, []);
 
   return (
-    <div className="content">
+    <div>
       <h1 className="mb-4">{t('ContributorsPage.Title')}</h1>
       <div>
         <h2 className="mb-3">{t('ContributorsPage.Developers')}</h2>

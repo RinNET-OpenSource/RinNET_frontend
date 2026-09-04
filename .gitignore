@@ -17,6 +17,9 @@ yarn-error.log*
 
 # misc
 /coverage
+/test-results
+/playwright-report
+/.artifacts
 
 # system
 .DS_Store

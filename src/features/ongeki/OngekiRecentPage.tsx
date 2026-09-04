@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Pagination } from '@/components/shared/Pagination';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import { dbGetByKey } from '@/lib/db/db';
@@ -12,6 +11,7 @@ import type {
   PlayerPlaylog,
 } from './models';
 import { OngekiRecentItem } from './OngekiRecentItem';
+import { OngekiPagination } from './OngekiPagination';
 
 /** 等价旧版 ongeki-recent.component（游玩记录，服务端分页） */
 export function OngekiRecentPage() {
@@ -75,8 +75,9 @@ export function OngekiRecentPage() {
     <div className="content">
       <h1 className="page-heading">{t('Ongeki.RecentPage.Title')}</h1>
 
-      <Pagination
+      <OngekiPagination
         current={currentPage}
+        marginClassName="m-0"
         pageSize={10}
         totalItems={totalElements}
         onPageChange={pageChanged}
@@ -128,8 +129,9 @@ export function OngekiRecentPage() {
           ))}
       </div>
 
-      <Pagination
+      <OngekiPagination
         current={currentPage}
+        marginClassName="m-0"
         pageSize={10}
         totalItems={totalElements}
         onPageChange={pageChanged}

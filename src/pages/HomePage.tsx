@@ -147,8 +147,7 @@ export function HomePage() {
           <div className="card align-middle bg-body-tertiary">
             <div className="card-body">
               <pre className="m-0" style={{ textWrap: 'inherit' }}>
-                <code data-lang="ini">[DNS]
-            default = aqua.naominet.live</code>
+                <code data-lang="ini">{'[DNS]\n            default = aqua.naominet.live'}</code>
               </pre>
             </div>
           </div>

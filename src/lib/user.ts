@@ -1,16 +1,32 @@
 import { api } from '@/lib/api/client';
 import { createStore } from '@/lib/store';
 import { getAccount } from '@/lib/auth/account';
+import { IMPERSONATED_USER_KEY } from '@/lib/auth/account';
+import { inIframe } from '@/lib/utils';
+import { isImpersonationBootstrapFrame } from '@/lib/auth/impersonation';
 import type { User } from '@/lib/models';
 import { notice } from '@/lib/message';
 
 /** 等价旧版 user.service.ts */
 
+const iframe = inIframe();
+const bootstrapFrame = iframe && isImpersonationBootstrapFrame();
+const storage: Storage = iframe ? sessionStorage : localStorage;
+const storageKey = iframe ? IMPERSONATED_USER_KEY : 'currentUser';
+
 export const userStore = createStore<User | null>(readCached());
 
 function readCached(): User | null {
+  if (bootstrapFrame) {
+    try {
+      storage.removeItem(storageKey);
+    } catch {
+      // The bootstrap handshake will surface storage failures to the entry point.
+    }
+    return null;
+  }
   try {
-    return JSON.parse(localStorage.getItem('currentUser') ?? 'null');
+    return JSON.parse(storage.getItem(storageKey) ?? 'null');
   } catch {
     return null;
   }
@@ -45,7 +61,7 @@ export function loadUser(forceReload = false): Promise<any | null> {
             }
           });
           userStore.set(user);
-          localStorage.setItem('currentUser', JSON.stringify(user));
+          storage.setItem(storageKey, JSON.stringify(user));
         } else {
           notice(resp.status.message);
         }
@@ -63,7 +79,7 @@ export function loadUser(forceReload = false): Promise<any | null> {
 }
 
 export function clearUser() {
-  localStorage.removeItem('currentUser');
+  storage.removeItem(storageKey);
   userStore.set(null);
 }
 

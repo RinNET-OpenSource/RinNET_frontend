@@ -1,8 +1,9 @@
 /* 等价旧版 ongeki-profile.component.css */
 /* 旧版组件样式相互隔离，此处覆盖 dashboard 共享样式的 max-width 限制 */
-.profile-table {
+.ongeki-profile-page .profile-table {
   width: 100%;
   max-width: none;
+  font-size: 1rem;
 }
 
 .user-data-container{
@@ -142,7 +143,7 @@
   color: var(--bs-dark);
 }
 
-.rating{
+.ongeki-profile-page .rating{
   position: absolute;
   width: 10%;
   height: 30%;
@@ -245,7 +246,7 @@
   z-index: 0;
 }
 
-.profile-table{
+.ongeki-profile-page .profile-table{
   position: relative;
   top: 0;
   font-weight: 500;
@@ -253,7 +254,7 @@
   --bs-table-bg: rgba(var(--bs-body-bg-rgb), 0.9);
 }
 
-.profile-table th{
+.ongeki-profile-page .profile-table th{
   font-weight: 500;
 }
 

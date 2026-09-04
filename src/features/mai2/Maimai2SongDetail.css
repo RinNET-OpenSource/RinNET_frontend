@@ -1,0 +1,108 @@
+.maimai2-song-detail {
+  z-index: 1045;
+  color: var(--bs-body-color);
+  border-left: 1px solid var(--bs-border-color-translucent) !important;
+  box-shadow: none;
+}
+
+body:has(.maimai2-song-detail[data-state='open']) [data-slot='sheet-overlay'] {
+  z-index: 1040;
+  background: #000;
+  opacity: 0.5;
+}
+
+.maimai2-song-detail .btn-close:focus {
+  outline: 0;
+  box-shadow: none;
+}
+
+.maimai2-song-detail .music-img {
+  position: relative;
+  z-index: 1;
+  width: 60%;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.maimai2-song-detail .color-basic {
+  color: #00ab84;
+}
+
+.maimai2-song-detail .color-advanced {
+  color: #ff7e00;
+}
+
+.maimai2-song-detail .color-expert {
+  color: #f12929;
+}
+
+.maimai2-song-detail .color-master {
+  color: #8e1be5;
+}
+
+.maimai2-song-detail .color-remaster {
+  color: #0be9ee;
+}
+
+.maimai2-song-detail .color-utage {
+  background: #870085 linear-gradient(45deg, #7c00a8, #ff6ffd, #870085);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
+}
+
+.maimai2-song-detail .difficulty-detail-body {
+  min-height: 32px;
+}
+
+.maimai2-song-detail .medal {
+  width: 1rem;
+}
+
+.maimai2-song-detail .tab-pane > table > thead > tr > th {
+  padding: 1px;
+}
+
+.maimai2-song-detail .music-info-container {
+  position: relative;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.maimai2-song-detail .music-info-container::before {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  content: '';
+  background-image: linear-gradient(to bottom, var(--color-from) 0%, var(--color-to) 100%), var(--jacket-img);
+  background-position: center;
+  background-size: cover;
+  transform: translate(-50%, -50%);
+  filter: blur(10px);
+}
+
+[data-bs-theme='light'] .maimai2-song-detail .music-info-container {
+  --color-from: rgba(255, 255, 255, 0.3);
+  --color-to: rgba(255, 255, 255, 1);
+}
+
+[data-bs-theme='dark'] .maimai2-song-detail .music-info-container {
+  --color-from: rgba(33, 37, 41, 0.3);
+  --color-to: rgba(33, 37, 41, 1);
+}
+
+.maimai2-song-detail .card-body {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+[data-bs-theme='dark'] .maimai2-song-detail .card-body {
+  background: rgba(33, 37, 41, 0.8);
+}

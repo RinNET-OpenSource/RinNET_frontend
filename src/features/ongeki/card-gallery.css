@@ -3,26 +3,50 @@
   width: 5em;
 }
 
-.cards-col {
-  width: 100%;
-  perspective: 1500px;
-  transform-style: preserve-3d;
-  --rotator-transition: all .6s ease-out;
-
-  --rotator-global-rotate-y: 0deg;
-  --rotator-rotate-x: 0deg;
-  --rotator-rotate-y: 0deg;
-  --pseudo-opacity: 0;
-  --pseudo-left: 50%;
-  --pseudo-top: 50%;
-
-  --holo-sheet-bottom: none;
-  --holo-sheet-middle: none;
-  --holo-sheet-top: none;
+.ongeki-card-gallery-pagination {
+  display: flex;
+  cursor: default;
 }
 
-.card-picking {
-  --rotator-global-rotate-y: 360deg;
+/*
+ * Bootstrap's Collapse plugin animates the filter panel's height while keeping
+ * its contents mounted. React used to remove the panel when collapsed, which
+ * made the Show/Hide links jump the page instead of animating. The grid track
+ * gives us the same auto-height transition without hard-coding the panel's
+ * content height (which changes with locale and viewport width).
+ */
+#filterCollapse.ongeki-card-gallery-filter-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.35s ease,
+    opacity 0.2s ease,
+    visibility 0s linear 0.35s;
+}
+
+#filterCollapse.ongeki-card-gallery-filter-collapse.show {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+  transition:
+    grid-template-rows 0.35s ease,
+    opacity 0.2s ease,
+    visibility 0s linear 0s;
+}
+
+.ongeki-card-gallery-filter-collapse-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #filterCollapse.ongeki-card-gallery-filter-collapse,
+  #filterCollapse.ongeki-card-gallery-filter-collapse.show {
+    transition: none;
+  }
 }
 
 .card-backdrop {

@@ -1,0 +1,43 @@
+/* Card picker keeps the same modal-gallery rhythm as the full Ongeki gallery. */
+.ongeki-card-picker-pagination {
+  display: flex;
+  cursor: default;
+}
+
+.ongeki-card-picker-filter-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.35s ease,
+    opacity 0.2s ease,
+    visibility 0s linear 0.35s;
+}
+
+.ongeki-card-picker-filter-collapse.show {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+  transition:
+    grid-template-rows 0.35s ease,
+    opacity 0.2s ease,
+    visibility 0s linear 0s;
+}
+
+.ongeki-card-picker-filter-collapse-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ongeki-card-picker-grid-wrap .cards-col {
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ongeki-card-picker-filter-collapse,
+  .ongeki-card-picker-filter-collapse.show {
+    transition: none;
+  }
+}

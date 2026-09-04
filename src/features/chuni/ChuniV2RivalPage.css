@@ -1,0 +1,52 @@
+.chuni-v2-rival-page table {
+  width: 100%;
+}
+
+.chuni-v2-rival-page .profile-icon {
+  height: 5.4em;
+  width: 5.4em;
+}
+
+.chuni-v2-rival-page .profile-table {
+  font-size: 0.8em;
+  max-width: 20em;
+}
+
+.chuni-v2-rival-page .profile-table th,
+.chuni-v2-rival-page .profile-table td {
+  width: 50%;
+}
+
+.chuni-v2-rival-page .friend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+body:has(.chuni-v2-rival-remove-modal) > [data-slot='dialog-overlay'] {
+  z-index: 1050;
+  background: #000;
+  opacity: 0.5;
+}
+
+body:has(.chuni-v2-rival-remove-modal) [data-slot='dialog-content'] {
+  z-index: 1055;
+  display: block;
+  width: 500px;
+  max-width: calc(100% - 1rem);
+  padding: 0;
+  gap: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: var(--bs-border-radius-lg);
+}
+
+body:has(.chuni-v2-rival-remove-modal) [data-slot='dialog-content'] .modal-header {
+  padding: 1rem;
+  border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+}
+
+body:has(.chuni-v2-rival-remove-modal) [data-slot='dialog-content'] .modal-body {
+  padding: 1rem;
+  font-size: 1rem;
+}

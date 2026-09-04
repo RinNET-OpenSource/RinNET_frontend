@@ -1,0 +1,35 @@
+.chuni-v2-user-ranking-page .ranking-row {
+  cursor: pointer;
+  padding-left: 0.5em;
+}
+
+.chuni-v2-user-ranking-page .medal {
+  width: 2em;
+}
+
+.chuni-v2-user-ranking-page .ranking-text {
+  display: inline-block;
+  width: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #7e7e7e;
+}
+
+.chuni-v2-user-ranking-page .ranking-item-icon {
+  width: 3em;
+  aspect-ratio: 1;
+}
+
+.chuni-v2-user-ranking-page .ranking-item-icon-lg {
+  width: 4em !important;
+}
+
+.chuni-v2-user-ranking-page .ranking-item-icon-xl {
+  width: 5em !important;
+}
+
+.chuni-v2-user-ranking-page .ranking-row th,
+.chuni-v2-user-ranking-page .ranking-row td {
+  display: table-cell;
+  vertical-align: middle;
+}

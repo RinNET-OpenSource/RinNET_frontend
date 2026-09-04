@@ -1,0 +1,203 @@
+/* Scoped port of v2-recent.component.css. */
+.chuni-v2-recent-page .jacket {
+  border-top-left-radius: var(--bs-border-radius) !important;
+  width: 7em;
+  aspect-ratio: 1;
+}
+
+.chuni-v2-recent-page .info-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chuni-v2-recent-page .info-second {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.chuni-v2-recent-page .track {
+  font-size: 0.8em;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chuni-v2-recent-page .difficulty,
+.chuni-v2-recent-page .title {
+  font-size: 1.1em;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chuni-v2-recent-page .artist {
+  font-size: 0.6em;
+  color: var(--bs-secondary-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chuni-v2-recent-page .difficulty-0 {
+  border-top-right-radius: var(--bs-border-radius) !important;
+  background: rgba(0, 171, 132, 0.7);
+  color: white;
+}
+
+.chuni-v2-recent-page .difficulty-1 {
+  border-top-right-radius: var(--bs-border-radius) !important;
+  background: rgba(255, 126, 0, 0.7);
+  color: white;
+}
+
+.chuni-v2-recent-page .difficulty-2 {
+  border-top-right-radius: var(--bs-border-radius) !important;
+  background: rgba(241, 41, 41, 0.7);
+  color: white;
+}
+
+.chuni-v2-recent-page .difficulty-3 {
+  border-top-right-radius: var(--bs-border-radius) !important;
+  background: rgba(142, 27, 229, 0.7);
+  color: white;
+}
+
+.chuni-v2-recent-page .difficulty-4 {
+  border-top-right-radius: var(--bs-border-radius) !important;
+  background: #424242;
+  color: white;
+}
+
+.chuni-v2-recent-page .color-we {
+  background: linear-gradient(45deg, #0be9ee, #ace559, #fce116, #cb00b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+}
+
+.chuni-v2-recent-page .difficulty-5 {
+  border-top-right-radius: var(--bs-border-radius) !important;
+  background: #343636;
+}
+
+.chuni-v2-recent-page .score,
+.chuni-v2-recent-page .rating {
+  font-size: 1.4em;
+}
+
+.chuni-v2-recent-page .score-label {
+  font-size: 0.8em;
+  display: block;
+  color: darkcyan;
+  font-weight: bold;
+}
+
+.chuni-v2-recent-page .level-container {
+  position: absolute;
+  top: 0.3em;
+  right: 0.3em;
+  background: white;
+  border: 1px solid var(--bs-secondary);
+  user-select: none;
+}
+
+.chuni-v2-recent-page .level-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7em;
+  color: #0d2e40;
+  padding-inline: 0.3em;
+  padding-top: 2px;
+}
+
+.chuni-v2-recent-page .level-value {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1em;
+  background-color: #0d2e40;
+  color: white;
+  width: 4em;
+  margin: 2px;
+  font-weight: bold;
+}
+
+.chuni-v2-recent-page .judge-justice-critical {
+  font-weight: bold;
+  background: linear-gradient(to bottom, #fef800 50%, #5abeed 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.2);
+}
+
+.chuni-v2-recent-page .judge-justice { color: #e68f1c; }
+.chuni-v2-recent-page .judge-attack { color: #4be15d; }
+.chuni-v2-recent-page .judge-miss { color: var(--bs-body-color); }
+.chuni-v2-recent-page .judge-tap { color: #ff5f6e; }
+.chuni-v2-recent-page .judge-hold { color: #f0962d; }
+.chuni-v2-recent-page .judge-slide { color: #46b7ff; }
+.chuni-v2-recent-page .judge-air { color: #4ccc4b; }
+.chuni-v2-recent-page .judge-flick { color: #00d8c9; }
+
+.chuni-v2-recent-page .result-plus { width: 0.5em; }
+.chuni-v2-recent-page .result-char { width: 1em; }
+
+.chuni-v2-recent-page .new-record-badge {
+  margin-left: -0.25rem;
+  padding-inline: 0.5rem;
+  padding-block: 3px;
+  user-select: none;
+  font-size: 0.5em;
+  font-weight: bold;
+  white-space: nowrap;
+  color: transparent;
+  background-color: var(--bs-secondary);
+}
+
+.chuni-v2-recent-page .new-record {
+  color: white;
+  background-color: #ff1a6f;
+}
+
+.chuni-v2-recent-page .honor { height: 1em; }
+
+.chuni-v2-recent-page .filter-text { font-size: 12px; }
+.chuni-v2-recent-page .difficulty-basic {
+  background: #00ab84;
+  border: 1px solid #145830;
+  color: white;
+}
+.chuni-v2-recent-page .difficulty-advanced {
+  background: #ff7e00;
+  border: 1px solid #995014;
+  color: white;
+}
+.chuni-v2-recent-page .difficulty-expert {
+  background: #f12929;
+  border: 1px solid #7b1f18;
+  color: white;
+}
+.chuni-v2-recent-page .difficulty-master {
+  background: #8e1be5;
+  border: 1px solid #381c47;
+  color: white;
+}
+.chuni-v2-recent-page .difficulty-ultima {
+  background: #424242;
+  border: 1px solid #ff2854;
+  color: white;
+}
+.chuni-v2-recent-page .difficulty-we {
+  background: #343636;
+  border: 1px solid var(--bs-secondary);
+}
+
+@media (max-width: 350px) {
+  .chuni-v2-recent-page .this-page { font-size: 0.8em; }
+}

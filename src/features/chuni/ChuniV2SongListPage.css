@@ -1,0 +1,126 @@
+.chuni-v2-song-list-page input[type='checkbox'] {
+  width: 0;
+  height: 0;
+  border: 0;
+  visibility: hidden;
+}
+
+.chuni-v2-song-list-page .checkbox-label {
+  text-wrap: nowrap;
+  user-select: none;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  color: var(--bs-link-color);
+  background-color: var(--bs-body-bg);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+.chuni-v2-song-list-page input[type='checkbox'] + .checkbox-label:hover {
+  color: var(--bs-link-hover-color);
+  background-color: var(--bs-tertiary-bg);
+}
+
+.chuni-v2-song-list-page input[type='checkbox']:checked + .checkbox-label {
+  color: var(--bs-light);
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+.chuni-v2-song-list-page .input-container:focus-within {
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.chuni-v2-song-list-page table {
+  width: 100%;
+}
+
+.chuni-v2-song-list-page .song-info {
+  padding: 4px;
+}
+
+.chuni-v2-song-list-page .song-info .jacket-container {
+  width: 6.4rem;
+  min-width: 6.4rem;
+  aspect-ratio: 1;
+}
+
+.chuni-v2-song-list-page .song-info .song-info-id {
+  font-size: 20px;
+}
+
+.chuni-v2-song-list-page .song-info .song-info-title {
+  font-size: 16px;
+}
+
+.chuni-v2-song-list-page .song-info .song-info-artist {
+  font-size: 12px;
+}
+
+.chuni-v2-song-list-page .difficulty {
+  font-size: 12px;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+.chuni-v2-song-list-page .difficulty-basic {
+  background: #00ab84;
+  border: 1px solid #145830;
+  color: white;
+}
+
+.chuni-v2-song-list-page .difficulty-advanced {
+  background: #ff7e00;
+  border: 1px solid #995014;
+  color: white;
+}
+
+.chuni-v2-song-list-page .difficulty-expert {
+  background: #f12929;
+  border: 1px solid #7b1f18;
+  color: white;
+}
+
+.chuni-v2-song-list-page .difficulty-master {
+  background: #8e1be5;
+  border: 1px solid #381c47;
+  color: white;
+}
+
+.chuni-v2-song-list-page .difficulty-ultima {
+  background: #424242;
+  border: 1px solid #ff2854;
+  color: white;
+}
+
+.chuni-v2-song-list-page .color-we {
+  background: linear-gradient(45deg, #0be9ee, #ace559, #fce116, #cb00b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+}
+
+.chuni-v2-song-list-page .difficulty-we {
+  background: #343636;
+  border: 1px solid var(--bs-secondary);
+}
+
+.chuni-v2-song-list-page #filterCollapse {
+  overflow: hidden;
+  transition: height 0.25s ease;
+  visibility: visible;
+}
+
+.chuni-v2-song-list-page .chuni-song-pagination {
+  width: fit-content;
+}

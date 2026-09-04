@@ -1,0 +1,268 @@
+.chuni-v2-userbox-page .audio-btn {
+  font-size: calc(0.5vw + 0.3vh);
+}
+
+.chuni-v2-userbox-page img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.chuni-v2-userbox-page .avatarPreview {
+  max-width: 15em;
+  margin: auto;
+}
+
+.chuni-v2-userbox-page .avatarPreview img {
+  position: absolute;
+  object-fit: none;
+  transform: translateX(-50%);
+}
+
+.chuni-v2-userbox-page .avatarContainer {
+  position: relative;
+  aspect-ratio: 0.925170068027211;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.chuni-v2-userbox-page #avatarFeet {
+  clip-path: inset(80.7% 14.7% 0 0);
+  z-index: 0;
+  left: 57%;
+  top: 20%;
+  width: 44%;
+  object-fit: inherit;
+}
+
+.chuni-v2-userbox-page #avatarBody {
+  clip-path: inset(0 0 19.3% 0);
+  z-index: 1;
+  left: 50%;
+  top: 25.5%;
+  width: 44%;
+  object-fit: inherit;
+}
+
+.chuni-v2-userbox-page #avatarFace {
+  z-index: 2;
+  left: 50%;
+  top: 28%;
+  width: 20%;
+  object-fit: inherit;
+}
+
+.chuni-v2-userbox-page #avatarLeftHand {
+  z-index: 5;
+  left: 26.3%;
+  top: 52%;
+  width: 13%;
+  object-fit: inherit;
+}
+
+.chuni-v2-userbox-page #avatarRightHand {
+  z-index: 5;
+  right: 13.7%;
+  top: 52%;
+  width: 12.7%;
+  object-fit: inherit;
+}
+
+.chuni-v2-userbox-page #avatarHead {
+  z-index: 3;
+  left: 50.4%;
+  top: 6%;
+  object-fit: inherit;
+  width: 68%;
+}
+
+.chuni-v2-userbox-page #avatarWear {
+  z-index: 4;
+  left: 50%;
+  top: 31%;
+  object-fit: inherit;
+  width: 88%;
+}
+
+.chuni-v2-userbox-page #avatarFaceWear {
+  z-index: 4;
+  left: 50%;
+  top: 27%;
+  width: 40%;
+  object-fit: initial;
+}
+
+.chuni-v2-userbox-page #avatarItemLeft {
+  clip-path: inset(0 50% 0 0);
+  z-index: 6;
+  left: 42%;
+  top: 11%;
+  width: 75%;
+  object-fit: initial;
+}
+
+.chuni-v2-userbox-page #avatarItemRight {
+  clip-path: inset(0 0 0 50%);
+  z-index: 6;
+  left: 58%;
+  top: 10%;
+  width: 75%;
+  object-fit: initial;
+}
+
+.chuni-v2-userbox-page #avatarBack {
+  object-fit: contain;
+  z-index: 0;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+}
+
+.chuni-v2-userbox-page .item-title {
+  background-color: #202c3a;
+}
+
+.chuni-v2-userbox-page .item-body {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-height: 5em;
+  aspect-ratio: 1.8;
+}
+
+.chuni-v2-userbox-page .item-body img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.chuni-v2-userbox-page .symbol-chat-container {
+  aspect-ratio: 1.8;
+  width: 100%;
+  max-height: 6em;
+  display: flex;
+  justify-content: center;
+}
+
+.chuni-v2-userbox-page .symbol-chat-body {
+  height: 100%;
+  aspect-ratio: 1.5;
+  position: relative;
+  container: symbol-chat-container / size;
+}
+
+.chuni-v2-userbox-page .symbol-chat-body img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.chuni-v2-userbox-page .symbol-chat-text {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  color: black;
+  font-size: 10cqh;
+  width: 70%;
+  white-space: pre-line;
+}
+
+@media only screen and (max-width: 767px) {
+  .chuni-v2-userbox-page .audio-btn { font-size: 1.5vw; }
+}
+
+@media only screen and (max-width: 575px) {
+  .chuni-v2-userbox-page .audio-btn { font-size: 2.1vw; }
+}
+
+body:has(.chuni-v2-userbox-dialog) > [data-slot='dialog-overlay'] {
+  z-index: 1050;
+  background: #000;
+  opacity: 0.5;
+}
+
+.chuni-v2-userbox-dialog {
+  z-index: 1055 !important;
+  display: flex !important;
+  flex-direction: column;
+  width: 800px !important;
+  max-width: calc(100% - 1rem) !important;
+  max-height: calc(100vh - 3.5rem);
+  padding: 1px !important;
+  gap: 0 !important;
+  overflow-y: auto;
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color-translucent);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: none;
+}
+
+.chuni-v2-userbox-dialog .modal-body {
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+.chuni-v2-userbox-dialog .btn-close {
+  opacity: 1;
+}
+
+.chuni-v2-userbox-dialog .selected {
+  border: 1px solid var(--bs-primary) !important;
+}
+
+.chuni-v2-userbox-dialog .row > .item-card {
+  box-sizing: border-box;
+  padding: 1%;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: default;
+}
+
+.chuni-v2-userbox-dialog .item-card img {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+.chuni-v2-userbox-symbol-dialog .item-card img {
+  display: inline;
+}
+
+.chuni-v2-userbox-dialog .item-body {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-height: 5em;
+  aspect-ratio: 1.8;
+}
+
+.chuni-v2-userbox-dialog .item-container {
+  aspect-ratio: 1.8;
+  width: 100%;
+  max-height: 6em;
+  display: flex;
+  justify-content: center;
+}
+
+.chuni-v2-userbox-dialog .item-container .item-body {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-height: none;
+  aspect-ratio: 1.5;
+  position: relative;
+  container: symbol-chat-container / size;
+}
+
+.chuni-v2-userbox-dialog .item-text {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  color: black;
+  font-size: 10cqh;
+  width: 70%;
+  white-space: pre-line;
+}

@@ -47,6 +47,11 @@
   color: var(--bs-body-color);
 }
 
+.profile-page .oauth-icon {
+  margin-inline-end: 0;
+  color: currentColor;
+}
+
 .profile-icon {
   height: 5.4em;
   width: 5.4em;

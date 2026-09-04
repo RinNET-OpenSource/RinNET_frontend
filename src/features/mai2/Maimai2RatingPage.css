@@ -1,0 +1,16 @@
+.maimai2-rating-page .rating-info { font-size: 1.2em; }
+.maimai2-rating-page .jacket { width: 5.6rem; aspect-ratio: 1; }
+.maimai2-rating-page .difficulty { font-size: 12px; }
+
+.maimai2-rating-page .difficulty-basic { background: #2da060; border: 1px solid #145830; color: white; }
+.maimai2-rating-page .difficulty-advanced { background: #e6a047; border: 1px solid #995014; color: white; }
+.maimai2-rating-page .difficulty-expert { background: #e55353; border: 1px solid #7b1f18; color: white; }
+.maimai2-rating-page .difficulty-master { background: #933daa; border: 1px solid #381c47; color: white; }
+.maimai2-rating-page .difficulty-remaster { background: whitesmoke; border: 1px solid #381c47; color: #933daa; }
+
+.maimai2-rating-page .score-preview { background: #9d5cb9; border-radius: 1rem; color: white; }
+.maimai2-rating-page .your-maimai-rating-text { margin-right: 3px; }
+.maimai2-rating-page .rank-icon { height: 2rem; width: auto; }
+
+[data-bs-theme='light'] .maimai2-rating-page .player-rating { color: #323232; }
+[data-bs-theme='dark'] .maimai2-rating-page .player-rating { color: #d2d2d2; }

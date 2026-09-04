@@ -394,8 +394,7 @@ export function KeychipPage() {
         <h5>{t('KeychipPage.Lead')}</h5>
         <p dangerouslySetInnerHTML={{ __html: t('KeychipPage.LeadDesc') }} />
         <pre className="m-0" style={{ textWrap: 'inherit' }}>
-          <code data-lang="ini">[keychip]
-  id=XXXX-XXXXXXXXXXX</code>
+          <code data-lang="ini">{'[keychip]\n  id=XXXX-XXXXXXXXXXX'}</code>
         </pre>
       </div>
       <div className="hstack alert alert-danger" role="alert">

@@ -1,0 +1,26 @@
+/* Shared pseudo-3D surface used by the deck editor, skin picker and gallery. */
+.cards-col {
+  width: 100%;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+
+  --rotator-transition: all .6s ease-out;
+  --rotator-global-rotate-y: 0deg;
+  --rotator-rotate-x: 0deg;
+  --rotator-rotate-y: 0deg;
+  --pseudo-opacity: 0;
+  --pseudo-left: 50%;
+  --pseudo-top: 50%;
+
+  --holo-sheet-bottom: none;
+  --holo-sheet-middle: none;
+  --holo-sheet-top: none;
+}
+
+.cards-col.card-picking {
+  --rotator-global-rotate-y: 360deg;
+}
+
+.cards-col[aria-disabled='true'] {
+  cursor: default;
+}

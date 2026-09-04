@@ -10,6 +10,10 @@
   "App": {
     "Footer": {
       "Theme": "Theme",
+      "ThemeFamily": "Interface style",
+      "ColorTheme": "Color mode",
+      "Legacy": "Classic",
+      "Modern": "Modern",
       "Auto": "Auto",
       "Light": "Light",
       "Dark": "Dark",

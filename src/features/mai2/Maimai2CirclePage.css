@@ -1,0 +1,26 @@
+.maimai2-circle-page .card { position: relative; }
+.maimai2-circle-page .horizon-margin { margin-left: 5px; margin-right: 5px; }
+.maimai2-circle-page .multi-line-ellipsis { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+.maimai2-circle-page .user-table { width: 100%; border-collapse: collapse; }
+.maimai2-circle-page .user-table th,
+.maimai2-circle-page .user-table td { padding: 8px; text-align: left; }
+.maimai2-circle-page .challenge-jacket { width: 120px; height: 120px; max-width: none; object-fit: cover; flex-shrink: 0; }
+.maimai2-circle-page .challenge-meta { display: grid; gap: 0.25rem; }
+.maimai2-circle-page .challenge-panel { height: 100%; display: flex; flex-direction: column; gap: 0.75rem; }
+.maimai2-circle-page .challenge-cell { min-width: 10rem; }
+.maimai2-circle-page .challenge-progress { margin-top: auto; }
+.maimai2-circle-page .challenge-progress-bar { height: 0.75rem; background-color: #e9ecef; }
+.maimai2-circle-page .challenge-progress-bar .progress-bar { background: #1d976c; }
+.maimai2-circle-page .pagination { margin-top: 10px; }
+.maimai2-circle-page .comment-text { white-space: pre-wrap; word-break: break-word; overflow-wrap: break-word; max-height: 100px; overflow: auto; }
+
+.maimai2-circle-dialog-overlay { z-index: 1050; }
+.maimai2-circle-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: 0;
+}
+.maimai2-circle-dialog .multi-line-ellipsis { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }

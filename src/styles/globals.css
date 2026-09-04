@@ -1,10 +1,10 @@
+@layer properties, theme, base, legacy-bootstrap, components, utilities;
+
 @import "tailwindcss";
 @import "tw-animate-css";
-/* Bootstrap 工具类（栅格/间距/排版/显示等，无任何组件外观）。
-   视觉令牌与组件样式由本文件与 bootstrap-compat 提供。 */
-@import "bootstrap/dist/css/bootstrap-grid.css";
-@import "bootstrap/dist/css/bootstrap-utilities.css";
-@import "./bootstrap-compat.css";
+/* Legacy 主题必须使用与 Angular 基线完全相同的 Bootstrap CSS。
+   shadcn 继续负责 React 交互组件；Bootstrap 只提供原版页面的视觉契约。 */
+@import "bootstrap/dist/css/bootstrap.css" layer(legacy-bootstrap);
 
 /*
  * 主题基座：Bootstrap 5.3 观感 = 第一套主题（未来多主题体系的一号成员）。
@@ -118,7 +118,7 @@
 
   --bs-body-font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans",
     "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Sans Emoji";
+    "Noto Color Emoji";
   --bs-card-cap-bg: rgba(0, 0, 0, 0.03);
   --bs-card-bg: var(--bs-body-bg);
 
@@ -128,6 +128,7 @@
   --bs-btn-active-bg-primary: #0a58ca;
 
   --bs-progress-bar-bg: #0d6efd;
+  --theme-primary-foreground: #fff;
 
   /* 旧版顶部进度条 */
   --app-progress-bar-color: var(--bs-primary);
@@ -194,6 +195,68 @@
   --bs-card-bg: var(--bs-body-bg);
 }
 
+:root[data-theme-family="modern"] {
+  --bs-primary: #5f7f1c;
+  --bs-primary-rgb: 95, 127, 28;
+  --bs-primary-text-emphasis: #33470e;
+  --bs-primary-bg-subtle: #e5efc8;
+  --bs-primary-border-subtle: #c9dc8f;
+  --bs-body-color: #18201b;
+  --bs-body-color-rgb: 24, 32, 27;
+  --bs-body-bg: #f7faf7;
+  --bs-body-bg-rgb: 247, 250, 247;
+  --bs-secondary-color: rgba(24, 32, 27, 0.75);
+  --bs-secondary-color-rgb: 24, 32, 27;
+  --bs-tertiary-color: rgba(24, 32, 27, 0.5);
+  --bs-tertiary-color-rgb: 24, 32, 27;
+  --bs-secondary-bg: #e7ede8;
+  --bs-secondary-bg-rgb: 231, 237, 232;
+  --bs-tertiary-bg: #eff4ef;
+  --bs-tertiary-bg-rgb: 239, 244, 239;
+  --bs-emphasis-color: #0d130f;
+  --bs-emphasis-color-rgb: 13, 19, 15;
+  --bs-link-color: #4d6817;
+  --bs-link-color-rgb: 77, 104, 23;
+  --bs-link-hover-color: #3b5011;
+  --bs-link-hover-color-rgb: 59, 80, 17;
+  --bs-border-color: #cfd9d1;
+  --bs-border-color-translucent: rgba(24, 32, 27, 0.18);
+  --bs-border-radius: 0.625rem;
+  --bs-border-radius-sm: 0.45rem;
+  --bs-border-radius-lg: 0.85rem;
+  --bs-card-bg: #fff;
+}
+
+:root[data-theme-family="modern"][data-bs-theme="dark"] {
+  --bs-primary: #a9c83f;
+  --bs-primary-rgb: 169, 200, 63;
+  --bs-primary-text-emphasis: #cde77a;
+  --bs-primary-bg-subtle: #293410;
+  --bs-primary-border-subtle: #657925;
+  --bs-body-color: #e5eee8;
+  --bs-body-color-rgb: 229, 238, 232;
+  --bs-body-bg: #111815;
+  --bs-body-bg-rgb: 17, 24, 21;
+  --bs-secondary-color: rgba(229, 238, 232, 0.75);
+  --bs-secondary-color-rgb: 229, 238, 232;
+  --bs-tertiary-color: rgba(229, 238, 232, 0.5);
+  --bs-tertiary-color-rgb: 229, 238, 232;
+  --bs-secondary-bg: #263129;
+  --bs-secondary-bg-rgb: 38, 49, 41;
+  --bs-tertiary-bg: #1b251f;
+  --bs-tertiary-bg-rgb: 27, 37, 31;
+  --bs-emphasis-color: #fff;
+  --bs-emphasis-color-rgb: 255, 255, 255;
+  --bs-link-color: #b7d95a;
+  --bs-link-color-rgb: 183, 217, 90;
+  --bs-link-hover-color: #cae979;
+  --bs-link-hover-color-rgb: 202, 233, 121;
+  --bs-border-color: #39483e;
+  --bs-border-color-translucent: rgba(229, 238, 232, 0.16);
+  --bs-card-bg: #151e19;
+  --theme-primary-foreground: #17200f;
+}
+
 /* ===== shadcn/ui 令牌桥接到 --bs-* ===== */
 @theme inline {
   --font-sans: var(--bs-body-font-family);
@@ -205,7 +268,7 @@
   --color-popover: var(--bs-body-bg);
   --color-popover-foreground: var(--bs-body-color);
   --color-primary: var(--bs-primary);
-  --color-primary-foreground: #fff;
+  --color-primary-foreground: var(--theme-primary-foreground);
   --color-secondary: var(--bs-secondary-bg);
   --color-secondary-foreground: var(--bs-body-color);
   --color-muted: var(--bs-tertiary-bg);
@@ -260,9 +323,90 @@
   }
 }
 
+@layer components {
+  /* Bootstrap Reboot 位于 Tailwind base 之后；shadcn 标题/描述显式恢复无外边距。 */
+  [data-slot$="-title"],
+  [data-slot$="-description"] {
+    margin: 0;
+  }
+
+  [data-theme-family="modern"] .btn-primary {
+    --bs-btn-color: var(--theme-primary-foreground);
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-color: var(--theme-primary-foreground);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--bs-primary) 86%, #000);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--bs-primary) 82%, #000);
+    --bs-btn-active-color: var(--theme-primary-foreground);
+    --bs-btn-active-bg: color-mix(in srgb, var(--bs-primary) 78%, #000);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--bs-primary) 75%, #000);
+  }
+
+  /* 与旧 Angular/CDK 弹窗适配层保持同一套 Bootstrap 几何契约。 */
+  .compat-modal,
+  .compat-offcanvas {
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  .compat-modal {
+    --bs-modal-width: 500px;
+    --bs-modal-padding: 1rem;
+    --bs-modal-margin: 0.5rem;
+    --bs-modal-color: var(--bs-body-color);
+    --bs-modal-bg: var(--bs-body-bg);
+    --bs-modal-border-color: var(--bs-border-color);
+    --bs-modal-border-width: var(--bs-border-width);
+    --bs-modal-border-radius: var(--bs-border-radius-lg);
+    --bs-modal-box-shadow: var(--bs-box-shadow-sm);
+    --bs-modal-inner-border-radius: calc(var(--bs-border-radius-lg) - var(--bs-border-width));
+    --bs-modal-header-padding-x: 1rem;
+    --bs-modal-header-padding-y: 1rem;
+    --bs-modal-header-padding: 1rem 1rem;
+    --bs-modal-header-border-color: var(--bs-border-color);
+    --bs-modal-header-border-width: var(--bs-border-width);
+    --bs-modal-title-line-height: 1.5;
+    --bs-modal-footer-gap: 0.5rem;
+    --bs-modal-footer-bg: transparent;
+    --bs-modal-footer-border-color: var(--bs-border-color);
+    --bs-modal-footer-border-width: var(--bs-border-width);
+  }
+
+  .compat-modal.compat-sm {
+    width: 300px !important;
+    max-width: 300px !important;
+  }
+
+  .compat-modal.compat-lg {
+    width: 800px !important;
+    max-width: min(92vw, 800px) !important;
+  }
+
+  .compat-modal.compat-xl {
+    width: 1140px !important;
+    max-width: min(94vw, 1140px) !important;
+  }
+
+  .compat-modal.compat-scrollable,
+  .compat-scrollable {
+    max-height: calc(100dvh - 3.5rem) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .compat-scrollable .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bs-modal-bg, var(--bs-body-bg));
+  }
+}
+
 /* ==================================================================
  * 旧版 styles.scss 全局工具类原样移植
  * ================================================================== */
+@layer legacy-bootstrap {
 .spacer-util {
   flex: 1 1 auto;
 }
@@ -652,21 +796,6 @@ input[type="checkbox"]:checked + .checkbox-label {
   z-index: 999;
 }
 
-.content {
-  background-origin: content-box;
-  height: auto;
-  overflow-y: visible;
-  width: 92%;
-  max-width: 1280px;
-  box-sizing: border-box;
-  padding: 30px;
-  margin: auto;
-}
-
-.content .padding {
-  padding-top: 4px;
-}
-
 .dark {
   background-color: #202124;
 }
@@ -675,9 +804,9 @@ input[type="checkbox"]:checked + .checkbox-label {
   display: none;
 }
 
-/* 侧栏导航项（link-btn 在 shell 语境下的样式） */
-.sidebar .link-btn,
-.app-navbar .link-btn {
+/* 侧栏/用户菜单可能由 Radix Portal 挂到 body，不能依赖祖先 .sidebar/.app-navbar。 */
+.shell-sidebar-nav .link-btn,
+.shell-user-popover .link-btn {
   padding: 0.3rem 0.5rem;
   color: var(--bs-body-color);
   text-decoration: none !important;
@@ -685,14 +814,187 @@ input[type="checkbox"]:checked + .checkbox-label {
   transition: all 0.1s ease 0s;
 }
 
-.sidebar .link-btn:hover,
-.sidebar .link-btn.active {
+.shell-sidebar-nav .link-btn:hover,
+.shell-sidebar-nav .link-btn.active {
   color: #fff !important;
   background-color: var(--bs-primary);
 }
 
-.sidebar .link-btn.active {
+.shell-sidebar-nav .link-btn.active {
   font-weight: bold;
+}
+
+.user-popover {
+  min-width: 10rem;
+}
+
+/* Bootstrap 5.2 offcanvas contract for the authenticated mobile sidebar. */
+.shell-mobile-sheet-overlay {
+  z-index: 1040 !important;
+  background-color: #000 !important;
+  opacity: 0.5 !important;
+}
+
+.shell-mobile-sheet {
+  z-index: 1045 !important;
+  width: 400px !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  color: var(--bs-body-color) !important;
+  background-color: var(--bs-body-bg) !important;
+  border-right: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
+  box-shadow: var(--bs-box-shadow-sm) !important;
+}
+
+.shell-mobile-sheet-header {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  height: 3.6rem;
+  padding: 1rem !important;
+}
+
+.shell-mobile-sheet-title {
+  font-size: 110% !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+.shell-mobile-sheet-body {
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.shell-mobile-sheet > [data-slot="sheet-close"] {
+  box-sizing: content-box;
+  top: 0.8rem !important;
+  right: 0.5625rem !important;
+  width: 1rem;
+  height: 1rem;
+  padding: 0.5rem !important;
+  color: var(--bs-body-color);
+  background: transparent !important;
+  border: 0;
+  border-radius: 0 !important;
+  opacity: 0.5 !important;
+  box-shadow: none !important;
+}
+
+.shell-mobile-sheet > [data-slot="sheet-close"] svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ng-bootstrap popover geometry for the account menu. */
+[data-theme-family="legacy"] .shell-user-popover {
+  z-index: 1070 !important;
+  width: auto !important;
+  max-width: 276px !important;
+  padding: 1rem !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5;
+  color: var(--bs-body-color) !important;
+  background-color: var(--bs-body-bg) !important;
+  border: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
+  border-radius: var(--bs-border-radius-lg) !important;
+  box-shadow: none !important;
+}
+
+[data-theme-family="legacy"] .shell-user-popover[data-side="bottom"]::before,
+[data-theme-family="legacy"] .shell-user-popover[data-side="bottom"]::after {
+  position: absolute;
+  right: 0.75rem;
+  display: block;
+  width: 0;
+  height: 0;
+  content: "";
+  border-right: 0.5rem solid transparent;
+  border-left: 0.5rem solid transparent;
+}
+
+[data-theme-family="legacy"] .shell-user-popover[data-side="bottom"]::before {
+  top: -0.55rem;
+  border-bottom: 0.5rem solid var(--bs-border-color-translucent);
+}
+
+[data-theme-family="legacy"] .shell-user-popover[data-side="bottom"]::after {
+  top: -0.48rem;
+  border-bottom: 0.5rem solid var(--bs-body-bg);
+}
+
+/* ng-bootstrap dropdown geometry and active item treatment for Legacy. */
+[data-theme-family="legacy"] .shell-legacy-dropdown {
+  z-index: 1000 !important;
+  min-width: 10rem !important;
+  padding: 0.5rem 0 !important;
+  font-size: 1rem !important;
+  color: var(--bs-body-color) !important;
+  text-align: left;
+  background-color: var(--bs-body-bg) !important;
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
+  border-radius: var(--bs-border-radius) !important;
+  box-shadow: none !important;
+}
+
+[data-theme-family="legacy"] .shell-dropdown-item {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.25rem 1rem !important;
+  clear: both;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5;
+  color: var(--bs-body-color) !important;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+}
+
+[data-theme-family="legacy"] .shell-dropdown-item[data-highlighted] {
+  color: var(--bs-body-color) !important;
+  background-color: var(--bs-tertiary-bg) !important;
+}
+
+[data-theme-family="legacy"] .shell-dropdown-item.active {
+  color: #fff !important;
+  background-color: var(--bs-primary) !important;
+}
+
+[data-theme-family="legacy"] .shell-legacy-theme-dropdown {
+  position: relative;
+}
+
+[data-theme-family="legacy"] .shell-theme-family-switch {
+  position: absolute !important;
+  top: 0.65rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: flex !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  justify-content: center;
+  color: var(--bs-secondary-color) !important;
+  background: transparent !important;
+  border-radius: var(--bs-border-radius-sm) !important;
+  opacity: 0.55;
+}
+
+[data-theme-family="legacy"] .shell-theme-family-switch:hover,
+[data-theme-family="legacy"] .shell-theme-family-switch[data-highlighted] {
+  color: var(--bs-body-color) !important;
+  background-color: var(--bs-tertiary-bg) !important;
+  opacity: 1;
 }
 
 .link-btn-danger {
@@ -803,4 +1105,6 @@ input[type="checkbox"]:checked + .checkbox-label {
   color: var(--bs-body-color);
   cursor: pointer;
   text-decoration: underline;
+}
+
 }

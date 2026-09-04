@@ -1,0 +1,149 @@
+.maimai2-song-list-page .checkbox-btn {
+  margin-right: 0.5rem;
+}
+
+.maimai2-song-list-page .checkbox-label {
+  cursor: pointer;
+  user-select: none;
+}
+
+.maimai2-song-list-page .input-container:focus-within {
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.maimai2-song-list-page .badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 1.25rem;
+  box-sizing: border-box;
+  font-size: 0.75rem;
+}
+
+.maimai2-song-list-page .card-btn {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transition: transform 0.1s;
+}
+
+.maimai2-song-list-page .text-nowrap {
+  white-space: nowrap;
+}
+
+.maimai2-song-list-page .badge-SD {
+  flex-shrink: 0;
+  color: #fff;
+  white-space: nowrap;
+  background: #45aeff;
+}
+
+.maimai2-song-list-page .badge-UTAGE {
+  flex-shrink: 0;
+  color: #fff;
+  white-space: nowrap;
+  background: #20356a;
+  border: #bde5fe solid 0.125rem;
+}
+
+.maimai2-song-list-page .badge-DX {
+  flex-shrink: 0;
+  color: #fff;
+  white-space: nowrap;
+  background: linear-gradient(-30deg, #fbad02, #fbad02 40%, #ff4427 60%, #ff4427);
+}
+
+.maimai2-song-list-page .song-info {
+  height: 5.6rem;
+}
+
+.maimai2-song-list-page .song-info-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  overflow: hidden;
+  font-size: 1rem;
+}
+
+.maimai2-song-list-page .song-info .jacket-container {
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1;
+}
+
+.maimai2-song-list-page .song-info .jacket-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.maimai2-song-list-page .song-info .song-info-id {
+  font-size: 20px;
+}
+
+.maimai2-song-list-page .song-info .song-info-artist {
+  font-size: 0.75rem;
+}
+
+.maimai2-song-list-page .difficulty {
+  width: 3.5rem;
+  font-size: 0.75rem;
+}
+
+.maimai2-song-list-page .difficulty-basic {
+  background: #2da060;
+}
+
+.maimai2-song-list-page .difficulty-advanced {
+  background: #e6a047;
+}
+
+.maimai2-song-list-page .difficulty-expert {
+  background: #e55353;
+}
+
+.maimai2-song-list-page .difficulty-master {
+  background: #9d5cb9;
+}
+
+.maimai2-song-list-page .difficulty-remaster {
+  color: #000;
+  background: #fff;
+  border: 1px solid #c148e5;
+}
+
+.maimai2-song-list-page .difficulty-utage {
+  background: #fe6ffd;
+}
+
+.maimai2-song-list-page .text-muted {
+  opacity: 0.8;
+}
+
+.maimai2-song-list-page .d-flex.gap-2 {
+  gap: 0.8rem !important;
+}
+
+.maimai2-song-list-page .scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.maimai2-song-list-page .scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.maimai2-song-list-page > .pagination {
+  width: fit-content;
+}
+
+.maimai2-song-list-page .form-select.form-select-sm {
+  width: 128px;
+}

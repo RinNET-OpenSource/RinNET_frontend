@@ -216,12 +216,13 @@ export function OngekiRatingPage() {
     return (
       <span
         className={
+          'difficulty ' +
           DIFF_CLASS[name] +
           ' badge rounded-pill' +
           (item.level === 10 ? ' text-danger border border-danger' : '')
         }
       >
-        {name} {levelData ? toLevelDecimal(levelData) ?? '' : ''}
+        {levelData ? toLevelDecimal(levelData) ?? name : name}
       </span>
     );
   };
@@ -262,7 +263,7 @@ export function OngekiRatingPage() {
               <div className="honor">
                 <img
                   className="honor-badge"
-                  src={assetsHost + `assets/ongeki/gameUi/${toTechHonorSprite(getTechnicalRankIDByScore(item.techScoreMax) + 1)}`}
+                  src={assetsHost + `assets/ongeki/gameUi/${toTechHonorSprite(getTechnicalRankIDByScore(item.techScoreMax))}`}
                   alt=""
                 />
                 {item.clearMarkType === ClearMarkType.AllBreakPlus && (

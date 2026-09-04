@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'qrcode';
 import './pages-common.css';
 import './auth/auth.css';
 import { BModal } from '@/components/shared/BModal';
+import { Card, CardContent } from '@/components/ui/card';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import { StatusCode } from '@/lib/models';
@@ -24,6 +25,43 @@ interface Passkey {
   id: number;
   nick: string;
   credentialId: string;
+}
+
+interface ProfileRowProps {
+  action?: ReactNode;
+  label: ReactNode;
+  labelClassName?: string;
+  value: ReactNode;
+  valueClassName?: string;
+}
+
+function ProfileCard({ children }: { children: ReactNode }) {
+  return (
+    <Card
+      className="mb-4 gap-4 overflow-hidden rounded-lg py-4 text-sm shadow-none"
+      data-size="default"
+    >
+      <CardContent className="flex flex-col gap-4 px-4">{children}</CardContent>
+    </Card>
+  );
+}
+
+function ProfileRow({
+  action,
+  label,
+  labelClassName = 'w-28 shrink-0 text-sm',
+  value,
+  valueClassName = '',
+}: ProfileRowProps) {
+  return (
+    <div className="d-flex flex-wrap align-items-center gap-x-4 gap-y-1">
+      <span className={labelClassName}>{label}</span>
+      <span className={`min-w-0 flex-1 text-sm fw-bold${valueClassName ? ` ${valueClassName}` : ''}`}>
+        {value}
+      </span>
+      {action}
+    </div>
+  );
 }
 
 /** 等价旧版 profile.component（个人信息 / OAuth 绑定 / TOTP / Passkey） */
@@ -365,55 +403,31 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="content">
+    <div className="content profile-page">
       <h1 className="page-heading">{t('ProfilePage.Title')}</h1>
       <h2 className="mb-3 mt-4">{t('ProfilePage.PersonalInformation')}</h2>
       {user && (
-        <div className="card mb-4">
-          <div className="card-body row g-3">
-            {[
-              [t('ProfilePage.Nickname'), user.name],
-              [t('ProfilePage.Username'), user.username],
-              [t('ProfilePage.Email'), user.email],
-              [t('ProfilePage.Password'), '********'],
-            ].map(([lead, value]) => (
-              <div className="col-container col-12" key={lead}>
-                <div className="row col-content">
-                  <div className="col-sm-auto">
-                    <span className="col-lead">{lead}</span>
-                  </div>
-                  <div className="col col-value">{value}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ProfileCard>
+          <ProfileRow label={t('ProfilePage.Nickname')} value={user.name} />
+          <ProfileRow label={t('ProfilePage.Username')} value={user.username} />
+          <ProfileRow
+            label={t('ProfilePage.Email')}
+            value={user.email}
+            valueClassName="text-break"
+          />
+          <ProfileRow label={t('ProfilePage.Password')} value="********" />
+        </ProfileCard>
       )}
 
       <h2 className="mb-3">{t('ProfilePage.LinkedAccounts')}</h2>
       {user && (
-        <div className="card mb-4">
-          <div className="card-body row g-3">
-            {providers.map((provider) => {
-              const oauth = findOAuth(provider);
-              return (
-                <div className="col-container col-12" key={provider}>
-                  <div className="row col-content">
-                    <div className="col-sm-auto">
-                      <span className="col-lead m-0">
-                        <svg className="oauth-icon" viewBox="0 0 16 16">
-                          <use href={`assets/${provider}.svg#icon`} />
-                        </svg>
-                        {tokenTypes.get(provider)}
-                      </span>
-                    </div>
-                    {oauth ? (
-                      <div className="col col-value">{oauth.email}</div>
-                    ) : (
-                      <div className="col col-value">{t('ProfilePage.NotLinked')}</div>
-                    )}
-                  </div>
-                  {oauth ? (
+        <ProfileCard>
+          {providers.map((provider) => {
+            const oauth = findOAuth(provider);
+            return (
+              <ProfileRow
+                action={
+                  oauth ? (
                     <a className="col-action" onClick={() => setUnlinking(oauth.id)}>
                       {t('ProfilePage.Unlink')}
                     </a>
@@ -421,27 +435,30 @@ export function ProfilePage() {
                     <a className="col-action" onClick={() => getSignInUrl(provider)}>
                       {t('ProfilePage.Link')}
                     </a>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                  )
+                }
+                key={provider}
+                label={
+                  <>
+                    <svg className="oauth-icon" viewBox="0 0 16 16">
+                      <use href={`assets/${provider}.svg#icon`} />
+                    </svg>
+                    {tokenTypes.get(provider)}
+                  </>
+                }
+                labelClassName="d-flex w-28 shrink-0 align-items-center gap-2 text-sm"
+                value={oauth?.email ?? t('ProfilePage.NotLinked')}
+              />
+            );
+          })}
+        </ProfileCard>
       )}
 
       <h2 className="mb-3">{t('ProfilePage.TwoFactor')}</h2>
-      <div className="card mb-4">
-        <div className="card-body row g-3">
-          <div className="col-container col-12">
-            <div className="row col-content">
-              <div className="col-sm-auto">
-                <span className="col-lead">{t('ProfilePage.Totp')}</span>
-              </div>
-              <div className="col col-value">
-                {t(totpEnabled ? 'ProfilePage.TotpOn' : 'ProfilePage.TotpOff')}
-              </div>
-            </div>
-            {!totpEnabled && (
+      <ProfileCard>
+        <ProfileRow
+          action={
+            !totpEnabled ? (
               <a
                 className="col-action"
                 onClick={() => {
@@ -451,8 +468,7 @@ export function ProfilePage() {
               >
                 {t('ProfilePage.TotpEnable')}
               </a>
-            )}
-            {totpEnabled && (
+            ) : (
               <a
                 className="col-action"
                 onClick={() => {
@@ -462,18 +478,14 @@ export function ProfilePage() {
               >
                 {t('ProfilePage.TotpDisable')}
               </a>
-            )}
-          </div>
-          {totpEnabled && (
-            <div className="col-container col-12">
-              <div className="row col-content">
-                <div className="col-sm-auto">
-                  <span className="col-lead">{t('ProfilePage.TotpRecovery')}</span>
-                </div>
-                <div className="col col-value">
-                  {t('ProfilePage.TotpRecoveryRemaining', { count: totpRecoveryRemaining })}
-                </div>
-              </div>
+            )
+          }
+          label={t('ProfilePage.Totp')}
+          value={t(totpEnabled ? 'ProfilePage.TotpOn' : 'ProfilePage.TotpOff')}
+        />
+        {totpEnabled && (
+          <ProfileRow
+            action={
               <a
                 className="col-action"
                 onClick={() => {
@@ -483,47 +495,46 @@ export function ProfilePage() {
               >
                 {t('ProfilePage.TotpRecoveryRegenerate')}
               </a>
-            </div>
-          )}
-          <div className="col-12 small text-secondary">{t('ProfilePage.TotpTip')}</div>
-        </div>
-      </div>
+            }
+            label={t('ProfilePage.TotpRecovery')}
+            value={t('ProfilePage.TotpRecoveryRemaining', { count: totpRecoveryRemaining })}
+          />
+        )}
+        <p className="text-xs text-muted-foreground">{t('ProfilePage.TotpTip')}</p>
+      </ProfileCard>
 
       <h2 className="mb-3">{t('ProfilePage.Passkeys')}</h2>
-      <div className="card mb-4">
-        <div className="card-body row g-3">
-          {passkeysLoaded && passkeys.length === 0 && (
-            <div className="col-12">{t('ProfilePage.NoPasskeys')}</div>
-          )}
-          {passkeys.map((passkey) => (
-            <div className="col-container col-12" key={passkey.id}>
-              <div className="row col-content">
-                <div className="col-sm-auto">
-                  <span className="col-lead">{passkey.nick}</span>
-                </div>
-                <div className="col col-value">{passkey.credentialId}</div>
-              </div>
+      <ProfileCard>
+        {passkeysLoaded && passkeys.length === 0 && (
+          <div className="text-sm text-muted-foreground">{t('ProfilePage.NoPasskeys')}</div>
+        )}
+        {passkeys.map((passkey) => (
+          <ProfileRow
+            action={
               <a className="col-action" onClick={() => setRemovingPasskey(passkey)}>
                 {t('ProfilePage.RemovePasskey')}
               </a>
-            </div>
-          ))}
-          {webAuthnSupported && (
-            <div className="col-12">
-              <button
-                className={'btn btn-primary btn-sm' + (addingPasskey ? ' disabled' : '')}
-                onClick={() => {
-                  setPasskeyNick('');
-                  setPasskeyTotp('');
-                  setAddPasskeyOpen(true);
-                }}
-              >
-                {t('ProfilePage.AddPasskey')}
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+            }
+            key={passkey.id}
+            label={passkey.nick}
+            value={passkey.credentialId}
+          />
+        ))}
+        {webAuthnSupported && (
+          <div>
+            <button
+              className={'btn btn-primary btn-sm' + (addingPasskey ? ' disabled' : '')}
+              onClick={() => {
+                setPasskeyNick('');
+                setPasskeyTotp('');
+                setAddPasskeyOpen(true);
+              }}
+            >
+              {t('ProfilePage.AddPasskey')}
+            </button>
+          </div>
+        )}
+      </ProfileCard>
 
       {/* 恢复码（唯一一次明文展示） */}
       <BModal open={!!recoveryCodes} onClose={() => {}} title={t('ProfilePage.TotpRecovery')}>

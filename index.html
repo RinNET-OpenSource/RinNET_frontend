@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-family="legacy" data-bs-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="noindex">
@@ -7,17 +7,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link href="/assets/turtle.svg" rel="icon" type="image/x-icon">
   <link href="/manifest.webmanifest" rel="manifest">
-  <meta name="theme-color" content="#2a2f33">
+  <meta name="theme-color" content="#f9fafa">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <script>
-    // 首屏前应用主题，避免暗色用户闪烁（键与旧版一致：localStorage.colorTheme）
+    // 首屏前应用主题，避免暗色或非默认主题闪烁。
     (function () {
+      var family = 'legacy';
+      var colorTheme = 'auto';
       try {
-        var t = localStorage.getItem('colorTheme') || 'auto';
-        var dark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+        var savedFamily = localStorage.getItem('themeFamily');
+        var savedColorTheme = localStorage.getItem('colorTheme');
+        if (savedFamily === 'legacy' || savedFamily === 'modern') family = savedFamily;
+        if (savedColorTheme === 'auto' || savedColorTheme === 'light' || savedColorTheme === 'dark') {
+          colorTheme = savedColorTheme;
+        }
       } catch (e) { /* ignore */ }
+      var dark = colorTheme === 'dark';
+      if (colorTheme === 'auto') {
+        try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { dark = false; }
+      }
+      var resolved = dark ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme-family', family);
+      document.documentElement.setAttribute('data-bs-theme', resolved);
+      var themeColors = family === 'modern'
+        ? { light: '#f4fbf7', dark: '#111815' }
+        : { light: '#f9fafa', dark: '#2a2f33' };
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[resolved]);
+      document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')
+        .setAttribute('content', dark ? 'black' : 'default');
     })();
   </script>
 </head>

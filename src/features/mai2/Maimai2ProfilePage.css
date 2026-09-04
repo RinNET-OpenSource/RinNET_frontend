@@ -1,0 +1,18 @@
+.maimai2-profile-table {
+  display: table;
+}
+
+.maimai2-profile-table .profile-list {
+  width: 100%;
+}
+
+.maimai2-profile-table .profile-label,
+.maimai2-profile-table .profile-value {
+  display: table-cell;
+  padding: 0.5rem;
+}
+
+.maimai2-profile-table .profile-label {
+  font-weight: bold;
+}
+

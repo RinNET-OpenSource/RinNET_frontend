@@ -1,0 +1,14 @@
+.maimai2-rival-page .profile-icon {
+  height: 5.4em;
+  width: 5.4em;
+}
+
+.maimai2-rival-page .profile-table {
+  font-size: 0.8em;
+  max-width: 20em;
+}
+
+.maimai2-rival-page .profile-table th,
+.maimai2-rival-page .profile-table td {
+  width: 50%;
+}

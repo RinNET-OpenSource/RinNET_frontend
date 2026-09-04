@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { TransitionEvent as ReactTransitionEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { Pagination } from '@/components/shared/Pagination';
 import { BModal } from '@/components/shared/BModal';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
@@ -9,6 +9,7 @@ import { dbGetAll, dbGetByKey } from '@/lib/db/db';
 import { getCurrentUser } from '@/lib/user';
 import { assetsHost } from '@/lib/utils';
 import { OngekiCardItem } from './OngekiCardItem';
+import { OngekiInteractiveCard, resetOngekiInteractiveCardTilt } from './OngekiInteractiveCard';
 import type { OngekiCard, OngekiCharacter, OngekiSkill, PlayerCard } from './models';
 import './card-gallery.css';
 import './ongeki-common.css';
@@ -26,6 +27,7 @@ const SKILL_CATEGORIES = [
   'DangerSupport',
 ];
 const PAGE_SIZE = 12;
+const CARD_PICK_ANIMATION_MS = 1_000;
 
 function parseSearchTerms(searchTerm: string): string[] {
   const terms: string[] = [];
@@ -96,6 +98,82 @@ function holoSheetStyle(index: string): React.CSSProperties {
   } as React.CSSProperties;
 }
 
+function createLegacyPageArray(currentPage: number, totalPages: number, paginationRange = 7) {
+  const pages: Array<{ label: number | string; value: number }> = [];
+  const halfWay = Math.ceil(paginationRange / 2);
+  const isStart = currentPage <= halfWay;
+  const isEnd = totalPages - halfWay < currentPage;
+  const isMiddle = !isStart && !isEnd;
+  const ellipsesNeeded = paginationRange < totalPages;
+
+  for (let i = 1; i <= totalPages && i <= paginationRange; i++) {
+    let pageNumber: number;
+    if (i === paginationRange) pageNumber = totalPages;
+    else if (i === 1) pageNumber = 1;
+    else if (paginationRange < totalPages && totalPages - halfWay < currentPage) {
+      pageNumber = totalPages - paginationRange + i;
+    } else if (paginationRange < totalPages && halfWay < currentPage) {
+      pageNumber = currentPage - halfWay + i;
+    } else {
+      pageNumber = i;
+    }
+
+    const openingEllipsesNeeded = i === 2 && (isMiddle || isEnd);
+    const closingEllipsesNeeded = i === paginationRange - 1 && (isMiddle || isStart);
+    pages.push({
+      label: ellipsesNeeded && (openingEllipsesNeeded || closingEllipsesNeeded) ? '...' : pageNumber,
+      value: pageNumber,
+    });
+  }
+
+  return pages;
+}
+
+function GalleryPagination({
+  current,
+  pageSize,
+  totalItems,
+  onPageChange,
+}: {
+  current: number;
+  pageSize: number;
+  totalItems: number;
+  onPageChange: (page: number) => void;
+}) {
+  const totalPages = Math.max(Math.ceil(totalItems / pageSize), 1);
+  const pages = useMemo(
+    () => createLegacyPageArray(current, totalPages),
+    [current, totalPages],
+  );
+
+  return (
+    <div className="ongeki-card-gallery-pagination user-select-none">
+      <ul className="pagination pagination-sm justify-content-center my-2">
+        <li className={'page-item' + (current <= 1 ? ' disabled' : '')}>
+          <a className="page-link" onClick={() => current > 1 && onPageChange(current - 1)}>
+            &nbsp;&lt;&nbsp;
+          </a>
+        </li>
+        {pages.map((page, index) => (
+          <li
+            key={`${page.label}-${page.value}-${index}`}
+            className={'page-item' + (current === page.value ? ' active' : '')}
+          >
+            <a className="page-link" onClick={() => current !== page.value && onPageChange(page.value)}>
+              {page.label}
+            </a>
+          </li>
+        ))}
+        <li className={'page-item' + (current >= totalPages ? ' disabled' : '')}>
+          <a className="page-link" onClick={() => current < totalPages && onPageChange(current + 1)}>
+            &nbsp;&gt;&nbsp;
+          </a>
+        </li>
+      </ul>
+    </div>
+  );
+}
+
 /** 等价旧版 ongeki-card-gallery.component（卡牌收集画廊） */
 export function OngekiCardGalleryPage() {
   const { t } = useTranslation();
@@ -121,9 +199,51 @@ export function OngekiCardGalleryPage() {
 
   const [pickedCardId, setPickedCardId] = useState<number | null>(null);
   const [picking, setPicking] = useState(false);
+  const pickedCardIdRef = useRef<number | null>(null);
+  const pickingTimerRef = useRef<number | null>(null);
+  const pickedOriginalStyleRef = useRef<string | null>(null);
   const pickParams = useRef({ left: 0, top: 0, width: 0, height: 0, expandedWidth: 0, expandedHeight: 0 });
   const pickedParentRef = useRef<HTMLElement | null>(null);
   const pickedElRef = useRef<HTMLElement | null>(null);
+
+  function clearPickingTimer() {
+    if (pickingTimerRef.current !== null) {
+      window.clearTimeout(pickingTimerRef.current);
+      pickingTimerRef.current = null;
+    }
+  }
+
+  function restorePickedElement() {
+    const el = pickedElRef.current;
+    if (el) {
+      const originalStyle = pickedOriginalStyleRef.current;
+      if (originalStyle === null) el.removeAttribute('style');
+      else el.setAttribute('style', originalStyle);
+    }
+    pickedElRef.current = null;
+    pickedParentRef.current = null;
+    pickedOriginalStyleRef.current = null;
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  function finishPickAnimation(expectedElement?: HTMLElement) {
+    const currentElement = pickedElRef.current;
+    if (expectedElement && currentElement !== expectedElement) return;
+    clearPickingTimer();
+    currentElement?.style.removeProperty('--rotator-transition');
+    setPicking(false);
+    if (pickedCardIdRef.current === null) restorePickedElement();
+  }
+
+  useEffect(() => {
+    return () => {
+      clearPickingTimer();
+      restorePickedElement();
+    };
+    // These helpers intentionally read refs at unmount rather than state from
+    // the render that installed this cleanup callback.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isSafari = useMemo(() => {
     const ua = window.navigator.userAgent;
@@ -210,11 +330,18 @@ export function OngekiCardGalleryPage() {
     return { forward: shuffle(styles), reversed: [...shuffle(styles)].reverse() };
   }, [cardList]);
 
+  const totalPages = Math.max(Math.ceil(filteredIds.length / PAGE_SIZE), 1);
+  const normalizedCurrentPage = Math.min(Math.max(currentPage, 1), totalPages);
+
   useEffect(() => {
+    if (currentPage !== normalizedCurrentPage) {
+      pageChanged(normalizedCurrentPage);
+      return;
+    }
     if (filteredIds.length === 0 && allCards.length === 0) return;
-    void loadPage(currentPage);
+    void loadPage(normalizedCurrentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredIds, currentPage]);
+  }, [filteredIds, currentPage, normalizedCurrentPage]);
 
   async function loadPage(page: number) {
     const start = Math.min((page - 1) * PAGE_SIZE, filteredIds.length);
@@ -268,9 +395,11 @@ export function OngekiCardGalleryPage() {
   }
 
   function pageChanged(page: number) {
+    const pageCount = Math.max(Math.ceil(filteredIds.length / PAGE_SIZE), 1);
+    const nextPage = Math.min(Math.max(page, 1), pageCount);
     setSearchParams((prev) => {
       const p = new URLSearchParams(prev);
-      p.set('page', String(page));
+      p.set('page', String(nextPage));
       return p;
     });
   }
@@ -298,43 +427,17 @@ export function OngekiCardGalleryPage() {
       .catch((error) => notice(String(error)));
   }
 
-  function onMoveRotator(clientX: number, clientY: number, el: HTMLElement) {
-    const rect = el.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = (centerY - y) / (rect.width / 32);
-    const rotateY = (x - centerX) / (rect.height / 32);
-    el.style.setProperty('--rotator-rotate-x', `${rotateX}deg`);
-    el.style.setProperty('--rotator-rotate-y', `${rotateY}deg`);
-    const max = Math.sqrt(centerX * centerX + centerY * centerY);
-    const dx = (x - centerX) / max;
-    const dy = (y - centerY) / max;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    el.style.setProperty('--rotator-transition', 'all 0s ease-out');
-    el.style.setProperty('--pseudo-left', `${(x / rect.width) * 100}%`);
-    el.style.setProperty('--pseudo-top', `${(y / rect.height) * 100}%`);
-    el.style.setProperty('--pseudo-opacity', String(Math.min(1, distance)));
-  }
-
-  function onMouseLeaveCard(el: HTMLElement) {
-    el.style.removeProperty('--rotator-rotate-x');
-    el.style.removeProperty('--rotator-rotate-y');
-    el.style.removeProperty('--rotator-transition');
-    el.style.setProperty('--pseudo-left', '50%');
-    el.style.setProperty('--pseudo-top', '50%');
-    el.style.setProperty('--pseudo-opacity', '0');
-  }
-
   function pickCard(cardId: number, cardCol: HTMLElement) {
     if (picking || isSafari) return;
     if (!cardIds.includes(cardId)) return;
-    if (pickedCardId) {
-      onMouseLeaveCard(cardCol);
+    if (pickedCardIdRef.current !== null) {
+      setPicking(true);
+      resetOngekiInteractiveCardTilt(pickedElRef.current ?? cardCol);
       unpickCard();
       return;
     }
+    clearPickingTimer();
+    pickedOriginalStyleRef.current = cardCol.getAttribute('style');
     const rect = cardCol.getBoundingClientRect();
     pickParams.current.width = rect.width;
     pickParams.current.height = rect.height;
@@ -345,7 +448,14 @@ export function OngekiCardGalleryPage() {
     maxWidth = Math.min(maxWidth, 768);
     pickParams.current.expandedWidth = maxWidth;
     pickParams.current.expandedHeight = maxWidth / 0.730038022813688;
-    onMouseLeaveCard(cardCol);
+    resetOngekiInteractiveCardTilt(cardCol);
+
+    pickedElRef.current = cardCol;
+    pickedParentRef.current = cardCol.parentElement;
+    pickedCardIdRef.current = cardId;
+    setPicking(true);
+    setPickedCardId(cardId);
+    document.body.classList.add('overflow-hidden');
 
     // 两阶段动画：先把元素钉在原位（无过渡），再过渡到放大位置（等价旧版 Angular 动画）
     const s = cardCol.style;
@@ -360,41 +470,55 @@ export function OngekiCardGalleryPage() {
     void cardCol.offsetWidth; // 强制 reflow，使起始样式生效
 
     s.transition = 'all 1s ease-in-out';
+    s.setProperty('--rotator-transition', 'all 1s ease-out');
     // 等价旧版 Angular 动画：从原位滑移到屏幕中央并同时放大
     s.top = '50%';
     s.left = '50%';
     s.width = `${pickParams.current.expandedWidth}px`;
     s.height = `${pickParams.current.expandedHeight}px`;
-
-    pickedElRef.current = cardCol;
-    setPickedCardId(cardId);
-    pickedParentRef.current = cardCol.parentElement;
-    document.body.classList.add('overflow-hidden');
+    s.transform = 'translate(-50%, -50%) translateZ(10000px)';
+    pickingTimerRef.current = window.setTimeout(() => finishPickAnimation(cardCol), CARD_PICK_ANIMATION_MS + 50);
   }
 
   function unpickCard() {
     const el = pickedElRef.current;
     const parent = pickedParentRef.current;
-    if (el && parent) {
-      const rect = parent.getBoundingClientRect();
+    if (!el) {
+      pickedCardIdRef.current = null;
+      setPickedCardId(null);
+      setPicking(false);
+      restorePickedElement();
+      return;
+    }
+    clearPickingTimer();
+    setPicking(true);
+    pickedCardIdRef.current = null;
+    if (parent) {
+      const parentRect = parent.getBoundingClientRect();
+      const width = parentRect.width > 0 ? parentRect.width : pickParams.current.width;
+      const height = parentRect.height > 0 ? parentRect.height : pickParams.current.height;
+      const left = parentRect.width > 0 ? (parentRect.left + parentRect.right) / 2 : pickParams.current.left;
+      const top = parentRect.height > 0 ? (parentRect.top + parentRect.bottom) / 2 : pickParams.current.top;
       const s = el.style;
       s.transition = 'all 1s ease-in-out';
-      s.top = `${(rect.top + rect.bottom) / 2}px`;
-      s.left = `${(rect.left + rect.right) / 2}px`;
-      s.width = `${rect.width}px`;
-      s.height = `${rect.height}px`;
+      s.setProperty('--rotator-transition', 'all 1s ease-out');
+      s.top = `${top}px`;
+      s.left = `${left}px`;
+      s.width = `${width}px`;
+      s.height = `${height}px`;
+      s.transform = 'translate(-50%, -50%)';
+    } else {
+      restorePickedElement();
     }
     setPickedCardId(null);
+    pickingTimerRef.current = window.setTimeout(() => finishPickAnimation(el), CARD_PICK_ANIMATION_MS + 50);
   }
 
-  function onPickTransitionEnd() {
-    setPicking(false);
-    if (pickedCardId === null) {
-      const el = pickedElRef.current;
-      if (el) el.style.cssText = '';
-      pickedElRef.current = null;
-      document.body.classList.remove('overflow-hidden');
-    }
+  function onPickTransitionEnd(event: ReactTransitionEvent<HTMLDivElement>) {
+    // The card surface has its own transitions and bubbles transitionend to
+    // this wrapper. Only the wrapper's transform marks the pick animation.
+    if (event.target !== event.currentTarget || event.propertyName !== 'transform') return;
+    finishPickAnimation(event.currentTarget);
   }
 
   const isDefaultFilter =
@@ -511,107 +635,111 @@ export function OngekiCardGalleryPage() {
         </div>
       </div>
 
-      {!filterCollapsed && (
-      <div id="filterCollapse">
-        <div className="row mb-2 g-1">
-          <div className="col-12 col-sm-auto pt-1 me-3">{t('Ongeki.CardGallery.IsAcquired')}</div>
-          <div className="col-12 col-sm">
-            <div className="row justify-content-start align-items-center g-1">
-              <div className="col-auto">
-                <input
-                  className="checkbox checkbox-btn"
-                  type="checkbox"
-                  role="switch"
-                  id="showUnacquired"
-                  checked={showAll}
-                  onChange={() => setShowAll((v) => !v)}
-                />
-                <label className="checkbox-label" htmlFor="showUnacquired">
-                  {t('Ongeki.CardGallery.Unacquired')}
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {[
-          {
-            label: t('Ongeki.CardGallery.Rarity'),
-            items: RARITIES,
-            checked: rarityChecked,
-            set: setRarityChecked,
-            display: toDisplayRarity,
-          },
-          {
-            label: t('Ongeki.CardGallery.Attribute'),
-            items: ATTRS,
-            checked: attrChecked,
-            set: setAttrChecked,
-            display: (s: string) => s,
-          },
-          {
-            label: t('Ongeki.CardGallery.SkillCategory'),
-            items: SKILL_CATEGORIES,
-            checked: skillChecked,
-            set: setSkillChecked,
-            display: toDisplaySkillCategory,
-          },
-        ].map((group) => (
-          <div className="row mb-2 g-1" key={group.label}>
-            <div className="col-12 col-sm-auto pt-1 me-3">{group.label}</div>
+      <div
+        id="filterCollapse"
+        className={`collapse ongeki-card-gallery-filter-collapse${filterCollapsed ? '' : ' show'}`}
+        aria-hidden={filterCollapsed}
+      >
+        <div className="ongeki-card-gallery-filter-collapse-inner">
+          <div className="row mb-2 g-1">
+            <div className="col-12 col-sm-auto pt-1 me-3">{t('Ongeki.CardGallery.IsAcquired')}</div>
             <div className="col-12 col-sm">
               <div className="row justify-content-start align-items-center g-1">
-                {group.items.map((item, i) => (
-                  <div className="col-auto" key={item}>
-                    <input
-                      className="checkbox checkbox-btn"
-                      type="checkbox"
-                      role="switch"
-                      id={`chk-${group.label}-${item}`}
-                      checked={group.checked[i]}
-                      onChange={() => group.set((s) => s.map((v, idx) => (idx === i ? !v : v)))}
-                    />
-                    <label className="checkbox-label" htmlFor={`chk-${group.label}-${item}`}>
-                      {group.display(item)}
-                    </label>
-                  </div>
-                ))}
+                <div className="col-auto">
+                  <input
+                    className="checkbox checkbox-btn"
+                    type="checkbox"
+                    role="switch"
+                    id="showUnacquired"
+                    checked={showAll}
+                    onChange={() => setShowAll((v) => !v)}
+                  />
+                  <label className="checkbox-label" htmlFor="showUnacquired">
+                    {t('Ongeki.CardGallery.Unacquired')}
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-        ))}
 
-        <div className="row mb-2 g-1">
-          <div className="col-12 col-sm-auto pt-1 me-3">{t('Ongeki.CardGallery.SortBy')}</div>
-          <div className="col-12 col-sm">
-            <div className="row justify-content-start align-items-center g-1">
-              <div className="col-12 p-0">
-                <select
-                  className="form-select form-select-sm"
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                >
-                  <option value="0">{t('Ongeki.CardGallery.Acquisition')}</option>
-                  <option value="1">{t('Ongeki.CardGallery.CardID')}</option>
-                </select>
+          {[
+            {
+              label: t('Ongeki.CardGallery.Rarity'),
+              items: RARITIES,
+              checked: rarityChecked,
+              set: setRarityChecked,
+              display: toDisplayRarity,
+            },
+            {
+              label: t('Ongeki.CardGallery.Attribute'),
+              items: ATTRS,
+              checked: attrChecked,
+              set: setAttrChecked,
+              display: (s: string) => s,
+            },
+            {
+              label: t('Ongeki.CardGallery.SkillCategory'),
+              items: SKILL_CATEGORIES,
+              checked: skillChecked,
+              set: setSkillChecked,
+              display: toDisplaySkillCategory,
+            },
+          ].map((group) => (
+            <div className="row mb-2 g-1" key={group.label}>
+              <div className="col-12 col-sm-auto pt-1 me-3">{group.label}</div>
+              <div className="col-12 col-sm">
+                <div className="row justify-content-start align-items-center g-1">
+                  {group.items.map((item, i) => (
+                    <div className="col-auto" key={item}>
+                      <input
+                        className="checkbox checkbox-btn"
+                        type="checkbox"
+                        role="switch"
+                        id={`chk-${group.label}-${item}`}
+                        checked={group.checked[i]}
+                        onChange={() => group.set((s) => s.map((v, idx) => (idx === i ? !v : v)))}
+                      />
+                      <label className="checkbox-label" htmlFor={`chk-${group.label}-${item}`}>
+                        {group.display(item)}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <div className="row mb-2 g-1">
+            <div className="col-12 col-sm-auto pt-1 me-3">{t('Ongeki.CardGallery.SortBy')}</div>
+            <div className="col-12 col-sm">
+              <div className="row justify-content-start align-items-center g-1">
+                <div className="col-12 p-0">
+                  <select
+                    className="form-select form-select-sm"
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                  >
+                    <option value="0">{t('Ongeki.CardGallery.Acquisition')}</option>
+                    <option value="1">{t('Ongeki.CardGallery.CardID')}</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="row mb-2 g-1">
-          <div className="col-12 p-0">
-            <input
-              type="text"
-              className="form-control form-control-sm"
-              placeholder={t('Ongeki.CardGallery.FilterPlaceholder')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div className="row mb-2 g-1">
+            <div className="col-12 p-0">
+              <input
+                type="text"
+                className="form-control form-control-sm"
+                placeholder={t('Ongeki.CardGallery.FilterPlaceholder')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
         </div>
       </div>
-      )}
 
       {cardList && (
         <div className="mb-2">
@@ -632,7 +760,7 @@ export function OngekiCardGalleryPage() {
       </div>
 
       {!loading && (
-        <Pagination
+        <GalleryPagination
           current={currentPage}
           pageSize={PAGE_SIZE}
           totalItems={filteredIds.length}
@@ -646,15 +774,13 @@ export function OngekiCardGalleryPage() {
             {cardList.map((item, i) => (
               <div className="col p-2" key={`${item.cardId}-${i}`}>
                 <div className="w-100">
-                  <div
+                  <OngekiInteractiveCard
                     className={
-                      'cards-col' +
                       (pickedCardId === item.cardId ? ' card-picking' : '') +
                       (item.digitalStock < 1 ? ' grayscale' : '')
                     }
-                    onMouseMove={(e) => !picking && !isSafari && onMoveRotator(e.clientX, e.clientY, e.currentTarget)}
-                    onMouseLeave={(e) => onMouseLeaveCard(e.currentTarget)}
-                    onTransitionEnd={() => onPickTransitionEnd()}
+                    interactive={!isSafari && !picking}
+                    onTransitionEnd={onPickTransitionEnd}
                     onClick={(e) => {
                       if (isSafari) {
                         if (!pickedCardId) setDetailsCard(item);
@@ -674,7 +800,7 @@ export function OngekiCardGalleryPage() {
                       holoSheetStyle1={holoStyles.forward[i % 12]}
                       holoSheetStyle2={holoStyles.reversed[i % 12]}
                     />
-                  </div>
+                  </OngekiInteractiveCard>
                 </div>
               </div>
             ))}
@@ -687,7 +813,7 @@ export function OngekiCardGalleryPage() {
       )}
 
       {!loading && (
-        <Pagination
+        <GalleryPagination
           current={currentPage}
           pageSize={PAGE_SIZE}
           totalItems={filteredIds.length}

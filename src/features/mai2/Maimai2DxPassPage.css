@@ -1,0 +1,41 @@
+.maimai2-dxpass-freedom {
+  border: 1px solid #3d91cd;
+  color: transparent;
+  background: #e625bf linear-gradient(to right, #6db1f6, #11c1ea);
+  background-clip: text;
+}
+
+.maimai2-dxpass-gold {
+  border: 1px solid #995014;
+  color: transparent;
+  background: #d1aa79 linear-gradient(45deg, #f4b400, #d1aa79, #b77a3b);
+  background-clip: text;
+}
+
+.maimai2-dxpass-normal {
+  background: #451d0c;
+  border: 1px solid #374908;
+  color: white;
+}
+
+.maimai2-dxpass-silver {
+  background: #09343c;
+  border: 1px solid #3a4165;
+  color: #6394d5;
+}
+
+.maimai2-dxpass-expired {
+  background: #686363;
+  border: 1px solid #c6b1b1;
+  color: white;
+}
+
+.maimai2-dxpass-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  opacity: 1;
+  z-index: 1;
+}

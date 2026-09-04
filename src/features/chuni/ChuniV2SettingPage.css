@@ -1,0 +1,48 @@
+.chuni-v2-setting-page .version-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chuni-v2-setting-page .version-box .card {
+  width: 49.5%;
+}
+
+.chuni-v2-setting-page .version-box button {
+  margin-left: 0.3rem;
+}
+
+.chuni-v2-setting-page .version {
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.chuni-v2-setting-dialog .btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.chuni-v2-setting-dialog .btns button {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+.chuni-v2-setting-dialog .btns::after {
+  content: '';
+  flex: auto;
+}
+
+@media only screen and (max-width: 575px) {
+  .chuni-v2-setting-page .version-box {
+    flex-direction: column;
+  }
+
+  .chuni-v2-setting-page .version-box .card {
+    width: 100%;
+  }
+
+  .chuni-v2-setting-page .version-box .card:nth-child(2) {
+    margin-top: 1rem;
+  }
+}

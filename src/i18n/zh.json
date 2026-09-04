@@ -10,6 +10,10 @@
   "App": {
     "Footer": {
       "Theme": "主题",
+      "ThemeFamily": "界面风格",
+      "ColorTheme": "明暗模式",
+      "Legacy": "经典",
+      "Modern": "现代",
       "Auto": "自动",
       "Light": "浅色",
       "Dark": "深色",

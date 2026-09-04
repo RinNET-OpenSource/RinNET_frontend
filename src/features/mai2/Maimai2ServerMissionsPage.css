@@ -1,0 +1,261 @@
+.maimai2-server-missions-page .server-missions-container {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.maimai2-server-missions-page .loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.maimai2-server-missions-page .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.maimai2-server-missions-page .section-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.maimai2-server-missions-page .missions-section { margin-bottom: 40px; }
+
+.maimai2-server-missions-page .missions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.maimai2-server-missions-page .mission-card {
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e9ecef;
+  position: relative;
+  overflow: hidden;
+}
+
+.maimai2-server-missions-page .mission-card.completed-card {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" opacity="0.5"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="%2328a745"/></svg>');
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size: 80px 80px;
+}
+
+.maimai2-server-missions-page .mission-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.maimai2-server-missions-page .mission-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.maimai2-server-missions-page .mission-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.maimai2-server-missions-page .completed-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #28a745;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.maimai2-server-missions-page .completed-tag i { font-size: 0.7rem; }
+.maimai2-server-missions-page .mission-title { margin: 0; font-size: 1.2rem; font-weight: 600; }
+
+.maimai2-server-missions-page .refresh-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: #e9ecef;
+  color: #495057;
+  margin-left: 10px;
+}
+
+.maimai2-server-missions-page .refresh-everyday { background: #e3f2fd; color: #1976d2; }
+.maimai2-server-missions-page .refresh-everyweek { background: #e8f5e9; color: #388e3c; }
+.maimai2-server-missions-page .refresh-everymonth { background: #fff3e0; color: #f57c00; }
+.maimai2-server-missions-page .refresh-none { background: #f5f5f5; color: #616161; }
+
+.maimai2-server-missions-page .mission-description {
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.maimai2-server-missions-page .condition-progresses { flex: 1; margin-bottom: 16px; }
+.maimai2-server-missions-page .condition-item { margin-bottom: 16px; }
+.maimai2-server-missions-page .condition-desc { font-size: 0.85rem; font-weight: 500; }
+.maimai2-server-missions-page .progress-container { display: flex; align-items: flex-start; gap: 10px; }
+.maimai2-server-missions-page .progress-wrapper { flex: 1; display: flex; flex-direction: column; }
+
+.maimai2-server-missions-page .progress {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #e9ecef;
+  width: 100%;
+}
+
+.maimai2-server-missions-page .progress-bar {
+  border-radius: 4px;
+  font-size: 0;
+  line-height: 8px;
+  transition: width 0.3s ease;
+}
+
+.maimai2-server-missions-page .progress-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  padding: 0 2px;
+}
+
+.maimai2-server-missions-page .current-value { font-weight: 600; }
+.maimai2-server-missions-page .total-value { font-weight: 600; color: #6c757d; }
+.maimai2-server-missions-page .checkbox-container { display: flex; align-items: center; gap: 12px; }
+.maimai2-server-missions-page .checkbox-wrapper { display: flex; align-items: center; gap: 8px; }
+
+.maimai2-server-missions-page .custom-checkbox {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ced4da;
+  border-radius: 4px;
+  background-color: white;
+  transition: all 0.2s ease;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.maimai2-server-missions-page .custom-checkbox.checked { background-color: #28a745; border-color: #28a745; }
+
+.maimai2-server-missions-page .custom-checkbox.checked::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.maimai2-server-missions-page .checkbox-label { font-size: 0.9rem; color: #495057; font-weight: 500; }
+.maimai2-server-missions-page .checkbox-status { font-size: 0.8rem; color: #28a745; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+.maimai2-server-missions-page .checkbox-status i { font-size: 0.8rem; }
+.maimai2-server-missions-page .condition-status { display: none; }
+
+.maimai2-server-missions-page .mission-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+.maimai2-server-missions-page .reward-info { display: flex; flex-direction: column; }
+.maimai2-server-missions-page .reward-label { font-size: 0.75rem; }
+.maimai2-server-missions-page .reward-description { font-weight: 500; color: #28a745; }
+
+.maimai2-server-missions-page .changelog-section {
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.maimai2-server-missions-page .changelog-controls { display: flex; align-items: center; gap: 15px; }
+.maimai2-server-missions-page .total-count { color: #6c757d; font-size: 0.9rem; }
+.maimai2-server-missions-page .changelog-table-container { margin-top: 20px; overflow-x: auto; }
+.maimai2-server-missions-page .table { margin-bottom: 0; }
+.maimai2-server-missions-page .table th { border-bottom: 2px solid #dee2e6; font-weight: 600; }
+.maimai2-server-missions-page .table td { vertical-align: middle; }
+.maimai2-server-missions-page .text-success { color: #28a745 !important; font-weight: 600; }
+.maimai2-server-missions-page .text-danger { color: #dc3545 !important; font-weight: 600; }
+
+.maimai2-server-missions-page .empty-state { text-align: center; padding: 60px 20px; color: #6c757d; }
+.maimai2-server-missions-page .empty-state i { font-size: 3rem; margin-bottom: 16px; color: #dee2e6; }
+.maimai2-server-missions-page .empty-state p { margin: 0; font-size: 1rem; }
+.maimai2-server-missions-page .pagination-container { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef; }
+.maimai2-server-missions-page .pagination { margin-bottom: 0; }
+.maimai2-server-missions-page .page-link { cursor: pointer; }
+.maimai2-server-missions-page .page-item.disabled .page-link { color: #6c757d; pointer-events: none; }
+
+.maimai2-server-missions-page .points-card {
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.maimai2-server-missions-page .points-info { display: flex; align-items: center; gap: 24px; }
+.maimai2-server-missions-page .points-item { display: flex; flex-direction: column; }
+.maimai2-server-missions-page .points-label { font-size: 0.8rem; opacity: 0.9; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.maimai2-server-missions-page .points-value { font-size: 2rem; font-weight: 700; line-height: 1; }
+.maimai2-server-missions-page .available-points,
+.maimai2-server-missions-page .total-points { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+.maimai2-server-missions-page .points-divider { width: 2px; height: 40px; background-color: rgba(255, 255, 255, 0.3); margin: 0 8px; }
+.maimai2-server-missions-page .points-actions { display: flex; align-items: center; }
+
+.maimai2-server-missions-page .points-actions .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  color: #764ba2;
+}
+
+@media (max-width: 1200px) {
+  .maimai2-server-missions-page .missions-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .maimai2-server-missions-page .missions-grid { grid-template-columns: 1fr; }
+  .maimai2-server-missions-page .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .maimai2-server-missions-page .changelog-controls { width: 100%; justify-content: space-between; }
+  .maimai2-server-missions-page .progress-container { flex-direction: column; align-items: flex-start; }
+  .maimai2-server-missions-page .progress-wrapper { width: 100%; }
+  .maimai2-server-missions-page .mission-title-wrapper { flex-wrap: wrap; }
+  .maimai2-server-missions-page .completed-tag { margin-bottom: 4px; }
+  .maimai2-server-missions-page .checkbox-container { flex-wrap: wrap; }
+  .maimai2-server-missions-page .points-card { flex-direction: column; align-items: flex-start; gap: 16px; padding: 16px; }
+  .maimai2-server-missions-page .points-info { width: 100%; justify-content: space-between; }
+  .maimai2-server-missions-page .points-value { font-size: 1.6rem; }
+  .maimai2-server-missions-page .points-actions { width: 100%; }
+  .maimai2-server-missions-page .points-actions .btn-primary { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .maimai2-server-missions-page .points-info { flex-direction: column; gap: 12px; }
+  .maimai2-server-missions-page .points-divider { display: none; }
+  .maimai2-server-missions-page .points-item { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; }
+  .maimai2-server-missions-page .points-label { margin-bottom: 0; }
+  .maimai2-server-missions-page .points-value { font-size: 1.4rem; }
+}

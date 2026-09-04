@@ -57,7 +57,7 @@ export function OngekiProfilePage() {
   };
 
   return (
-    <div className="content">
+    <div className="content ongeki-profile-page">
       <div className="d-flex flex-column align-items-center">
         <div className="col-12 col-sm-8 col-md-6 col-lg-7 col-xl-6">
           <div className="user-data-container p-0 m-3 mb-0">

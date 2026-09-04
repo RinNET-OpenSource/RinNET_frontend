@@ -1,0 +1,43 @@
+.chuni-v2-rating-page .jacket {
+  width: 5.6rem;
+  aspect-ratio: 1;
+}
+
+.chuni-v2-rating-page .difficulty-basic {
+  background: #2da060;
+  border: 1px solid #145830;
+  color: white;
+}
+
+.chuni-v2-rating-page .difficulty-advanced {
+  background: #e6a047;
+  border: 1px solid #995014;
+  color: white;
+}
+
+.chuni-v2-rating-page .difficulty-expert {
+  background: #e55353;
+  border: 1px solid #7b1f18;
+  color: white;
+}
+
+.chuni-v2-rating-page .difficulty-master {
+  background: #9d5cb9;
+  border: 1px solid #381c47;
+  color: white;
+}
+
+.chuni-v2-rating-page .difficulty-ultima {
+  background: var(--bs-black);
+  color: #ff2855;
+}
+
+.chuni-v2-rating-page .rating-score {
+  display: flex;
+  align-items: center;
+}
+
+.chuni-v2-rating-page .rating-score b {
+  padding: 0 3px;
+}
+

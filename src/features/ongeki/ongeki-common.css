@@ -1,4 +1,8 @@
 /* ongeki 页面共享样式（旧版 battle-point/rating 组件样式合并） */
+.deck-row {
+  max-width: 720px;
+}
+
 .rating-card {
   min-width: 180px;
 }

@@ -9,6 +9,9 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
+    "test:ui-parity": "playwright test -c playwright.parity.config.ts",
+    "test:ui-parity:auth": "playwright test -c playwright.parity.config.ts authenticated-pages.spec.ts",
+    "parity:legacy-server": "node scripts/serve-legacy-baseline.mjs",
     "gen:cert": "node scripts/gen-cert.mjs"
   },
   "dependencies": {
@@ -34,13 +37,18 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/crypto-js": "^4.2.2",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
     "bootstrap": "^5.3.3",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "selfsigned": "^5.5.0",
     "tailwindcss": "^4.3.3",
     "tw-animate-css": "^1.4.0",

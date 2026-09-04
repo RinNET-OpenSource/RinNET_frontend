@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { Pagination } from '@/components/shared/Pagination';
 import { dbGetAll } from '@/lib/db/db';
 import { toLevelDecimal } from './pipes';
 import { OngekiSongScoreRanking } from './OngekiSongScoreRanking';
 import type { OngekiCard, OngekiCharacter, OngekiMusic } from './models';
+import { OngekiPagination } from './OngekiPagination';
 import './song-list.css';
 import './ongeki-common.css';
 
@@ -41,6 +41,7 @@ export function OngekiSongListPage() {
   const [suggestions, setSuggestions] = useState<SearchPattern[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [detailMusic, setDetailMusic] = useState<OngekiMusic | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     void (async () => {
@@ -117,7 +118,7 @@ export function OngekiSongListPage() {
         res.push(new SearchPattern('Boss', character.name));
       }
     }
-    setSuggestions(res.slice(0, 20));
+    setSuggestions(res);
   }, [searchTerm, showSuggestions, songList, characters]);
 
   function filterByPattern(song: OngekiMusic, pattern: SearchPattern, cardList: OngekiCard[], charList: OngekiCharacter[]): boolean {
@@ -233,8 +234,9 @@ export function OngekiSongListPage() {
 
   function onPatternClick(pattern: SearchPattern) {
     setPatterns((list) => list.filter((p) => p !== pattern));
-    setSearchTerm(pattern.value);
+    setSearchTerm(String(pattern.value));
     setShowSuggestions(true);
+    searchInputRef.current?.focus();
   }
 
   const pageItems = filteredSongList.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
@@ -259,10 +261,10 @@ export function OngekiSongListPage() {
   };
 
   return (
-    <div className="content">
+    <div className="content ongeki-song-list-page">
       <h1 className="page-heading">{t('Ongeki.MusicList.Title')}</h1>
 
-      <Pagination
+      <OngekiPagination
         current={currentPage}
         pageSize={PAGE_SIZE}
         totalItems={filteredSongList.length}
@@ -316,6 +318,7 @@ export function OngekiSongListPage() {
           ))}
           <div className="col" style={{ minWidth: 100 }}>
             <input
+              ref={searchInputRef}
               className="form-control-plaintext p-0"
               placeholder={t('Ongeki.MusicList.Filter')}
               value={searchTerm}
@@ -392,7 +395,7 @@ export function OngekiSongListPage() {
         </div>
       ))}
 
-      <Pagination
+      <OngekiPagination
         current={currentPage}
         pageSize={PAGE_SIZE}
         totalItems={filteredSongList.length}
