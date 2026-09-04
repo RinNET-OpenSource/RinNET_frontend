@@ -2,10 +2,31 @@
   user-select: none;
 }
 
-/* Tailwind also defines `.collapse { visibility: collapse }`; Bootstrap uses the
-   same class for its disclosure widget. Keep the Bootstrap display contract. */
-.chuni-v2-character-page .collapse {
+/* Keep this page's disclosure independent from Bootstrap/Tailwind's global
+   `.collapse` utility. The inner wrapper lets the grid row animate between a
+   true zero-height state and the content's intrinsic height. */
+.chuni-v2-character-filter-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.25s ease,
+    opacity 0.2s ease,
+    visibility 0s linear 0.25s;
+}
+
+.chuni-v2-character-filter-collapse.show {
+  grid-template-rows: 1fr;
+  opacity: 1;
   visibility: visible;
+  transition-delay: 0s;
+}
+
+.chuni-v2-character-filter-collapse-inner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .chuni-v2-character-page .character-card .character-img {
@@ -95,6 +116,17 @@
 
 .chuni-v2-character-dialog-overlay {
   z-index: 1050;
+  animation-duration: 0.2s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.chuni-v2-character-dialog-overlay[data-state='open'] {
+  animation-name: chuni-v2-character-dialog-overlay-in;
+}
+
+.chuni-v2-character-dialog-overlay[data-state='closed'] {
+  animation-name: chuni-v2-character-dialog-overlay-out;
 }
 
 .chuni-v2-character-dialog {
@@ -105,6 +137,17 @@
   overflow-x: hidden;
   overflow-y: auto;
   outline: 0;
+  animation-duration: 0.25s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+.chuni-v2-character-dialog[data-state='open'] {
+  animation-name: chuni-v2-character-dialog-in;
+}
+
+.chuni-v2-character-dialog[data-state='closed'] {
+  animation-name: chuni-v2-character-dialog-out;
 }
 
 .chuni-v2-character-dialog .modal-dialog {
@@ -119,4 +162,46 @@
    class name. Character details rely on Bootstrap's automatic table layout. */
 .chuni-v2-character-dialog .card-details-table td {
   width: auto;
+}
+
+@keyframes chuni-v2-character-dialog-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 0.5; }
+}
+
+@keyframes chuni-v2-character-dialog-overlay-out {
+  from { opacity: 0.5; }
+  to { opacity: 0; }
+}
+
+@keyframes chuni-v2-character-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes chuni-v2-character-dialog-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chuni-v2-character-filter-collapse,
+  .chuni-v2-character-filter-collapse.show,
+  .chuni-v2-character-dialog-overlay,
+  .chuni-v2-character-dialog {
+    animation: none;
+    transition: none;
+  }
 }

@@ -131,9 +131,9 @@ function CharacterDetailsModal({
       onOpenChange={(open) => !open && onClose()}
     >
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="chuni-v2-character-dialog-overlay modal-backdrop fade show" />
+        <DialogPrimitive.Overlay className="chuni-v2-character-dialog-overlay modal-backdrop" />
         <DialogPrimitive.Content
-          className="chuni-v2-character-dialog d-block modal fade show"
+          className="chuni-v2-character-dialog d-block modal"
           aria-describedby={undefined}
         >
           <div className="modal-dialog modal-dialog-centered">
@@ -447,95 +447,101 @@ export function ChuniV2CharacterPage() {
         />
       )}
 
-      <div className={`collapse${filterOpen ? ' show' : ''}`} id="filterCollapse">
-        <div className="row mb-2 g-1">
-          <div className="col-12 col-sm-auto pt-1 me-3">
-            {t('ChuniV2.CharacterPage.Acquisition')}
-          </div>
-          <div className="col-12 col-sm">
-            <div className="row justify-content-start align-items-center g-1">
-              <div className="col-auto">
-                <input
-                  className="checkbox checkbox-btn"
-                  type="checkbox"
-                  role="switch"
-                  id="showAcquired"
-                  value="acquired"
-                  checked={showAcquired}
-                  onChange={(event) => {
-                    setFilterAcquiredIds(acquiredIds);
-                    setShowAcquired(event.target.checked);
-                  }}
-                />
-                <label className="checkbox-label" htmlFor="showAcquired">
-                  {t('ChuniV2.CharacterPage.Acquired')}
-                </label>
-              </div>
-              <div className="col-auto">
-                <input
-                  className="checkbox checkbox-btn"
-                  type="checkbox"
-                  role="switch"
-                  id="showUnacquired"
-                  value="unacquired"
-                  checked={showUnacquired}
-                  onChange={(event) => {
-                    setFilterAcquiredIds(acquiredIds);
-                    setShowUnacquired(event.target.checked);
-                  }}
-                />
-                <label className="checkbox-label" htmlFor="showUnacquired">
-                  {t('ChuniV2.CharacterPage.Unacquired')}
-                </label>
-              </div>
+      <div
+        className={`chuni-v2-character-filter-collapse${filterOpen ? ' show' : ''}`}
+        id="filterCollapse"
+        aria-hidden={!filterOpen}
+      >
+        <div className="chuni-v2-character-filter-collapse-inner">
+          <div className="row mb-2 g-1">
+            <div className="col-12 col-sm-auto pt-1 me-3">
+              {t('ChuniV2.CharacterPage.Acquisition')}
             </div>
-          </div>
-        </div>
-
-        <div className="row mb-2 g-1">
-          <div className="col-12 col-sm-auto pt-1 me-3">
-            {t('ChuniV2.CharacterPage.Version')}
-          </div>
-          <div className="col-12 col-sm">
-            <div className="row justify-content-start align-items-center g-1">
-              {CHUNI_V2_CHARACTER_RELEASES.map(([releaseTag, releaseName], index) => (
-                <div className="col-auto" key={releaseTag}>
+            <div className="col-12 col-sm">
+              <div className="row justify-content-start align-items-center g-1">
+                <div className="col-auto">
                   <input
+                    className="checkbox checkbox-btn"
                     type="checkbox"
-                    className="form-check-input checkbox-btn"
-                    value={releaseTag}
-                    id={`releaseTag${index}`}
-                    checked={releaseChecked[index]}
+                    role="switch"
+                    id="showAcquired"
+                    value="acquired"
+                    checked={showAcquired}
                     onChange={(event) => {
                       setFilterAcquiredIds(acquiredIds);
-                      setReleaseChecked((current) =>
-                        current.map((value, itemIndex) =>
-                          itemIndex === index ? event.target.checked : value,
-                        ),
-                      );
+                      setShowAcquired(event.target.checked);
                     }}
                   />
-                  <label className="checkbox-label" htmlFor={`releaseTag${index}`}>
-                    {releaseName}
+                  <label className="checkbox-label" htmlFor="showAcquired">
+                    {t('ChuniV2.CharacterPage.Acquired')}
                   </label>
                 </div>
-              ))}
+                <div className="col-auto">
+                  <input
+                    className="checkbox checkbox-btn"
+                    type="checkbox"
+                    role="switch"
+                    id="showUnacquired"
+                    value="unacquired"
+                    checked={showUnacquired}
+                    onChange={(event) => {
+                      setFilterAcquiredIds(acquiredIds);
+                      setShowUnacquired(event.target.checked);
+                    }}
+                  />
+                  <label className="checkbox-label" htmlFor="showUnacquired">
+                    {t('ChuniV2.CharacterPage.Unacquired')}
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="row mb-2 g-1">
-          <div className="col-12 p-0">
-            <input
-              type="text"
-              className="form-control form-control-sm"
-              placeholder={t('ChuniV2.CharacterPage.SearchPlaceholder')}
-              value={searchTerm}
-              onChange={(event) => {
-                setFilterAcquiredIds(acquiredIds);
-                setSearchTerm(event.target.value);
-              }}
-            />
+          <div className="row mb-2 g-1">
+            <div className="col-12 col-sm-auto pt-1 me-3">
+              {t('ChuniV2.CharacterPage.Version')}
+            </div>
+            <div className="col-12 col-sm">
+              <div className="row justify-content-start align-items-center g-1">
+                {CHUNI_V2_CHARACTER_RELEASES.map(([releaseTag, releaseName], index) => (
+                  <div className="col-auto" key={releaseTag}>
+                    <input
+                      type="checkbox"
+                      className="form-check-input checkbox-btn"
+                      value={releaseTag}
+                      id={`releaseTag${index}`}
+                      checked={releaseChecked[index]}
+                      onChange={(event) => {
+                        setFilterAcquiredIds(acquiredIds);
+                        setReleaseChecked((current) =>
+                          current.map((value, itemIndex) =>
+                            itemIndex === index ? event.target.checked : value,
+                          ),
+                        );
+                      }}
+                    />
+                    <label className="checkbox-label" htmlFor={`releaseTag${index}`}>
+                      {releaseName}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="row mb-2 g-1">
+            <div className="col-12 p-0">
+              <input
+                type="text"
+                className="form-control form-control-sm"
+                placeholder={t('ChuniV2.CharacterPage.SearchPlaceholder')}
+                value={searchTerm}
+                onChange={(event) => {
+                  setFilterAcquiredIds(acquiredIds);
+                  setSearchTerm(event.target.value);
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -543,7 +549,12 @@ export function ChuniV2CharacterPage() {
       {prepared && (
         <div className="mb-2">
           <span>{t('ChuniV2.CharacterPage.TotalCharaNum', { num: filteredIds.length })}</span>
-          <a className="link-btn ms-3" onClick={() => setFilterOpen((open) => !open)}>
+          <a
+            className="link-btn ms-3"
+            aria-controls="filterCollapse"
+            aria-expanded={filterOpen}
+            onClick={() => setFilterOpen((open) => !open)}
+          >
             {t(
               filterOpen
                 ? 'ChuniV2.CharacterPage.HideFilter'

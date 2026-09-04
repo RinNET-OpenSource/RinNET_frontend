@@ -445,11 +445,50 @@ test.describe('Chunithm v2 character parity', () => {
       });
       await expect(filter).toBeVisible();
     }
-    const [legacyFilter, reactFilter] = await Promise.all([
+    const reactFilter = pageRoot(reactPage).locator('#filterCollapse');
+    await expect(reactFilter).toHaveClass(/chuni-v2-character-filter-collapse/);
+    await expect(reactFilter).toHaveAttribute('aria-hidden', 'false');
+    const openFilterStyle = await reactFilter.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        gridTemplateRows: style.gridTemplateRows,
+        opacity: style.opacity,
+        transitionDuration: style.transitionDuration,
+        transitionProperty: style.transitionProperty,
+        visibility: style.visibility,
+      };
+    });
+    expect(openFilterStyle.transitionProperty).toContain('grid-template-rows');
+    expect(openFilterStyle.transitionProperty).toContain('opacity');
+    expect(parseFloat(openFilterStyle.transitionDuration)).toBeGreaterThan(0);
+    await expect.poll(() =>
+      reactFilter.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return { opacity: style.opacity, visibility: style.visibility };
+      }),
+    ).toEqual({ opacity: '1', visibility: 'visible' });
+
+    await pageRoot(reactPage).getByText('隐藏过滤', { exact: true }).click();
+    await expect(reactFilter).not.toHaveClass(/show/);
+    await expect(reactFilter).toHaveAttribute('aria-hidden', 'true');
+    await expect.poll(() =>
+      reactFilter.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return {
+          opacity: style.opacity,
+          visibility: style.visibility,
+          height: style.height,
+        };
+      }),
+    ).toEqual({ opacity: '0', visibility: 'hidden', height: '0px' });
+    await pageRoot(reactPage).getByText('显示过滤', { exact: true }).click();
+    await expect(reactFilter).toHaveClass(/show/);
+
+    const [legacyFilter, reactFilterScreenshot] = await Promise.all([
       legacyPage.screenshot({ animations: 'disabled', caret: 'hide' }),
       reactPage.screenshot({ animations: 'disabled', caret: 'hide' }),
     ]);
-    await saveComparison(legacyFilter, reactFilter, testInfo, 'character-filter-expanded');
+    await saveComparison(legacyFilter, reactFilterScreenshot, testInfo, 'character-filter-expanded');
 
     for (const page of [legacyPage, reactPage]) {
       await pageRoot(page).locator('label[for="showAcquired"]').click();
@@ -496,6 +535,13 @@ test.describe('Chunithm v2 character parity', () => {
       await expect(dialog).toBeVisible();
       await expect(dialog.locator('tbody tr').first()).toContainText('101');
       await expect(dialog).toContainText('Fixture Character 01 Alt');
+      if (page === reactPage) {
+        const modal = page.locator('.chuni-v2-character-dialog');
+        await expect(modal).toHaveAttribute('data-state', 'open');
+        await expect.poll(() => modal.evaluate((element) => getComputedStyle(element).animationName)).toMatch(
+          /chuni-v2-character-dialog-in/,
+        );
+      }
     }
     const [legacyAcquiredModal, reactAcquiredModal] = await Promise.all([
       legacyPage.getByRole('dialog').locator('.modal-content').screenshot({ animations: 'disabled', caret: 'hide' }),
@@ -507,6 +553,17 @@ test.describe('Chunithm v2 character parity', () => {
       testInfo,
       'character-acquired-modal',
     );
+    const reactDialog = reactPage.getByRole('dialog');
+    await reactDialog.locator('button.btn-close').click();
+    const closedReactModal = reactPage.locator('.chuni-v2-character-dialog[data-state="closed"]');
+    await expect(closedReactModal).toHaveCount(1);
+    await expect.poll(() =>
+      closedReactModal.evaluate((element) => getComputedStyle(element).animationName),
+    ).toMatch(/chuni-v2-character-dialog-out/);
+    await expect(closedReactModal).toHaveCount(0);
+    await pageRoot(reactPage).locator('.card.card-btn').first().click();
+    await expect(reactPage.getByRole('dialog')).toBeVisible();
+
     for (const page of [legacyPage, reactPage]) {
       const dialog = page.getByRole('dialog');
       await dialog.getByRole('button', { name: '使用', exact: true }).click();
