@@ -231,6 +231,7 @@ export function OngekiCardGalleryPage() {
     if (expectedElement && currentElement !== expectedElement) return;
     clearPickingTimer();
     currentElement?.style.removeProperty('--rotator-transition');
+    currentElement?.removeAttribute('data-pick-transition');
     setPicking(false);
     if (pickedCardIdRef.current === null) restorePickedElement();
   }
@@ -453,6 +454,10 @@ export function OngekiCardGalleryPage() {
     pickedElRef.current = cardCol;
     pickedParentRef.current = cardCol.parentElement;
     pickedCardIdRef.current = cardId;
+    // The element moves under a stationary pointer during this transition.
+    // Mark the phase synchronously so a mouseleave/mousemove dispatched before
+    // React commits `picking` cannot reset the flip transition.
+    cardCol.dataset.pickTransition = 'true';
     setPicking(true);
     setPickedCardId(cardId);
     document.body.classList.add('overflow-hidden');
@@ -518,6 +523,10 @@ export function OngekiCardGalleryPage() {
     // The card surface has its own transitions and bubbles transitionend to
     // this wrapper. Only the wrapper's transform marks the pick animation.
     if (event.target !== event.currentTarget || event.propertyName !== 'transform') return;
+    // A canceled/restarted transform can emit an early transitionend. The
+    // timer remains the authoritative boundary so an inner card flip cannot
+    // be cleaned up halfway through its one-second sequence.
+    if (event.elapsedTime < CARD_PICK_ANIMATION_MS / 1000 - 0.1) return;
     finishPickAnimation(event.currentTarget);
   }
 

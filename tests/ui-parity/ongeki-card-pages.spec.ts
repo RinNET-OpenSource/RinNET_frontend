@@ -572,4 +572,155 @@ test.describe('authenticated Ongeki card-page visual parity', () => {
       });
     }
   }
+
+  test('keeps the picked card flipping until the fly-in transition completes', async ({ browser }) => {
+    expect(account, 'Authenticated account was not initialized').toBeTruthy();
+    expect(currentUser, 'Authenticated user was not initialized').toBeTruthy();
+
+    const context = await browser.newContext({
+      colorScheme: 'light',
+      deviceScaleFactor: 1,
+      ignoreHTTPSErrors: true,
+      locale: 'zh-CN',
+      serviceWorkers: 'block',
+      timezoneId: 'Asia/Hong_Kong',
+      viewport: { width: 1280, height: 720 },
+    });
+    const responseCache = new Map<string, Promise<CachedResponse>>();
+    await installReadOnlyNetwork(context, responseCache);
+    await context.addInitScript(
+      ({ authenticatedAccount, authenticatedUser, selectedDatabaseVersion }) => {
+        if (window.location.origin !== new URL('https://portal.naominet.live:5173').origin) return;
+        localStorage.setItem('currentAccount', JSON.stringify(authenticatedAccount));
+        localStorage.setItem('currentUser', JSON.stringify(authenticatedUser));
+        localStorage.setItem('lang', 'zh');
+        localStorage.setItem('colorTheme', 'light');
+        localStorage.setItem('themeFamily', 'legacy');
+        localStorage.setItem('dbVersion', String(selectedDatabaseVersion));
+      },
+      {
+        authenticatedAccount: account,
+        authenticatedUser: currentUser,
+        selectedDatabaseVersion: databaseVersion,
+      },
+    );
+
+    const page = await context.newPage();
+    await warmReadOnlyData(page, REACT_ORIGIN);
+    await page.goto(`${REACT_ORIGIN}/ongeki/card/gallery`, { waitUntil: 'domcontentloaded' });
+    await settleCardPage(page, { name: 'card-gallery', path: '/ongeki/card/gallery' }, 'react');
+
+    const acquiredCards = page.locator('.cards-col:not(.grayscale)');
+    expect(await acquiredCards.count()).toBeGreaterThan(0);
+    await page.evaluate(() => {
+      const events: Array<Record<string, unknown>> = [];
+      Object.defineProperty(window, '__ongekiAnimationEvents', { configurable: true, value: events });
+      for (const eventName of ['transitionstart', 'transitionend'] as const) {
+        document.addEventListener(
+          eventName,
+          (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+            events.push({
+              type: eventName,
+              propertyName: event.propertyName,
+              target: target.className,
+              elapsedTime: event.elapsedTime,
+            });
+          },
+          true,
+        );
+      }
+    });
+
+    const targetIndex = Number(process.env.ONCE_CARD_INDEX ?? 1);
+    const card = acquiredCards.nth(Math.min(targetIndex, (await acquiredCards.count()) - 1));
+    await card.evaluate((element) => {
+      const style = (element as HTMLElement).style;
+      const setProperty = style.setProperty.bind(style);
+      style.setProperty = (name, value, priority) => {
+        setProperty(name, value, priority);
+        if (name === '--rotator-transition' && value === 'all 1s ease-out') {
+          // The card moves away from a stationary pointer as soon as its fly-in
+          // starts. Reproduce that native boundary event while React is still
+          // handling the click, rather than adding a second user action.
+          element.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, relatedTarget: document.body }));
+        }
+      };
+    });
+    await card.click();
+    const samples: Array<Record<string, unknown>> = [];
+    let previousDelay = 0;
+    for (const delay of [0, 100, 250, 500, 750, 1_000, 1_100]) {
+      if (delay > previousDelay) await page.waitForTimeout(delay - previousDelay);
+      previousDelay = delay;
+      if (delay === 100) {
+        await page.locator('.cards-col.card-picking').evaluate((element) => {
+          element.dispatchEvent(
+            new TransitionEvent('transitionend', {
+              bubbles: true,
+              elapsedTime: 0.1,
+              propertyName: 'transform',
+            }),
+          );
+        });
+      }
+      samples.push({
+        delay,
+        ...(await page.evaluate(() => {
+          const wrapper = document.querySelector<HTMLElement>('.cards-col.card-picking');
+          const rotator = wrapper?.querySelector<HTMLElement>('.card-rotator');
+          if (!wrapper || !rotator) return { present: false };
+          const rect = wrapper.getBoundingClientRect();
+          return {
+            present: true,
+            className: wrapper.className,
+            position: getComputedStyle(wrapper).position,
+            transition: wrapper.style.transition,
+            transform: getComputedStyle(wrapper).transform,
+            rotatorTransitionDuration: getComputedStyle(rotator).transitionDuration,
+            rotatorTransform: getComputedStyle(rotator).transform,
+            rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+          };
+        })),
+      });
+    }
+    const events = await page.evaluate(
+      () => (window as Window & { __ongekiAnimationEvents?: unknown[] }).__ongekiAnimationEvents ?? [],
+    );
+
+    expect(samples[4], 'The picked wrapper must still be in the fly-in phase at 750ms').toMatchObject({
+      present: true,
+      position: 'fixed',
+    });
+    expect(String(samples[4].className)).toContain('card-picking');
+    expect(String(samples[4].transition)).toContain('1s');
+    expect(
+      String(samples[4].rotatorTransitionDuration),
+      'A pointer boundary event during fly-in must not downgrade the flip to the default duration',
+    ).toBe('1s');
+    const rotatorTransforms = samples
+      .filter((sample) => sample.present && typeof sample.rotatorTransform === 'string')
+      .map((sample) => sample.rotatorTransform);
+    expect(new Set(rotatorTransforms).size, 'The inner card must visibly progress through its flip').toBeGreaterThan(2);
+    const wrapperTransformEnds = (events as Array<Record<string, unknown>>).filter(
+      (event) =>
+        event.type === 'transitionend' &&
+        event.propertyName === 'transform' &&
+        String(event.target).includes('cards-col'),
+    );
+    expect(
+      wrapperTransformEnds.some((event) => Number(event.elapsedTime) >= 0.9),
+      `The genuine wrapper transition must still complete after an early event: ${JSON.stringify({ samples, events })}`,
+    ).toBeTruthy();
+    const earlyCleanup = samples.filter(
+      (sample) => Number(sample.delay) < 1_000 && (!sample.present || !String(sample.className).includes('card-picking')),
+    );
+    expect(earlyCleanup, `Pick animation was cleaned up early: ${JSON.stringify({ samples, events })}`).toEqual([]);
+
+    await page.locator('.card-backdrop').click({ position: { x: 10, y: 10 } });
+    await page.waitForTimeout(750);
+    await expect(page.locator('.cards-col.card-picking')).toHaveCount(0);
+    await context.close();
+  });
 });

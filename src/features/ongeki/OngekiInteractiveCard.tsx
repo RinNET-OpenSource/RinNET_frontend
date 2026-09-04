@@ -99,17 +99,21 @@ export function OngekiInteractiveCard({
   const enabled = interactive && !disabled;
 
   function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
-    if (enabled) updateTilt(event.currentTarget, event.clientX, event.clientY);
+    if (enabled && !event.currentTarget.dataset.pickTransition) {
+      updateTilt(event.currentTarget, event.clientX, event.clientY);
+    }
     onMouseMove?.(event);
   }
 
   function handleMouseLeave(event: MouseEvent<HTMLDivElement>) {
-    if (enabled) resetOngekiInteractiveCardTilt(event.currentTarget);
+    if (enabled && !event.currentTarget.dataset.pickTransition) {
+      resetOngekiInteractiveCardTilt(event.currentTarget);
+    }
     onMouseLeave?.(event);
   }
 
   function handleTouchMove(event: TouchEvent<HTMLDivElement>) {
-    if (enabled) {
+    if (enabled && !event.currentTarget.dataset.pickTransition) {
       const touch = event.touches[0];
       if (touch) {
         updateTilt(event.currentTarget, touch.clientX, touch.clientY);
@@ -120,18 +124,24 @@ export function OngekiInteractiveCard({
   }
 
   function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
-    if (enabled) resetOngekiInteractiveCardTilt(event.currentTarget);
+    if (enabled && !event.currentTarget.dataset.pickTransition) {
+      resetOngekiInteractiveCardTilt(event.currentTarget);
+    }
     onTouchEnd?.(event);
   }
 
   function handleTouchCancel(event: TouchEvent<HTMLDivElement>) {
-    if (enabled) resetOngekiInteractiveCardTilt(event.currentTarget);
+    if (enabled && !event.currentTarget.dataset.pickTransition) {
+      resetOngekiInteractiveCardTilt(event.currentTarget);
+    }
     onTouchCancel?.(event);
   }
 
   function handleClick(event: MouseEvent<HTMLDivElement>) {
     if (!disabled) {
-      if (enabled) resetOngekiInteractiveCardTilt(event.currentTarget);
+      if (enabled && !event.currentTarget.dataset.pickTransition) {
+        resetOngekiInteractiveCardTilt(event.currentTarget);
+      }
       onClick?.(event);
     }
   }
