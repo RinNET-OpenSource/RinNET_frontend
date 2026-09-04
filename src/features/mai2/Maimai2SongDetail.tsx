@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StopFill } from 'react-bootstrap-icons';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { api } from '@/lib/api/client';
@@ -39,9 +39,11 @@ function imageFallback(event: React.SyntheticEvent<HTMLImageElement>) {
   if (event.currentTarget.src !== fallback) event.currentTarget.src = fallback;
 }
 
+const SHEET_EXIT_DURATION_MS = 300;
+
 /** Read-only counterpart of the legacy maimai2-song-detail offcanvas. */
 export function Maimai2SongDetail({
-  music,
+  music: selectedMusic,
   open,
   onClose,
 }: {
@@ -49,9 +51,45 @@ export function Maimai2SongDetail({
   open: boolean;
   onClose: () => void;
 }) {
+  const [renderedMusic, setRenderedMusic] = useState<Maimai2Music | null>(selectedMusic);
+  const [sheetOpen, setSheetOpen] = useState(open);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const music = selectedMusic ?? renderedMusic;
   const [songData, setSongData] = useState<Record<number, Maimai2SongRecord>>({});
   const [ranking, setRanking] = useState<Maimai2SongRanking[]>([]);
   const [currentDiffTab, setCurrentDiffTab] = useState(3);
+
+  useEffect(() => {
+    if (selectedMusic) setRenderedMusic(selectedMusic);
+  }, [selectedMusic]);
+
+  useEffect(() => {
+    if (open) {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+      setSheetOpen(true);
+    } else {
+      setSheetOpen(false);
+    }
+  }, [open]);
+
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    },
+    [],
+  );
+
+  function requestClose() {
+    if (closeTimerRef.current) return;
+    setSheetOpen(false);
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      onClose();
+    }, SHEET_EXIT_DURATION_MS);
+  }
 
   useEffect(() => {
     if (!music || !open) return;
@@ -131,7 +169,20 @@ export function Maimai2SongDetail({
   }
 
   return (
-    <Sheet open={open} onOpenChange={(value) => !value && onClose()}>
+    <Sheet
+      open={sheetOpen}
+      onOpenChange={(value) => {
+        if (value) {
+          if (closeTimerRef.current) {
+            clearTimeout(closeTimerRef.current);
+            closeTimerRef.current = null;
+          }
+          setSheetOpen(true);
+        } else {
+          requestClose();
+        }
+      }}
+    >
       <SheetContent
         side="right"
         showCloseButton={false}
@@ -147,7 +198,7 @@ export function Maimai2SongDetail({
             className="btn-close"
             aria-label="Close"
             style={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 1000 }}
-            onClick={onClose}
+            onClick={requestClose}
           />
 
           <div

@@ -565,7 +565,9 @@ test.describe('Maimai2 recent and rating visual parity', () => {
     await page.locator('.rating-card').first().click();
     await settleSongDetail(page, false);
     await page.locator('.maimai2-song-detail .btn-close').click();
-    await expect(page.locator('.maimai2-song-detail')).toHaveCount(0);
+    const songDetailSheet = page.locator('.maimai2-song-detail');
+    await expect(songDetailSheet).toHaveAttribute('data-state', 'closed');
+    await expect(songDetailSheet).toHaveCount(0, { timeout: 1_000 });
     expect(blockedBusinessWrites, 'Modern-theme interactions must stay read-only').toEqual([]);
     await context.close();
   });
