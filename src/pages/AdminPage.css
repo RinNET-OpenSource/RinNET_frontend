@@ -1,10 +1,36 @@
+.admin-page {
+  animation: admin-page-enter 0.34s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
 .admin-dialog-overlay {
   z-index: 1050;
+  animation-duration: 0.2s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
 }
 
 .admin-dialog-content {
   z-index: 1055;
   outline: 0;
+  animation-duration: 0.26s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: backwards;
+}
+
+.admin-dialog-overlay[data-state='open'] {
+  animation-name: admin-dialog-overlay-in;
+}
+
+.admin-dialog-overlay[data-state='closed'] {
+  animation-name: admin-dialog-overlay-out;
+}
+
+.admin-dialog-content:not(.admin-impersonation-dialog)[data-state='open'] {
+  animation-name: admin-dialog-content-in;
+}
+
+.admin-dialog-content:not(.admin-impersonation-dialog)[data-state='closed'] {
+  animation-name: admin-dialog-content-out;
 }
 
 .admin-dialog-content.compat-modal {
@@ -64,6 +90,15 @@
   transform: none;
   border: 0;
   border-radius: 0;
+  animation-duration: 0.3s;
+}
+
+.admin-dialog-content.admin-impersonation-dialog[data-state='open'] {
+  animation-name: admin-impersonation-dialog-in;
+}
+
+.admin-dialog-content.admin-impersonation-dialog[data-state='closed'] {
+  animation-name: admin-impersonation-dialog-out;
 }
 
 .admin-dialog-content.admin-impersonation-dialog > main {
@@ -76,4 +111,78 @@
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+@keyframes admin-page-enter {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes admin-dialog-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 0.5; }
+}
+
+@keyframes admin-dialog-overlay-out {
+  from { opacity: 0.5; }
+  to { opacity: 0; }
+}
+
+@keyframes admin-dialog-content-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes admin-dialog-content-out {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+
+@keyframes admin-impersonation-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-impersonation-dialog-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-page,
+  .admin-dialog-overlay,
+  .admin-dialog-content {
+    animation: none;
+    transition: none;
+  }
 }

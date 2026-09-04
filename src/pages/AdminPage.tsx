@@ -312,7 +312,7 @@ function AdminDialog({
           style={{ gap: 0, padding: 0 }}
         >
           <main
-            className="flex flex-col space-y-4"
+            className={`flex flex-col${fullscreen ? '' : ' space-y-4'}`}
             style={scrollable ? { display: 'block', overflow: 'auto' } : undefined}
           >
             <div className={`modal-header${headerClassName ? ` ${headerClassName}` : ''}`}>

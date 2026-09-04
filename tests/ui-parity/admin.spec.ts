@@ -721,6 +721,67 @@ test.describe('Admin page parity and safety', () => {
     }
   });
 
+  test('Admin entry and dialogs animate while impersonation has no header-to-frame gap', async ({ browser }) => {
+    const context = await browser.newContext({
+      colorScheme: 'light',
+      ignoreHTTPSErrors: true,
+      locale: 'zh-CN',
+      serviceWorkers: 'block',
+      timezoneId: 'Asia/Hong_Kong',
+      viewport: { width: 1280, height: 720 },
+    });
+    const audit = await installFixtureApi(context, new Set([
+      'POST /api/admin/users/loginas/fixture-user-01',
+      'POST /api/auth/signout',
+    ]));
+    await installStorage(context, 'light');
+    const page = await context.newPage();
+    try {
+      await page.goto(`${REACT_ORIGIN}/admin`, { waitUntil: 'domcontentloaded' });
+      await settleUsers(page);
+
+      await expect(page.locator('.admin-page')).toHaveCSS('animation-name', /admin-page-enter/);
+
+      const detail = await openFirstUserDetail(page);
+      await expect(detail).toHaveCSS('animation-name', /admin-dialog-content-in/);
+      await expect(page.locator('.admin-dialog-overlay')).toHaveCSS('animation-name', /admin-dialog-overlay-in/);
+
+      await detail.getByRole('button', { name: '夺舍', exact: true }).click();
+      const impersonationDialog = page.locator('[role="dialog"]:visible').last();
+      const iframe = impersonationDialog.locator('iframe.impersonation-frame');
+      await expect(iframe).toBeVisible();
+      await expect(impersonationDialog).toHaveCSS('animation-name', /admin-impersonation-dialog-in/);
+
+      const layout = await iframe.evaluate((element) => {
+        const body = element.parentElement;
+        const main = body?.parentElement;
+        const header = main?.querySelector<HTMLElement>('.modal-header');
+        return {
+          frameTop: element.getBoundingClientRect().top,
+          headerBottom: header?.getBoundingClientRect().bottom ?? Number.NaN,
+          bodyMarginTop: body ? Number.parseFloat(getComputedStyle(body).marginTop) : Number.NaN,
+        };
+      });
+      expect(layout.bodyMarginTop).toBe(0);
+      expect(layout.frameTop - layout.headerBottom).toBeLessThanOrEqual(1);
+
+      await impersonationDialog.getByRole('button', { name: '返回管理员账户' }).click();
+      await expect(page.locator('.admin-impersonation-dialog[data-state="closed"]')).toHaveCSS(
+        'animation-name',
+        /admin-impersonation-dialog-out/,
+      );
+      await expect.poll(() => audit.writes.filter((write) => write.path === '/api/auth/signout')).toHaveLength(1);
+      await detail.getByRole('button', { name: 'Close' }).click();
+      await expect(page.locator('.admin-dialog-content[data-state="closed"]')).toHaveCSS(
+        'animation-name',
+        /admin-dialog-content-out/,
+      );
+      expect(audit.blockedWrites).toEqual([]);
+    } finally {
+      await context.close();
+    }
+  });
+
   test('leaving Admin through a route change tears down storage and revokes its session', async ({ browser }) => {
     const context = await browser.newContext({
       colorScheme: 'light',
