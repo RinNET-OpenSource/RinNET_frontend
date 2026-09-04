@@ -8,8 +8,8 @@ import { notice } from '@/lib/message';
 import { dbGetAll, dbGetByKey } from '@/lib/db/db';
 import { getCurrentUser } from '@/lib/user';
 import { assetsHost } from '@/lib/utils';
-import { OngekiCardItem } from './OngekiCardItem';
-import { OngekiInteractiveCard, resetOngekiInteractiveCardTilt } from './OngekiInteractiveCard';
+import { OngekiCardSurface } from './OngekiCardSurface';
+import { resetOngekiInteractiveCardTilt } from './OngekiInteractiveCard';
 import type { OngekiCard, OngekiCharacter, OngekiSkill, PlayerCard } from './models';
 import './card-gallery.css';
 import './ongeki-common.css';
@@ -774,7 +774,12 @@ export function OngekiCardGalleryPage() {
             {cardList.map((item, i) => (
               <div className="col p-2" key={`${item.cardId}-${i}`}>
                 <div className="w-100">
-                  <OngekiInteractiveCard
+                  <OngekiCardSurface
+                    item={item}
+                    showHolo={showHolo}
+                    showElements={showElements}
+                    holoSheetStyle1={holoStyles.forward[i % 12]}
+                    holoSheetStyle2={holoStyles.reversed[i % 12]}
                     className={
                       (pickedCardId === item.cardId ? ' card-picking' : '') +
                       (item.digitalStock < 1 ? ' grayscale' : '')
@@ -792,15 +797,7 @@ export function OngekiCardGalleryPage() {
                       e.preventDefault();
                       if (!pickedCardId) setDetailsCard(item);
                     }}
-                  >
-                    <OngekiCardItem
-                      item={item}
-                      showHolo={showHolo}
-                      showElements={showElements}
-                      holoSheetStyle1={holoStyles.forward[i % 12]}
-                      holoSheetStyle2={holoStyles.reversed[i % 12]}
-                    />
-                  </OngekiInteractiveCard>
+                  />
                 </div>
               </div>
             ))}

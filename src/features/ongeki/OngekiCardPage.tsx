@@ -10,8 +10,7 @@ import { dbGetAll, dbGetByKey } from '@/lib/db/db';
 import { StatusCode } from '@/lib/models';
 import { useStore } from '@/lib/store';
 import { assetsHost } from '@/lib/utils';
-import { OngekiCardItem } from './OngekiCardItem';
-import { OngekiInteractiveCard } from './OngekiInteractiveCard';
+import { OngekiCardSurface } from './OngekiCardSurface';
 import type { OngekiCard as OngekiCardModel, OngekiSkill, PlayerCard } from './models';
 import './ongeki-common.css';
 import './ongeki-card-picker.css';
@@ -651,12 +650,13 @@ export function OngekiCardPage() {
           <div className="deck-row row row-cols-3">
             {currentDeck.map((item, i) => (
               <div className="col" key={i}>
-                <OngekiInteractiveCard
+                <OngekiCardSurface
+                  item={getCard(item)}
+                  showHolo={false}
+                  showElements
                   className="cursor-pointer"
                   onClick={() => setSelecting({ deckIndex: i })}
-                >
-                  <OngekiCardItem item={getCard(item)} showHolo={false} showElements />
-                </OngekiInteractiveCard>
+                />
               </div>
             ))}
           </div>
@@ -850,21 +850,18 @@ export function OngekiCardPage() {
             {galleryCards.map((card, index) => (
               <div className="col p-2" key={`${card.cardId}-${index}`}>
                 <div className="w-100">
-                  <OngekiInteractiveCard
+                  <OngekiCardSurface
+                    item={card}
+                    showHolo={galleryShowHolo}
+                    showElements={galleryShowElements}
+                    holoSheetStyle1={galleryHoloStyles.forward[index % 12]}
+                    holoSheetStyle2={galleryHoloStyles.reversed[index % 12]}
                     className="cursor-pointer"
                     onClick={() => {
                       if (selecting) changeCard(currentDeckID, selecting.deckIndex, card.cardId);
                       setSelecting(null);
                     }}
-                  >
-                    <OngekiCardItem
-                      item={card}
-                      showHolo={galleryShowHolo}
-                      showElements={galleryShowElements}
-                      holoSheetStyle1={galleryHoloStyles.forward[index % 12]}
-                      holoSheetStyle2={galleryHoloStyles.reversed[index % 12]}
-                    />
-                  </OngekiInteractiveCard>
+                  />
                 </div>
               </div>
             ))}

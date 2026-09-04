@@ -182,19 +182,21 @@ const SKILL_IMG: Record<string, string> = {
 };
 
 /** 等价旧版 ongeki-card-item.component（卡牌渲染） */
+export interface OngekiCardItemProps {
+  item: PlayerCard;
+  showHolo: boolean;
+  showElements: boolean;
+  holoSheetStyle1?: React.CSSProperties;
+  holoSheetStyle2?: React.CSSProperties;
+}
+
 export function OngekiCardItem({
   item,
   showHolo,
   showElements,
   holoSheetStyle1,
   holoSheetStyle2,
-}: {
-  item: PlayerCard;
-  showHolo: boolean;
-  showElements: boolean;
-  holoSheetStyle1?: React.CSSProperties;
-  holoSheetStyle2?: React.CSSProperties;
-}) {
+}: OngekiCardItemProps) {
   const holo = showHolo && item.digitalStock > 0;
   const kaika = item.kaikaDate !== '0000-00-00 00:00:00.0';
   const chokaika = item.choKaikaDate !== '0000-00-00 00:00:00.0';
