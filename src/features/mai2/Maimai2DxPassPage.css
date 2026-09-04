@@ -39,3 +39,10 @@
   opacity: 1;
   z-index: 1;
 }
+
+/* Tailwind also defines `.collapse { visibility: collapse }`; restore the
+   Bootstrap disclosure contract for the expanded pass details. */
+.maimai2-dxpass-page .collapse.show {
+  display: block;
+  visibility: visible;
+}

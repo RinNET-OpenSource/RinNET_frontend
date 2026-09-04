@@ -534,6 +534,15 @@ test.describe('newly migrated secondary-page visual parity', () => {
           newPage.screenshot({ animations: 'disabled', caret: 'hide' }),
         ]);
         await saveComparison(oldBuffer, newBuffer, testInfo);
+
+        if (route.name === 'maimai2-dxpass') {
+          const firstCard = newPage.locator('.container .card').first();
+          const details = firstCard.locator('.card-footer');
+          await firstCard.locator('> img').last().click();
+          await expect(details).toBeVisible();
+          await expect(details).toContainText('获得时间');
+          await expect.poll(() => details.evaluate((element) => getComputedStyle(element).visibility)).toBe('visible');
+        }
         await context.close();
       });
     }

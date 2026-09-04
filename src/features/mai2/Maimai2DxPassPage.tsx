@@ -102,7 +102,7 @@ export function Maimai2DxPassPage() {
   };
 
   return (
-    <>
+    <div className="maimai2-dxpass-page">
       <h1 className="page-heading">{t('Maimai2.DxpassPage.Title')}</h1>
 
       <Maimai2Pagination
@@ -184,6 +184,6 @@ export function Maimai2DxPassPage() {
           })}
         </div>
       </div>
-    </>
+    </div>
   );
 }
