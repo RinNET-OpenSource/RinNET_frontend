@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog as DialogPrimitive } from 'radix-ui';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import { getCurrentUser, loadUser } from '@/lib/user';
@@ -73,73 +73,74 @@ function CircleEditor({
 }) {
   const { t } = useTranslation();
   return (
-    <DialogPrimitive.Root open={circle !== null} onOpenChange={(open) => !open && onClose()}>
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="maimai2-circle-dialog-overlay modal-backdrop fade show" />
-        <DialogPrimitive.Content
-          className="maimai2-circle-dialog d-block modal fade show"
-          aria-describedby={undefined}
-          onInteractOutside={(event) => event.preventDefault()}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <DialogPrimitive.Title asChild>
-                  <h4 className="modal-title" id="modal-basic-title">
-                    {t(modify ? 'Maimai2.CirclePage.EditCircle' : 'Maimai2.CirclePage.CreateCircle')}
-                  </h4>
-                </DialogPrimitive.Title>
-                <button type="button" className="btn-close" aria-label="Close" onClick={onClose} />
-              </div>
-              {circle && (
-                <div className="modal-body">
-                  <label htmlFor="circleNameInput" className="form-label">{t('Maimai2.CirclePage.CircleName')}</label>
+    <Dialog open={circle !== null} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        aria-describedby={undefined}
+        className="maimai2-circle-dialog d-block modal fade show"
+        onInteractOutside={(event) => event.preventDefault()}
+        overlayClassName="maimai2-circle-dialog-overlay modal-backdrop fade show"
+        overlayUnstyled
+        showCloseButton={false}
+        unstyled
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <DialogTitle asChild unstyled>
+                <h4 className="modal-title" id="modal-basic-title">
+                  {t(modify ? 'Maimai2.CirclePage.EditCircle' : 'Maimai2.CirclePage.CreateCircle')}
+                </h4>
+              </DialogTitle>
+              <button type="button" className="btn-close" aria-label="Close" onClick={onClose} />
+            </div>
+            {circle && (
+              <div className="modal-body">
+                <label htmlFor="circleNameInput" className="form-label">{t('Maimai2.CirclePage.CircleName')}</label>
+                <input
+                  id="circleNameInput"
+                  type="text"
+                  className="form-control"
+                  value={circle.circleName}
+                  onChange={(event) => onChange({ ...circle, circleName: event.target.value })}
+                />
+                <label htmlFor="circleCommentInput" className="form-label mt-2">{t('Maimai2.CirclePage.Comment')}</label>
+                <textarea
+                  id="circleCommentInput"
+                  rows={5}
+                  className="form-control multi-line-ellipsis"
+                  value={circle.comment}
+                  onChange={(event) => onChange({ ...circle, comment: event.target.value })}
+                />
+                <div className="form-check mt-2">
                   <input
-                    id="circleNameInput"
-                    type="text"
-                    className="form-control"
-                    value={circle.circleName}
-                    onChange={(event) => onChange({ ...circle, circleName: event.target.value })}
+                    id="circlePublicInput"
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={circle.isPublic}
+                    onChange={(event) => onChange({ ...circle, isPublic: event.target.checked })}
                   />
-                  <label htmlFor="circleCommentInput" className="form-label mt-2">{t('Maimai2.CirclePage.Comment')}</label>
-                  <textarea
-                    id="circleCommentInput"
-                    rows={5}
-                    className="form-control multi-line-ellipsis"
-                    value={circle.comment}
-                    onChange={(event) => onChange({ ...circle, comment: event.target.value })}
-                  />
-                  <div className="form-check mt-2">
-                    <input
-                      id="circlePublicInput"
-                      className="form-check-input"
-                      type="checkbox"
-                      checked={circle.isPublic}
-                      onChange={(event) => onChange({ ...circle, isPublic: event.target.checked })}
-                    />
-                    <label className="form-check-label" htmlFor="circlePublicInput">{t('Maimai2.CirclePage.Public')}</label>
-                  </div>
-                  <div className="form-check mt-2">
-                    <input
-                      id="circleJoinInput"
-                      className="form-check-input"
-                      type="checkbox"
-                      checked={circle.isAllowAnyoneJoin}
-                      onChange={(event) => onChange({ ...circle, isAllowAnyoneJoin: event.target.checked })}
-                    />
-                    <label className="form-check-label" htmlFor="circleJoinInput">{t('Maimai2.CirclePage.AllowAnyoneJoin')}</label>
-                  </div>
+                  <label className="form-check-label" htmlFor="circlePublicInput">{t('Maimai2.CirclePage.Public')}</label>
                 </div>
-              )}
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={onClose}>{t('Maimai2.CirclePage.Cancel')}</button>
-                <button type="button" className="btn btn-success" onClick={onSubmit}>{t('Maimai2.CirclePage.Submit')}</button>
+                <div className="form-check mt-2">
+                  <input
+                    id="circleJoinInput"
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={circle.isAllowAnyoneJoin}
+                    onChange={(event) => onChange({ ...circle, isAllowAnyoneJoin: event.target.checked })}
+                  />
+                  <label className="form-check-label" htmlFor="circleJoinInput">{t('Maimai2.CirclePage.AllowAnyoneJoin')}</label>
+                </div>
               </div>
+            )}
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={onClose}>{t('Maimai2.CirclePage.Cancel')}</button>
+              <button type="button" className="btn btn-success" onClick={onSubmit}>{t('Maimai2.CirclePage.Submit')}</button>
             </div>
           </div>
-        </DialogPrimitive.Content>
-      </DialogPrimitive.Portal>
-    </DialogPrimitive.Root>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

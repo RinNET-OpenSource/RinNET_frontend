@@ -8,10 +8,14 @@ export function BModal({
   onClose,
   title,
   children,
+  className = '',
+  overlayClassName,
   scrollable = false,
   wide = false,
 }: {
+  className?: string;
   open: boolean;
+  overlayClassName?: string;
   onClose: () => void;
   title?: string;
   children: ReactNode;
@@ -23,10 +27,12 @@ export function BModal({
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
         showCloseButton={false}
+        overlayClassName={overlayClassName}
         className={
           'compat-modal bg-popover border border-border rounded-[0.5rem] shadow-md p-0 gap-0 text-popover-foreground text-sm sm:max-w-[500px]' +
           (wide ? ' compat-lg' : '') +
-          (scrollable ? ' compat-scrollable' : '')
+          (scrollable ? ' compat-scrollable' : '') +
+          (className ? ` ${className}` : '')
         }
       >
         <div className="modal-header">

@@ -239,7 +239,13 @@ export function ChuniV2RivalPage() {
         </div>
       ))}
 
-      <BModal open={removing !== null} onClose={() => setRemoving(null)} title={t('ChuniV2.RivalPage.Remove')}>
+      <BModal
+        className="chuni-v2-rival-remove-dialog"
+        open={removing !== null}
+        onClose={() => setRemoving(null)}
+        overlayClassName="chuni-v2-rival-remove-overlay"
+        title={t('ChuniV2.RivalPage.Remove')}
+      >
         <form className="chuni-v2-rival-remove-modal" onSubmit={(event) => event.preventDefault()}>
           <div className="d-grid">
             <p className="mb-3 ms-1">{t('ChuniV2.RivalPage.RemoveTip')}</p>

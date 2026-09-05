@@ -96,10 +96,10 @@ test('the legacy theme menu uses the same family-over-color layout as modern', a
   await page.goto(REACT_ORIGIN, { waitUntil: 'domcontentloaded' });
 
   await page.getByLabel('主题', { exact: true }).click();
-  const menu = page.locator('[data-slot="dropdown-menu-content"]');
+  const menu = page.getByRole('menu');
   await expect(menu.getByText('界面风格', { exact: true })).toBeVisible();
   await expect(menu.getByText('明暗模式', { exact: true })).toBeVisible();
-  await expect(menu.locator('[data-slot="dropdown-menu-separator"]')).toHaveCount(1);
+  await expect(menu.getByRole('separator')).toHaveCount(1);
   await expect(menu.getByRole('menuitem', { name: '经典', exact: true })).toBeVisible();
   await expect(menu.getByRole('menuitem', { name: '现代', exact: true })).toBeVisible();
   await expect(menu.getByRole('menuitem', { name: '自动', exact: true })).toBeVisible();

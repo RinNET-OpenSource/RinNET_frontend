@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { ArrowRepeat } from 'react-bootstrap-icons';
-import { Dialog as DialogPrimitive } from 'radix-ui';
+import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { api } from '@/lib/api/client';
 import { dbGetAll } from '@/lib/db/db';
 import { preloadStates } from '@/lib/db/preload';
@@ -158,96 +158,97 @@ function CharacterDetailsModal({
   }
 
   return (
-    <DialogPrimitive.Root
+    <Dialog
       open={dialogOpen}
       onOpenChange={(open) => {
         if (open) setDialogOpen(true);
         else requestClose();
       }}
     >
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="chuni-v2-character-dialog-overlay modal-backdrop" />
-        <DialogPrimitive.Content
-          className="chuni-v2-character-dialog d-block modal"
-          aria-describedby={undefined}
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <DialogPrimitive.Title asChild>
-                  <h4 className="modal-title">{t('ChuniV2.CharacterPage.Details')}</h4>
-                </DialogPrimitive.Title>
-                <DialogPrimitive.Close asChild>
-                  <button type="button" className="btn-close shadow-none" aria-label="Close" />
-                </DialogPrimitive.Close>
-              </div>
-              {renderedCharacter && (
-                <div className="modal-body">
-                  <table className="card-details-table table table-borderless table-sm table-striped align-middle text-center small">
-                    <tbody>
-                      <tr>
-                        <td>ID</td>
-                            <td>{renderedCharacter.characterId}</td>
-                          </tr>
-                      {renderedCharacter.isValid && (
-                        <>
-                          <tr>
-                            <td>{t('ChuniV2.CharacterPage.Rank')}</td>
-                            <td>{renderedCharacter.level}</td>
-                          </tr>
-                          <tr>
-                            <td>{t('ChuniV2.CharacterPage.PlayCount')}</td>
-                            <td>{renderedCharacter.playCount}</td>
-                          </tr>
-                        </>
-                      )}
-                      <tr>
-                        <td>{t('ChuniV2.CharacterPage.Name')}</td>
-                        <td>{displayedCharacterName(renderedCharacter)}</td>
-                      </tr>
-                      <tr>
-                        <td>{t('ChuniV2.CharacterPage.WorksName')}</td>
-                        <td>{renderedCharacter.characterInfo.worksName}</td>
-                      </tr>
-                      {renderedCharacter.characterInfo.illustratorName && (
-                        <tr>
-                          <td>{t('ChuniV2.CharacterPage.Illustrator')}</td>
-                            <td>{renderedCharacter.characterInfo.illustratorName}</td>
-                        </tr>
-                      )}
-                      <tr>
-                        <td>{t('ChuniV2.CharacterPage.Version')}</td>
-                        <td>{chuniV2ReleaseName(renderedCharacter.characterInfo.releaseTag)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div className="hstack gap-1 float-end">
-                    {renderedCharacter.isValid ? (
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-primary"
-                        disabled={renderedCharacter.characterId === equippedIllustrationId}
-                        onClick={() => onSet(renderedCharacter)}
-                      >
-                        {t('ChuniV2.CharacterPage.Set')}
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-primary"
-                        onClick={() => onUnlock(renderedCharacter)}
-                      >
-                        {t('ChuniV2.CharacterPage.Unlock')}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
+      <DialogContent
+        aria-describedby={undefined}
+        className="chuni-v2-character-dialog d-block modal"
+        overlayClassName="chuni-v2-character-dialog-overlay modal-backdrop"
+        overlayUnstyled
+        showCloseButton={false}
+        unstyled
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <DialogTitle asChild unstyled>
+                <h4 className="modal-title">{t('ChuniV2.CharacterPage.Details')}</h4>
+              </DialogTitle>
+              <DialogClose asChild>
+                <button type="button" className="btn-close shadow-none" aria-label="Close" />
+              </DialogClose>
             </div>
+            {renderedCharacter && (
+              <div className="modal-body">
+                <table className="card-details-table table table-borderless table-sm table-striped align-middle text-center small">
+                  <tbody>
+                    <tr>
+                      <td>ID</td>
+                      <td>{renderedCharacter.characterId}</td>
+                    </tr>
+                    {renderedCharacter.isValid && (
+                      <>
+                        <tr>
+                          <td>{t('ChuniV2.CharacterPage.Rank')}</td>
+                          <td>{renderedCharacter.level}</td>
+                        </tr>
+                        <tr>
+                          <td>{t('ChuniV2.CharacterPage.PlayCount')}</td>
+                          <td>{renderedCharacter.playCount}</td>
+                        </tr>
+                      </>
+                    )}
+                    <tr>
+                      <td>{t('ChuniV2.CharacterPage.Name')}</td>
+                      <td>{displayedCharacterName(renderedCharacter)}</td>
+                    </tr>
+                    <tr>
+                      <td>{t('ChuniV2.CharacterPage.WorksName')}</td>
+                      <td>{renderedCharacter.characterInfo.worksName}</td>
+                    </tr>
+                    {renderedCharacter.characterInfo.illustratorName && (
+                      <tr>
+                        <td>{t('ChuniV2.CharacterPage.Illustrator')}</td>
+                        <td>{renderedCharacter.characterInfo.illustratorName}</td>
+                      </tr>
+                    )}
+                    <tr>
+                      <td>{t('ChuniV2.CharacterPage.Version')}</td>
+                      <td>{chuniV2ReleaseName(renderedCharacter.characterInfo.releaseTag)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="hstack gap-1 float-end">
+                  {renderedCharacter.isValid ? (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-primary"
+                      disabled={renderedCharacter.characterId === equippedIllustrationId}
+                      onClick={() => onSet(renderedCharacter)}
+                    >
+                      {t('ChuniV2.CharacterPage.Set')}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-primary"
+                      onClick={() => onUnlock(renderedCharacter)}
+                    >
+                      {t('ChuniV2.CharacterPage.Unlock')}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-        </DialogPrimitive.Content>
-      </DialogPrimitive.Portal>
-    </DialogPrimitive.Root>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

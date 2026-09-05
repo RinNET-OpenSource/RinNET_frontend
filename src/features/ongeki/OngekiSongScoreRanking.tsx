@@ -297,6 +297,7 @@ export function OngekiSongScoreRanking({
         side="right"
         showCloseButton={false}
         className="ongeki-song-score-ranking ongeki-song-score-ranking-sheet z-[1045] w-[400px] max-w-full sm:max-w-[400px] p-0 text-sm bg-[var(--bs-body-bg)] outline-none"
+        overlayClassName="ongeki-song-score-ranking-overlay"
       >
         <div className="offcanvas-header position-absolute end-0 z-3">
           <SheetClose asChild>

@@ -17,19 +17,19 @@
   animation-fill-mode: backwards;
 }
 
-.admin-dialog-overlay[data-state='open'] {
+.admin-dialog-overlay[data-dialog-state='open'] {
   animation-name: admin-dialog-overlay-in;
 }
 
-.admin-dialog-overlay[data-state='closed'] {
+.admin-dialog-overlay[data-dialog-state='closed'] {
   animation-name: admin-dialog-overlay-out;
 }
 
-.admin-dialog-content:not(.admin-impersonation-dialog)[data-state='open'] {
+.admin-dialog-content:not(.admin-impersonation-dialog)[data-dialog-state='open'] {
   animation-name: admin-dialog-content-in;
 }
 
-.admin-dialog-content:not(.admin-impersonation-dialog)[data-state='closed'] {
+.admin-dialog-content:not(.admin-impersonation-dialog)[data-dialog-state='closed'] {
   animation-name: admin-dialog-content-out;
 }
 
@@ -93,11 +93,11 @@
   animation-duration: 0.3s;
 }
 
-.admin-dialog-content.admin-impersonation-dialog[data-state='open'] {
+.admin-dialog-content.admin-impersonation-dialog[data-dialog-state='open'] {
   animation-name: admin-impersonation-dialog-in;
 }
 
-.admin-dialog-content.admin-impersonation-dialog[data-state='closed'] {
+.admin-dialog-content.admin-impersonation-dialog[data-dialog-state='closed'] {
   animation-name: admin-impersonation-dialog-out;
 }
 

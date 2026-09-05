@@ -25,7 +25,7 @@
   margin: 0;
 }
 
-body:has(.ongeki-song-score-ranking[data-state='open']) > [data-slot='sheet-overlay'] {
+.ongeki-song-score-ranking-overlay {
   z-index: 1040;
 }
 

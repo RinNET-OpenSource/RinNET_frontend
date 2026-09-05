@@ -591,7 +591,7 @@ test.describe('newly migrated secondary-page visual parity', () => {
         if (route.name === 'chuni-rating') {
           const firstRating = newPage.locator('.rating-card.card-btn').first();
           await firstRating.click();
-          const detail = newPage.locator('.chuni-v2-song-score-ranking-panel[data-state="open"]');
+          const detail = newPage.locator('.chuni-v2-song-score-ranking-panel');
           await expect(detail).toBeVisible();
           await expect(detail).toContainText('Sample Music 1');
           await expect(detail.locator('.music-img')).toHaveAttribute('src', /CHU_UI_Jacket_0001\.webp$/);

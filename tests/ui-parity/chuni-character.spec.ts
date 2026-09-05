@@ -537,7 +537,6 @@ test.describe('Chunithm v2 character parity', () => {
       await expect(dialog).toContainText('Fixture Character 01 Alt');
       if (page === reactPage) {
         const modal = page.locator('.chuni-v2-character-dialog');
-        await expect(modal).toHaveAttribute('data-state', 'open');
         await expect.poll(() => modal.evaluate((element) => getComputedStyle(element).animationName)).toMatch(
           /chuni-v2-character-dialog-in/,
         );
@@ -555,7 +554,7 @@ test.describe('Chunithm v2 character parity', () => {
     );
     const reactDialog = reactPage.getByRole('dialog');
     await reactDialog.locator('button.btn-close').click();
-    const closedReactModal = reactPage.locator('.chuni-v2-character-dialog[data-state="closed"]');
+    const closedReactModal = reactPage.locator('.chuni-v2-character-dialog');
     await expect(closedReactModal).toHaveCount(1);
     await expect.poll(() =>
       closedReactModal.evaluate((element) => getComputedStyle(element).animationName),

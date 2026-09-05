@@ -5,9 +5,9 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { Dialog as DialogPrimitive } from 'radix-ui';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import { StatusCode, type Card, type User } from '@/lib/models';
@@ -286,48 +286,43 @@ function AdminDialog({
   ].filter(Boolean).join(' ');
 
   return (
-    <DialogPrimitive.Root
+    <Dialog
       open={open}
       onOpenChange={(value) => {
         if (!value && !staticBackdrop) onClose();
       }}
     >
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay
-          className={`admin-dialog-overlay modal-backdrop fade show${nested ? ' admin-dialog-overlay-nested' : ''}`}
-        />
-        <DialogPrimitive.Content
-          aria-describedby={undefined}
-          className={contentClass}
-          onEscapeKeyDown={(event) => staticBackdrop && event.preventDefault()}
-          onInteractOutside={(event) => staticBackdrop && event.preventDefault()}
-          onOpenAutoFocus={(event) => {
-            if (initialFocusRef?.current) {
-              event.preventDefault();
-              initialFocusRef.current.focus();
-            } else {
-              event.preventDefault();
-            }
-          }}
-          style={{ gap: 0, padding: 0 }}
+      <DialogContent
+        aria-describedby={undefined}
+        className={contentClass}
+        onEscapeKeyDown={(event) => staticBackdrop && event.preventDefault()}
+        onInteractOutside={(event) => staticBackdrop && event.preventDefault()}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          initialFocusRef?.current?.focus();
+        }}
+        overlayClassName={`admin-dialog-overlay modal-backdrop fade show${nested ? ' admin-dialog-overlay-nested' : ''}`}
+        overlayUnstyled
+        showCloseButton={false}
+        style={{ gap: 0, padding: 0 }}
+        unstyled
+      >
+        <main
+          className={`flex flex-col${fullscreen ? '' : ' space-y-4'}`}
+          style={scrollable ? { display: 'block', overflow: 'auto' } : undefined}
         >
-          <main
-            className={`flex flex-col${fullscreen ? '' : ' space-y-4'}`}
-            style={scrollable ? { display: 'block', overflow: 'auto' } : undefined}
-          >
-            <div className={`modal-header${headerClassName ? ` ${headerClassName}` : ''}`}>
-              <DialogPrimitive.Title asChild>
-                <h5 className={`modal-title${titleClassName ? ` ${titleClassName}` : ''}`}>{title}</h5>
-              </DialogPrimitive.Title>
-              {headerAction ?? (
-                <button type="button" className="btn-close shadow-none" aria-label="Close" onClick={onClose} />
-              )}
-            </div>
-            <div className={`modal-body${bodyClassName ? ` ${bodyClassName}` : ''}`}>{children}</div>
-          </main>
-        </DialogPrimitive.Content>
-      </DialogPrimitive.Portal>
-    </DialogPrimitive.Root>
+          <div className={`modal-header${headerClassName ? ` ${headerClassName}` : ''}`}>
+            <DialogTitle asChild unstyled>
+              <h5 className={`modal-title${titleClassName ? ` ${titleClassName}` : ''}`}>{title}</h5>
+            </DialogTitle>
+            {headerAction ?? (
+              <button type="button" className="btn-close shadow-none" aria-label="Close" onClick={onClose} />
+            )}
+          </div>
+          <div className={`modal-body${bodyClassName ? ` ${bodyClassName}` : ''}`}>{children}</div>
+        </main>
+      </DialogContent>
+    </Dialog>
   );
 }
 

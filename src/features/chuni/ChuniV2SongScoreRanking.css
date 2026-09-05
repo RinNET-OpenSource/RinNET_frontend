@@ -1,4 +1,7 @@
 .chuni-v2-song-score-ranking-panel {
+  --bs-offcanvas-padding-x: 1rem;
+  --bs-offcanvas-padding-y: 1rem;
+  --bs-offcanvas-title-line-height: 1.5;
   width: 400px !important;
   max-width: 100vw !important;
   gap: 0 !important;
@@ -16,82 +19,18 @@
 .chuni-v2-song-score-ranking-panel > .offcanvas-body {
   flex: 1 1 auto;
   min-height: 0;
+  margin-top: -1.5rem;
   overflow-y: auto;
 }
 
-body:has(.chuni-v2-song-score-ranking-panel[data-state='open']) > [data-slot='sheet-overlay'] {
+.chuni-v2-song-score-ranking-overlay {
   z-index: 1040;
   background: #000;
   opacity: 0.5;
 }
 
-.chuni-v2-song-score-ranking-panel .offcanvas-header {
-  top: 0;
-  right: 0;
-  width: auto;
-  height: auto;
-  padding: 1rem;
-}
-
-.chuni-v2-song-score-ranking-panel .offcanvas-header .btn-close {
-  margin: 0;
-}
-
-.chuni-v2-song-score-ranking-panel .music-info-container {
-  position: relative;
-  background-position: center;
-  background-size: cover;
-  overflow: hidden;
-}
-
-.chuni-v2-song-score-ranking-panel .music-info-container::before {
-  position: absolute;
-  z-index: 0;
-  top: 50%;
-  left: 50%;
-  width: 120%;
-  height: 120%;
-  content: '';
-  background-image:
-    linear-gradient(to bottom, var(--color-from) 0%, var(--color-to) 100%), var(--jacket-img);
-  background-position: center;
-  background-size: cover;
-  transform: translate(-50%, -50%);
-  filter: blur(10px);
-}
-
-[data-bs-theme='light'] .chuni-v2-song-score-ranking-panel .music-info-container {
-  --color-from: rgba(255, 255, 255, 0.3);
-  --color-to: rgba(255, 255, 255, 1);
-}
-
-[data-bs-theme='dark'] .chuni-v2-song-score-ranking-panel .music-info-container {
-  --color-from: rgba(33, 37, 41, 0.3);
-  --color-to: rgba(33, 37, 41, 1);
-}
-
-.chuni-v2-song-score-ranking-panel .music-info-container > * {
-  position: relative;
-  z-index: 1;
-}
-
 .chuni-v2-song-score-ranking-panel .music-img {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: min(60%, 12em);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.chuni-v2-song-score-ranking-panel .music-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.chuni-v2-song-score-ranking-panel .music-title {
-  font-weight: bold;
+  width: 60%;
 }
 
 .chuni-v2-song-score-ranking-panel .fbab-img {

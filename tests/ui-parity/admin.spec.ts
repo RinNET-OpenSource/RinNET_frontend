@@ -766,13 +766,13 @@ test.describe('Admin page parity and safety', () => {
       expect(layout.frameTop - layout.headerBottom).toBeLessThanOrEqual(1);
 
       await impersonationDialog.getByRole('button', { name: '返回管理员账户' }).click();
-      await expect(page.locator('.admin-impersonation-dialog[data-state="closed"]')).toHaveCSS(
+      await expect(page.locator('.admin-impersonation-dialog')).toHaveCSS(
         'animation-name',
         /admin-impersonation-dialog-out/,
       );
       await expect.poll(() => audit.writes.filter((write) => write.path === '/api/auth/signout')).toHaveLength(1);
       await detail.getByRole('button', { name: 'Close' }).click();
-      await expect(page.locator('.admin-dialog-content[data-state="closed"]')).toHaveCSS(
+      await expect(page.locator('.admin-dialog-content')).toHaveCSS(
         'animation-name',
         /admin-dialog-content-out/,
       );

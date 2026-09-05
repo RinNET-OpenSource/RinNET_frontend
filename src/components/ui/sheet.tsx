@@ -6,8 +6,36 @@ import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
-function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />
+const SheetStateContext = React.createContext(false)
+
+function Sheet({
+  children,
+  defaultOpen,
+  onOpenChange,
+  open,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Root>) {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen ?? false)
+  const isOpen = open ?? uncontrolledOpen
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (open === undefined) setUncontrolledOpen(nextOpen)
+    onOpenChange?.(nextOpen)
+  }
+
+  return (
+    <SheetStateContext.Provider value={isOpen}>
+      <SheetPrimitive.Root
+        data-slot="sheet"
+        defaultOpen={defaultOpen}
+        onOpenChange={handleOpenChange}
+        open={open}
+        {...props}
+      >
+        {children}
+      </SheetPrimitive.Root>
+    </SheetStateContext.Provider>
+  )
 }
 
 function SheetTrigger({
@@ -19,7 +47,7 @@ function SheetTrigger({
 function SheetClose({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Close>) {
-  return <SheetPrimitive.Close data-slot="sheet-close" {...props} />
+  return <SheetPrimitive.Close data-slot="sheet-close" data-sheet-close {...props} />
 }
 
 function SheetPortal({
@@ -32,9 +60,12 @@ function SheetOverlay({
   className,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+  const isOpen = React.useContext(SheetStateContext)
+
   return (
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
+      data-sheet-state={isOpen ? "open" : "closed"}
       className={cn(
         "fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
         className
@@ -56,11 +87,14 @@ function SheetContent({
   showCloseButton?: boolean
   overlayClassName?: string
 }) {
+  const isOpen = React.useContext(SheetStateContext)
+
   return (
     <SheetPortal>
       <SheetOverlay className={overlayClassName} />
       <SheetPrimitive.Content
         data-slot="sheet-content"
+        data-sheet-state={isOpen ? "open" : "closed"}
         className={cn(
           "fixed z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
           side === "right" &&
@@ -112,12 +146,19 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
 
 function SheetTitle({
   className,
+  unstyled = false,
   ...props
-}: React.ComponentProps<typeof SheetPrimitive.Title>) {
+}: React.ComponentProps<typeof SheetPrimitive.Title> & {
+  unstyled?: boolean
+}) {
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("font-semibold text-foreground", className)}
+      className={cn(
+        "ui-title",
+        !unstyled && "font-semibold text-foreground",
+        className
+      )}
       {...props}
     />
   )
@@ -130,7 +171,7 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("ui-description text-sm text-muted-foreground", className)}
       {...props}
     />
   )

@@ -176,7 +176,7 @@
   .chuni-v2-userbox-page .audio-btn { font-size: 2.1vw; }
 }
 
-body:has(.chuni-v2-userbox-dialog) > [data-slot='dialog-overlay'] {
+.chuni-v2-userbox-dialog-overlay {
   z-index: 1050;
   background: #000;
   opacity: 0.5;

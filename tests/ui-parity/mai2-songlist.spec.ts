@@ -342,7 +342,7 @@ async function settleList(page: Page) {
 }
 
 async function settleDetail(page: Page, legacy: boolean) {
-  const root = page.locator(legacy ? '.offcanvas.show' : '.maimai2-song-detail[data-state="open"]');
+  const root = page.locator(legacy ? '.offcanvas.show' : '.maimai2-song-detail');
   await root.waitFor({ state: 'visible', timeout: 30_000 });
   await expect(root.locator('section > .card')).toHaveCount(5, { timeout: 30_000 });
   await expect(root.locator('.tab-pane.show.active > table tbody tr')).toHaveCount(ranking.length, {
@@ -457,7 +457,7 @@ test.describe('Maimai2 song list visual parity', () => {
       await saveComparison(oldDetail, newDetail, testInfo, 'detail');
 
       const oldDetailRoot = oldPage.locator('.offcanvas.show');
-      const newDetailRoot = newPage.locator('.maimai2-song-detail[data-state="open"]');
+      const newDetailRoot = newPage.locator('.maimai2-song-detail');
       await Promise.all([
         oldDetailRoot.getByRole('tab', { name: 'BA', exact: true }).click(),
         newDetailRoot.getByRole('tab', { name: 'BA', exact: true }).click(),

@@ -325,8 +325,8 @@
 
 @layer components {
   /* Bootstrap Reboot 位于 Tailwind base 之后；shadcn 标题/描述显式恢复无外边距。 */
-  [data-slot$="-title"],
-  [data-slot$="-description"] {
+  .ui-title,
+  .ui-description {
     margin: 0;
   }
 
@@ -804,7 +804,7 @@ input[type="checkbox"]:checked + .checkbox-label {
   display: none;
 }
 
-/* 侧栏/用户菜单可能由 Radix Portal 挂到 body，不能依赖祖先 .sidebar/.app-navbar。 */
+/* 侧栏/用户菜单可渲染到 portal 根节点，不能依赖祖先 .sidebar/.app-navbar。 */
 .shell-sidebar-nav .link-btn,
 .shell-user-popover .link-btn {
   padding: 0.3rem 0.5rem;
@@ -870,7 +870,7 @@ input[type="checkbox"]:checked + .checkbox-label {
   overflow-y: auto;
 }
 
-.shell-mobile-sheet > [data-slot="sheet-close"] {
+.shell-mobile-sheet > [data-sheet-close] {
   box-sizing: content-box;
   top: 0.8rem !important;
   right: 0.5625rem !important;
@@ -885,7 +885,7 @@ input[type="checkbox"]:checked + .checkbox-label {
   box-shadow: none !important;
 }
 
-.shell-mobile-sheet > [data-slot="sheet-close"] svg {
+.shell-mobile-sheet > [data-sheet-close] svg {
   width: 1rem;
   height: 1rem;
 }
@@ -905,8 +905,8 @@ input[type="checkbox"]:checked + .checkbox-label {
   box-shadow: none !important;
 }
 
-[data-theme-family="legacy"] .shell-user-popover[data-side="bottom"]::before,
-[data-theme-family="legacy"] .shell-user-popover[data-side="bottom"]::after {
+[data-theme-family="legacy"] .shell-user-popover[data-popover-side="bottom"]::before,
+[data-theme-family="legacy"] .shell-user-popover[data-popover-side="bottom"]::after {
   position: absolute;
   right: 0.75rem;
   display: block;
@@ -917,12 +917,12 @@ input[type="checkbox"]:checked + .checkbox-label {
   border-left: 0.5rem solid transparent;
 }
 
-[data-theme-family="legacy"] .shell-user-popover[data-side="bottom"]::before {
+[data-theme-family="legacy"] .shell-user-popover[data-popover-side="bottom"]::before {
   top: -0.55rem;
   border-bottom: 0.5rem solid var(--bs-border-color-translucent);
 }
 
-[data-theme-family="legacy"] .shell-user-popover[data-side="bottom"]::after {
+[data-theme-family="legacy"] .shell-user-popover[data-popover-side="bottom"]::after {
   top: -0.48rem;
   border-bottom: 0.5rem solid var(--bs-body-bg);
 }
@@ -959,7 +959,8 @@ input[type="checkbox"]:checked + .checkbox-label {
   cursor: pointer;
 }
 
-[data-theme-family="legacy"] .shell-dropdown-item[data-highlighted] {
+[data-theme-family="legacy"] .shell-dropdown-item:hover,
+[data-theme-family="legacy"] .shell-dropdown-item:focus {
   color: var(--bs-body-color) !important;
   background-color: var(--bs-tertiary-bg) !important;
 }

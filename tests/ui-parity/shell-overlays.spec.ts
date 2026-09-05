@@ -218,7 +218,7 @@ async function closeTransientOverlays(legacyPage: Page, reactPage: Page) {
     expect(legacyPage.locator('.popover.show, .dropdown-menu.show')).toHaveCount(0),
     expect(
       reactPage.locator(
-        '[data-slot="popover-content"][data-state="open"], [data-slot="dropdown-menu-content"][data-state="open"]',
+        '.shell-user-popover, [role="menu"]',
       ),
     ).toHaveCount(0),
   ]);
@@ -260,7 +260,7 @@ test.describe('application shell responsive and overlay parity', () => {
           .locator('#sidebar[role="dialog"][aria-modal="true"]')
           .waitFor({ state: 'visible', timeout: 10_000 }),
         mobile.reactPage
-          .locator('[data-slot="sheet-content"][data-state="open"]')
+          .locator('.shell-mobile-sheet')
           .waitFor({ state: 'visible', timeout: 10_000 }),
       ]);
       comparisons.push({
@@ -282,7 +282,7 @@ test.describe('application shell responsive and overlay parity', () => {
       await Promise.all([
         desktop.legacyPage.locator('.popover.show').waitFor({ state: 'visible', timeout: 10_000 }),
         desktop.reactPage
-          .locator('[data-slot="popover-content"][data-state="open"]')
+          .locator('.shell-user-popover')
           .waitFor({ state: 'visible', timeout: 10_000 }),
       ]);
       comparisons.push({
@@ -310,7 +310,7 @@ test.describe('application shell responsive and overlay parity', () => {
           .locator('.dropdown-menu.show')
           .waitFor({ state: 'visible', timeout: 10_000 }),
         desktop.reactPage
-          .locator('[data-slot="dropdown-menu-content"][data-state="open"]')
+          .getByRole('menu')
           .waitFor({ state: 'visible', timeout: 10_000 }),
       ]);
       comparisons.push({
@@ -333,18 +333,13 @@ test.describe('application shell responsive and overlay parity', () => {
           .locator('.dropdown-menu.show')
           .waitFor({ state: 'visible', timeout: 10_000 }),
         desktop.reactPage
-          .locator('[data-slot="dropdown-menu-content"][data-state="open"]')
+          .getByRole('menu')
           .waitFor({ state: 'visible', timeout: 10_000 }),
       ]);
-      comparisons.push({
-        label: `theme-dropdown-${theme}`,
-        ratio: await capturePair(
-          desktop.legacyPage,
-          desktop.reactPage,
-          testInfo,
-          `theme-dropdown-${theme}`,
-        ),
-      });
+      // The React theme menu intentionally adds a family selector above the
+      // legacy color choices. Its layout and state transitions are covered by
+      // theme-system.spec.ts, so it is not an Angular pixel-parity target.
+      await closeTransientOverlays(desktop.legacyPage, desktop.reactPage);
 
       expect(blockedStateChanges, 'Shell parity must not attempt any Portal state change').toEqual([]);
       expect(
@@ -376,18 +371,18 @@ test.describe('application shell responsive and overlay parity', () => {
     await settle(page);
     await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
     await page.locator('.navbar-toggler:visible').click();
-    await expect(page.locator('[data-slot="sheet-content"][data-state="open"]')).toBeVisible();
+    await expect(page.locator('.shell-mobile-sheet')).toBeVisible();
     await page.keyboard.press('Escape');
 
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.reload({ waitUntil: 'domcontentloaded' });
     await settle(page);
     await visibleNavbarButton(page).click();
-    await expect(page.locator('[data-slot="popover-content"][data-state="open"]')).toBeVisible();
+    await expect(page.locator('.shell-user-popover')).toBeVisible();
     await page.keyboard.press('Escape');
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await footerTrigger(page, 0).click();
-    await expect(page.locator('[data-slot="dropdown-menu-content"][data-state="open"]')).toBeVisible();
+    await expect(page.getByRole('menu')).toBeVisible();
     await page.keyboard.press('Escape');
     await footerTrigger(page, 1).click();
     await expect(page.getByRole('menuitem', { name: '现代', exact: true })).toBeVisible();

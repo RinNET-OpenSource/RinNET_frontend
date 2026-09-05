@@ -187,6 +187,7 @@ export function Maimai2SongDetail({
         side="right"
         showCloseButton={false}
         className="maimai2-song-detail w-[400px] max-w-full gap-0 overflow-y-auto bg-[var(--bs-body-bg)] p-0 sm:max-w-[400px]"
+        overlayClassName="maimai2-song-detail-overlay"
       >
         <SheetTitle className="visually-hidden">{music.name}</SheetTitle>
         <div

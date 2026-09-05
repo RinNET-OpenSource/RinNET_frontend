@@ -23,13 +23,13 @@
   align-items: center;
 }
 
-body:has(.chuni-v2-rival-remove-modal) > [data-slot='dialog-overlay'] {
+.chuni-v2-rival-remove-overlay {
   z-index: 1050;
   background: #000;
   opacity: 0.5;
 }
 
-body:has(.chuni-v2-rival-remove-modal) [data-slot='dialog-content'] {
+.chuni-v2-rival-remove-dialog {
   z-index: 1055;
   display: block;
   width: 500px;
@@ -41,12 +41,12 @@ body:has(.chuni-v2-rival-remove-modal) [data-slot='dialog-content'] {
   border-radius: var(--bs-border-radius-lg);
 }
 
-body:has(.chuni-v2-rival-remove-modal) [data-slot='dialog-content'] .modal-header {
+.chuni-v2-rival-remove-dialog .modal-header {
   padding: 1rem;
   border-bottom: var(--bs-border-width) solid var(--bs-border-color);
 }
 
-body:has(.chuni-v2-rival-remove-modal) [data-slot='dialog-content'] .modal-body {
+.chuni-v2-rival-remove-dialog .modal-body {
   padding: 1rem;
   font-size: 1rem;
 }

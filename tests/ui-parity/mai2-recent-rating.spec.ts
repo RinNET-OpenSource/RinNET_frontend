@@ -392,7 +392,7 @@ async function settle(page: Page, selector: string, count: number) {
 }
 
 async function settleSongDetail(page: Page, legacy: boolean) {
-  const root = page.locator(legacy ? '.offcanvas.show' : '.maimai2-song-detail[data-state="open"]');
+  const root = page.locator(legacy ? '.offcanvas.show' : '.maimai2-song-detail');
   await root.waitFor({ state: 'visible', timeout: 30_000 });
   await expect(root.locator('section > .card')).toHaveCount(5, { timeout: 30_000 });
   await expect(root.locator('.tab-pane.show.active > table tbody tr')).toHaveCount(ranking.length, { timeout: 30_000 });
@@ -566,7 +566,6 @@ test.describe('Maimai2 recent and rating visual parity', () => {
     await settleSongDetail(page, false);
     await page.locator('.maimai2-song-detail .btn-close').click();
     const songDetailSheet = page.locator('.maimai2-song-detail');
-    await expect(songDetailSheet).toHaveAttribute('data-state', 'closed');
     await expect(songDetailSheet).toHaveCount(0, { timeout: 1_000 });
     expect(blockedBusinessWrites, 'Modern-theme interactions must stay read-only').toEqual([]);
     await context.close();

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
-import { Dialog as DialogPrimitive } from 'radix-ui';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import { getCurrentUser, loadUser } from '@/lib/user';
@@ -98,89 +98,90 @@ function ExchangeConfirmDialog({
   onConfirm: () => void;
 }) {
   return (
-    <DialogPrimitive.Root open={item !== null} onOpenChange={(open) => !open && onCancel()}>
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="maimai2-point-exchange-confirm-overlay modal-backdrop fade show" />
-        <DialogPrimitive.Content
-          className="maimai2-point-exchange-confirm-dialog d-block modal fade show"
-          aria-describedby={undefined}
-          onOpenAutoFocus={(event) => event.preventDefault()}
-          onInteractOutside={(event) => event.preventDefault()}
-        >
-          <div className="modal-dialog modal-lg modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header bg-dark text-light border-secondary">
-                <DialogPrimitive.Title asChild>
-                  <h5 className="modal-title">确认兑换</h5>
-                </DialogPrimitive.Title>
-                <button
-                  type="button"
-                  className="btn-close btn-close-white"
-                  aria-label="Close"
-                  onClick={onCancel}
-                />
-              </div>
-              <div className="modal-body bg-dark text-light">
-                {item && (
-                  <div className="exchange-confirm">
-                    <div className="d-flex align-items-center mb-4">
-                      <div className="flex-shrink-0 me-3">
-                        <div className="placeholder-image d-flex justify-content-center align-items-center bg-dark border-secondary rounded">
-                          <i className="bi bi-box-seam fs-2 text-secondary" />
-                        </div>
-                      </div>
-                      <div className="flex-grow-1">
-                        <h5 className="mb-1">{item.name}</h5>
-                        <p className="small text-secondary mb-0">
-                          {item.description.split('\n').map((line, index, lines) => (
-                            <span key={`${line}-${index}`}>
-                              {line}
-                              {index < lines.length - 1 && <br />}
-                            </span>
-                          ))}
-                        </p>
+    <Dialog open={item !== null} onOpenChange={(open) => !open && onCancel()}>
+      <DialogContent
+        aria-describedby={undefined}
+        className="maimai2-point-exchange-confirm-dialog d-block modal fade show"
+        onOpenAutoFocus={(event) => event.preventDefault()}
+        onInteractOutside={(event) => event.preventDefault()}
+        overlayClassName="maimai2-point-exchange-confirm-overlay modal-backdrop fade show"
+        overlayUnstyled
+        showCloseButton={false}
+        unstyled
+      >
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header bg-dark text-light border-secondary">
+              <DialogTitle asChild unstyled>
+                <h5 className="modal-title">确认兑换</h5>
+              </DialogTitle>
+              <button
+                type="button"
+                className="btn-close btn-close-white"
+                aria-label="Close"
+                onClick={onCancel}
+              />
+            </div>
+            <div className="modal-body bg-dark text-light">
+              {item && (
+                <div className="exchange-confirm">
+                  <div className="d-flex align-items-center mb-4">
+                    <div className="flex-shrink-0 me-3">
+                      <div className="placeholder-image d-flex justify-content-center align-items-center bg-dark border-secondary rounded">
+                        <i className="bi bi-box-seam fs-2 text-secondary" />
                       </div>
                     </div>
-                    <div className="info-row d-flex justify-content-between mb-2 p-2 bg-dark border-secondary rounded">
-                      <span>兑换数量:</span>
-                      <span className="fw-bold">{item.itemCount} 个</span>
-                    </div>
-                    <div className="info-row d-flex justify-content-between mb-2 p-2 bg-dark border-secondary rounded">
-                      <span>需要点数:</span>
-                      <span className="fw-bold text-warning">{item.costPoints} 点</span>
-                    </div>
-                    {item.stockCount >= 0 && (
-                      <div className="info-row d-flex justify-content-between mb-2 p-2 bg-dark border-secondary rounded">
-                        <span>库存:</span>
-                        <span className="fw-bold">{item.exchangedCount} / {item.stockCount}</span>
-                      </div>
-                    )}
-                    <div className="info-row d-flex justify-content-between p-2 bg-dark border-secondary rounded">
-                      <span>兑换后剩余:</span>
-                      <span className="fw-bold text-danger">{points - item.costPoints} 点</span>
-                    </div>
-                    <div className="alert alert-warning mt-3 mb-0" role="alert">
-                      <i className="bi bi-exclamation-triangle-fill me-2" />
-                      确认使用 {item.costPoints} 任务点数兑换此物品吗？
+                    <div className="flex-grow-1">
+                      <h5 className="mb-1">{item.name}</h5>
+                      <p className="small text-secondary mb-0">
+                        {item.description.split('\n').map((line, index, lines) => (
+                          <span key={`${line}-${index}`}>
+                            {line}
+                            {index < lines.length - 1 && <br />}
+                          </span>
+                        ))}
+                      </p>
                     </div>
                   </div>
-                )}
-              </div>
-              <div className="modal-footer bg-dark border-secondary">
-                <button type="button" className="btn btn-outline-secondary" onClick={onCancel}>
-                  取消
+                  <div className="info-row d-flex justify-content-between mb-2 p-2 bg-dark border-secondary rounded">
+                    <span>兑换数量:</span>
+                    <span className="fw-bold">{item.itemCount} 个</span>
+                  </div>
+                  <div className="info-row d-flex justify-content-between mb-2 p-2 bg-dark border-secondary rounded">
+                    <span>需要点数:</span>
+                    <span className="fw-bold text-warning">{item.costPoints} 点</span>
+                  </div>
+                  {item.stockCount >= 0 && (
+                    <div className="info-row d-flex justify-content-between mb-2 p-2 bg-dark border-secondary rounded">
+                      <span>库存:</span>
+                      <span className="fw-bold">{item.exchangedCount} / {item.stockCount}</span>
+                    </div>
+                  )}
+                  <div className="info-row d-flex justify-content-between p-2 bg-dark border-secondary rounded">
+                    <span>兑换后剩余:</span>
+                    <span className="fw-bold text-danger">{points - item.costPoints} 点</span>
+                  </div>
+                  <div className="alert alert-warning mt-3 mb-0" role="alert">
+                    <i className="bi bi-exclamation-triangle-fill me-2" />
+                    确认使用 {item.costPoints} 任务点数兑换此物品吗？
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="modal-footer bg-dark border-secondary">
+              <button type="button" className="btn btn-outline-secondary" onClick={onCancel}>
+                取消
+              </button>
+              {item && (
+                <button type="button" className="btn btn-success" onClick={onConfirm}>
+                  确认兑换
                 </button>
-                {item && (
-                  <button type="button" className="btn btn-success" onClick={onConfirm}>
-                    确认兑换
-                  </button>
-                )}
-              </div>
+              )}
             </div>
           </div>
-        </DialogPrimitive.Content>
-      </DialogPrimitive.Portal>
-    </DialogPrimitive.Root>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -523,23 +524,24 @@ export function Maimai2PointExchangesDialog({
   onClose: () => void;
 }) {
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={(value) => !value && onClose()}>
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="maimai2-point-exchange-outer-overlay modal-backdrop fade show" />
-        <DialogPrimitive.Content
-          className="maimai2-point-exchange-outer-dialog d-block modal fade show"
-          aria-describedby={undefined}
-          onInteractOutside={(event) => event.preventDefault()}
-        >
-          <DialogPrimitive.Title className="visually-hidden">任务点数兑换 - 舞萌DX</DialogPrimitive.Title>
-          <div className="modal-dialog modal-xl modal-dialog-centered">
-            <div className="modal-content">
-              <Maimai2PointExchangesPanel onClose={onClose} />
-            </div>
+    <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
+      <DialogContent
+        aria-describedby={undefined}
+        className="maimai2-point-exchange-outer-dialog d-block modal fade show"
+        onInteractOutside={(event) => event.preventDefault()}
+        overlayClassName="maimai2-point-exchange-outer-overlay modal-backdrop fade show"
+        overlayUnstyled
+        showCloseButton={false}
+        unstyled
+      >
+        <DialogTitle className="visually-hidden">任务点数兑换 - 舞萌DX</DialogTitle>
+        <div className="modal-dialog modal-xl modal-dialog-centered">
+          <div className="modal-content">
+            <Maimai2PointExchangesPanel onClose={onClose} />
           </div>
-        </DialogPrimitive.Content>
-      </DialogPrimitive.Portal>
-    </DialogPrimitive.Root>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

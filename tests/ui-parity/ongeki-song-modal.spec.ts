@@ -197,7 +197,6 @@ async function openSongDetail(page: Page, origin: string, legacy: boolean) {
   await page.locator('.card-btn.card').first().click();
   const root = page.locator(legacy ? '.compat-offcanvas' : '.ongeki-song-score-ranking');
   await root.waitFor({ state: 'visible', timeout: 30_000 });
-  if (!legacy) await expect(root).toHaveAttribute('data-state', 'open');
   await root.locator('.btn-close').waitFor({ state: 'visible', timeout: 30_000 });
   return root;
 }
@@ -215,7 +214,6 @@ async function sheetGeometry(page: Page, legacy: boolean) {
       rightInset: Math.round((contentRect.right - closeRect.right) * 100) / 100,
       topInset: Math.round((closeRect.top - contentRect.top) * 100) / 100,
       closeWidth: Math.round(closeRect.width * 100) / 100,
-      state: content.getAttribute('data-state'),
     };
   }, legacy);
 }
@@ -264,10 +262,8 @@ test.describe('Ongeki song detail Sheet lifecycle', () => {
 
       await newRoot.locator('.btn-close').click();
       await expect(newRoot).toHaveCount(1);
-      await expect(newRoot).toHaveAttribute('data-state', 'closed');
       await newPage.waitForTimeout(100);
       await expect(newRoot).toHaveCount(1);
-      await expect(newRoot).toHaveAttribute('data-state', 'closed');
       await expect(newRoot).toHaveCount(0, { timeout: 1_000 });
       expect(blockedWrites, 'Sheet interaction must remain read-only').toEqual([]);
     } finally {

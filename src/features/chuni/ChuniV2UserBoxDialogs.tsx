@@ -139,6 +139,7 @@ export function ChuniV2UserBoxItemDialog({
         showCloseButton={false}
         className="modal-content chuni-v2-userbox-dialog chuni-v2-userbox-item-dialog border-[1px] shadow-none"
         onOpenAutoFocus={(event) => event.preventDefault()}
+        overlayClassName="chuni-v2-userbox-dialog-overlay"
       >
         <DialogTitle className="visually-hidden">
           {t(favoriteMode ? 'ChuniV2.UserBoxPage.SelectFavorites' : 'ChuniV2.UserBoxPage.SelectItem')}
@@ -256,6 +257,7 @@ export function ChuniV2SymbolChatDialog({
         showCloseButton={false}
         className="modal-content chuni-v2-userbox-dialog chuni-v2-userbox-symbol-dialog border-[1px] shadow-none"
         onOpenAutoFocus={(event) => event.preventDefault()}
+        overlayClassName="chuni-v2-userbox-dialog-overlay"
       >
         <DialogTitle className="visually-hidden">{t('ChuniV2.UserBoxPage.SelectItem')}</DialogTitle>
         <div className="modal-body">

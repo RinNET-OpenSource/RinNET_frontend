@@ -9,7 +9,7 @@ test('Tailwind utilities override legacy Bootstrap element defaults', async ({ p
     const fixture = document.createElement('div');
     fixture.innerHTML = `
       <h3 class="text-xs font-bold leading-none m-0">Title</h3>
-      <h2 data-slot="dialog-title" class="text-lg leading-none font-semibold">Dialog title</h2>
+      <h2 class="ui-title text-lg leading-none font-semibold">Dialog title</h2>
       <button class="text-xs leading-none">Button</button>
       <input class="text-xs leading-none" value="Input">
     `;
@@ -27,7 +27,7 @@ test('Tailwind utilities override legacy Bootstrap element defaults', async ({ p
 
     const result = {
       button: read('button'),
-      dialogTitle: read('[data-slot="dialog-title"]'),
+      dialogTitle: read('.ui-title'),
       heading: read('h3'),
       input: read('input'),
     };

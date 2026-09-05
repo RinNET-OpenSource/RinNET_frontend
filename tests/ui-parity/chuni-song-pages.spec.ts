@@ -238,7 +238,7 @@ async function settleList(page: Page) {
 
 async function settleDetail(page: Page, legacy: boolean) {
   const root = page.locator(
-    legacy ? '.offcanvas.show' : '.chuni-v2-song-score-ranking-panel[data-state="open"]',
+    legacy ? '.offcanvas.show' : '.chuni-v2-song-score-ranking-panel',
   );
   await root.waitFor({ state: 'visible', timeout: 30_000 });
   await expect(root.locator('section > .card')).toHaveCount(5, { timeout: 30_000 });
@@ -341,17 +341,11 @@ test.describe('Chunithm v2 song pages visual parity', () => {
       expect(blockedBusinessWrites, 'Ranking interaction must remain read-only').toEqual([]);
 
       const oldRoot = oldPage.locator('.offcanvas.show');
-      const newRoot = newPage.locator('.chuni-v2-song-score-ranking-panel[data-state="open"]');
-      const musicInfo = newRoot.locator('.music-info-container');
-      await expect(musicInfo).toHaveCount(1);
-      await expect(newRoot.locator('.music-img')).toHaveClass(/\bms-4\b/);
-      await expect(newRoot.locator('.music-img')).toHaveClass(/\bmt-4\b/);
-      const backgroundStyle = await musicInfo.evaluate((element) => {
-        const style = getComputedStyle(element, '::before');
-        return { backgroundImage: style.backgroundImage, filter: style.filter };
-      });
-      expect(backgroundStyle.backgroundImage).toContain('CHU_UI_Jacket_0001.webp');
-      expect(backgroundStyle.filter).toContain('blur');
+      const newRoot = newPage.locator('.chuni-v2-song-score-ranking-panel');
+      await expect(newRoot.locator('.offcanvas-header')).toHaveCount(1);
+      await expect(newRoot.getByRole('heading', { name: 'User Score' })).toBeVisible();
+      await expect(newRoot.locator('.offcanvas-body > .card > .card-body')).toHaveCount(1);
+      await expect(newRoot.locator('.music-img')).not.toHaveClass(/\bms-4\b|\bmt-4\b/);
 
       await Promise.all([
         oldRoot.getByRole('tab', { name: 'BA', exact: true }).click(),
@@ -376,7 +370,6 @@ test.describe('Chunithm v2 song pages visual parity', () => {
 
       const newSheet = newPage.locator('.chuni-v2-song-score-ranking-panel');
       await newSheet.locator('.btn-close').click();
-      await expect(newSheet).toHaveAttribute('data-state', 'closed');
       await expect(newSheet).toHaveCount(0, { timeout: 1_000 });
       await context.close();
     });
@@ -417,7 +410,7 @@ test.describe('Chunithm v2 song pages visual parity', () => {
     await page.goto(`${REACT_ORIGIN}/chuni/v2/song`, { waitUntil: 'domcontentloaded' });
     await waitForCatalog(page);
     await page.goto(`${REACT_ORIGIN}/chuni/v2/song/ranking/1/2`, { waitUntil: 'domcontentloaded' });
-    const root = page.locator('.chuni-v2-song-score-ranking-panel[data-state="open"]');
+    const root = page.locator('.chuni-v2-song-score-ranking-panel');
     await root.waitFor({ state: 'visible', timeout: 30_000 });
     await expect(root.getByRole('tab', { name: 'EX', exact: true })).toHaveClass(/active/);
     expect(blockedBusinessWrites, 'Direct ranking route must remain read-only').toEqual([]);

@@ -5,7 +5,7 @@
   box-shadow: none;
 }
 
-body:has(.maimai2-song-detail[data-state='open']) [data-slot='sheet-overlay'] {
+.maimai2-song-detail-overlay {
   z-index: 1040;
   background: #000;
   opacity: 0.5;

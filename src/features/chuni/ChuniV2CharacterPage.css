@@ -121,11 +121,11 @@
   animation-fill-mode: both;
 }
 
-.chuni-v2-character-dialog-overlay[data-state='open'] {
+.chuni-v2-character-dialog-overlay[data-dialog-state='open'] {
   animation-name: chuni-v2-character-dialog-overlay-in;
 }
 
-.chuni-v2-character-dialog-overlay[data-state='closed'] {
+.chuni-v2-character-dialog-overlay[data-dialog-state='closed'] {
   animation-name: chuni-v2-character-dialog-overlay-out;
 }
 
@@ -142,11 +142,11 @@
   animation-fill-mode: both;
 }
 
-.chuni-v2-character-dialog[data-state='open'] {
+.chuni-v2-character-dialog[data-dialog-state='open'] {
   animation-name: chuni-v2-character-dialog-in;
 }
 
-.chuni-v2-character-dialog[data-state='closed'] {
+.chuni-v2-character-dialog[data-dialog-state='closed'] {
   animation-name: chuni-v2-character-dialog-out;
 }
 
