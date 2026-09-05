@@ -1,4 +1,4 @@
-import { CircleHalf, Palette, Stars, Sun } from 'react-bootstrap-icons';
+import { CircleHalf, Stars, Sun } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 import {
   DropdownMenu,
@@ -31,58 +31,39 @@ export function ThemeMenu() {
           <span className="ms-1">{t(`App.Footer.${titleCase(theme.colorTheme)}`)}</span>
         </a>
       </DropdownMenuTrigger>
-      {theme.family === 'legacy' ? (
-        <DropdownMenuContent
-          align="start"
-          sideOffset={2}
-          className="shell-legacy-dropdown shell-legacy-theme-dropdown"
-        >
+      <DropdownMenuContent
+        align="start"
+        sideOffset={theme.family === 'legacy' ? 2 : 4}
+        className={theme.family === 'legacy' ? 'shell-legacy-dropdown' : undefined}
+      >
+        <DropdownMenuLabel>{t('App.Footer.ThemeFamily')}</DropdownMenuLabel>
+        {THEME_FAMILIES.map((item) => (
           <DropdownMenuItem
-            aria-label={t('App.Footer.Modern')}
-            title={`${t('App.Footer.ThemeFamily')}: ${t('App.Footer.Modern')}`}
-            className="shell-theme-family-switch"
-            onSelect={() => setTheme({ family: 'modern' })}
+            key={item.id}
+            className={
+              `${theme.family === 'legacy' ? 'shell-dropdown-item small my-1' : ''}` +
+              (theme.family === item.id ? ' active bg-[var(--bs-tertiary-bg)] font-bold' : '')
+            }
+            onSelect={() => setTheme({ family: item.id })}
           >
-            <Palette aria-hidden="true" />
+            {t(item.labelKey)}
           </DropdownMenuItem>
-          {colorThemes.map((item) => (
-            <DropdownMenuItem
-              key={item}
-              className={
-                'shell-dropdown-item small my-1' +
-                (theme.colorTheme === item ? ' active bg-[var(--bs-tertiary-bg)] font-bold' : '')
-              }
-              onSelect={() => setTheme({ colorTheme: item })}
-            >
-              {t(`App.Footer.${titleCase(item)}`)}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      ) : (
-        <DropdownMenuContent align="start">
-          <DropdownMenuLabel>{t('App.Footer.ThemeFamily')}</DropdownMenuLabel>
-          {THEME_FAMILIES.map((item) => (
-            <DropdownMenuItem
-              key={item.id}
-              className={theme.family === item.id ? 'bg-[var(--bs-tertiary-bg)] font-bold' : ''}
-              onSelect={() => setTheme({ family: item.id })}
-            >
-              {t(item.labelKey)}
-            </DropdownMenuItem>
-          ))}
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel>{t('App.Footer.ColorTheme')}</DropdownMenuLabel>
-          {colorThemes.map((item) => (
-            <DropdownMenuItem
-              key={item}
-              className={theme.colorTheme === item ? 'bg-[var(--bs-tertiary-bg)] font-bold' : ''}
-              onSelect={() => setTheme({ colorTheme: item })}
-            >
-              {t(`App.Footer.${titleCase(item)}`)}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      )}
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>{t('App.Footer.ColorTheme')}</DropdownMenuLabel>
+        {colorThemes.map((item) => (
+          <DropdownMenuItem
+            key={item}
+            className={
+              `${theme.family === 'legacy' ? 'shell-dropdown-item small my-1' : ''}` +
+              (theme.colorTheme === item ? ' active bg-[var(--bs-tertiary-bg)] font-bold' : '')
+            }
+            onSelect={() => setTheme({ colorTheme: item })}
+          >
+            {t(`App.Footer.${titleCase(item)}`)}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }

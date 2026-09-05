@@ -969,34 +969,6 @@ input[type="checkbox"]:checked + .checkbox-label {
   background-color: var(--bs-primary) !important;
 }
 
-[data-theme-family="legacy"] .shell-legacy-theme-dropdown {
-  position: relative;
-}
-
-[data-theme-family="legacy"] .shell-theme-family-switch {
-  position: absolute !important;
-  top: 0.65rem;
-  right: 0.5rem;
-  z-index: 1;
-  display: flex !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  justify-content: center;
-  color: var(--bs-secondary-color) !important;
-  background: transparent !important;
-  border-radius: var(--bs-border-radius-sm) !important;
-  opacity: 0.55;
-}
-
-[data-theme-family="legacy"] .shell-theme-family-switch:hover,
-[data-theme-family="legacy"] .shell-theme-family-switch[data-highlighted] {
-  color: var(--bs-body-color) !important;
-  background-color: var(--bs-tertiary-bg) !important;
-  opacity: 1;
-}
-
 .link-btn-danger {
   color: var(--bs-danger);
 }
