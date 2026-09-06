@@ -520,6 +520,46 @@
   font-size: 0.9rem;
 }
 
+[data-theme='liquefy'] .liquefy-import-panel__button {
+  flex: 0 0 auto;
+  min-width: 11rem;
+  min-height: 3rem;
+  padding: 0.7rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--lq-accent) 54%, var(--lq-glass-bright));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--lq-accent) 15%, var(--lq-glass-soft) 72%);
+  box-shadow:
+    0 10px 24px color-mix(in srgb, var(--lq-shadow-color) 48%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--lq-glass-bright) 92%, white),
+    inset 0 -1px 0 var(--lq-glass-shade);
+  color: var(--lq-foreground);
+  white-space: nowrap;
+  transition:
+    background 180ms var(--lq-easing),
+    border-color 180ms var(--lq-easing),
+    box-shadow 180ms var(--lq-easing),
+    transform 180ms var(--lq-easing);
+}
+
+[data-theme='liquefy'] .liquefy-import-panel__button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--lq-accent) 78%, white);
+  background: color-mix(in srgb, var(--lq-accent) 26%, var(--lq-glass-soft) 68%);
+  box-shadow:
+    0 14px 30px color-mix(in srgb, var(--lq-shadow-color) 62%, transparent),
+    inset 0 1px 0 var(--lq-glass-bright),
+    inset 0 -1px 0 var(--lq-glass-shade);
+  transform: translateY(-1px);
+}
+
+[data-theme='liquefy'] .liquefy-import-panel__button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+[data-theme='liquefy'] .liquefy-import-panel__button:focus-visible {
+  outline: 2px solid var(--ui-focus-ring);
+  outline-offset: 3px;
+}
+
 [data-theme='liquefy'] .card-header,
 [data-theme='liquefy'] .card-footer {
   background: color-mix(in srgb, var(--lq-glass-soft) 74%, transparent);
@@ -1297,6 +1337,10 @@
     padding: 1.1rem;
   }
 
+  [data-theme='liquefy'] .liquefy-import-panel__button {
+    width: 100%;
+  }
+
   [data-theme='liquefy'] [data-slot='dialog-content'],
   [data-theme='liquefy'] .compat-modal,
   [data-theme='liquefy'] .modal-dialog {
@@ -1322,5 +1366,215 @@
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+/* Low-amplitude motion for route, tab, pagination, and portal surfaces. */
+[data-theme='liquefy'] .route-view-transition {
+  view-transition-name: page-content;
+  animation: liquefy-route-enter 220ms var(--lq-easing) both;
+}
+
+[data-theme='liquefy'] .pagination-view-transition,
+[data-theme='liquefy'] [data-pagination-page] {
+  animation: liquefy-pagination-enter 180ms var(--lq-easing) both;
+}
+
+[data-theme='liquefy'] [data-slot='tabs-content'][data-state='active'],
+[data-theme='liquefy'] .tab-pane.show.active {
+  animation: liquefy-tab-content-enter 190ms var(--lq-easing) both;
+}
+
+[data-theme='liquefy'] .tab-selector {
+  position: relative;
+  overflow: hidden;
+  transition:
+    color 180ms var(--lq-easing),
+    background-color 180ms var(--lq-easing),
+    border-color 180ms var(--lq-easing),
+    box-shadow 180ms var(--lq-easing),
+    transform 180ms var(--lq-easing);
+}
+
+[data-theme='liquefy'] .tab-selector::after {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.15rem;
+  left: 0.55rem;
+  height: 2px;
+  border-radius: 999px;
+  content: '';
+  background: var(--ui-primary);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 180ms var(--lq-easing), opacity 180ms var(--lq-easing);
+}
+
+[data-theme='liquefy'] .tab-selector-active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+[data-theme='liquefy'] .tab-selector:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+}
+
+[data-theme='liquefy'] [data-slot='tabs-trigger']::after,
+[data-theme='liquefy'] .nav-tabs .nav-link::after {
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 180ms var(--lq-easing), opacity 180ms var(--lq-easing);
+}
+
+[data-theme='liquefy'] [data-slot='tabs-trigger'][data-state='active']::after,
+[data-theme='liquefy'] .nav-tabs .nav-link.active::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+[data-theme='liquefy'] .nav-tabs .nav-link {
+  position: relative;
+  transition: color 180ms var(--lq-easing), background-color 180ms var(--lq-easing), border-color 180ms var(--lq-easing);
+}
+
+[data-theme='liquefy'] .nav-tabs .nav-link::after {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.15rem;
+  left: 0.55rem;
+  height: 2px;
+  content: '';
+  background: var(--lq-accent);
+  opacity: 0;
+}
+
+[data-theme='liquefy'] [data-slot='dialog-overlay'][data-dialog-state='open'],
+[data-theme='liquefy'] [data-slot='sheet-overlay'][data-sheet-state='open'],
+[data-theme='liquefy'] .modal-backdrop.show,
+[data-theme='liquefy'] .offcanvas-backdrop.show {
+  animation: liquefy-overlay-enter 180ms ease-out both;
+}
+
+[data-theme='liquefy'] [data-slot='dialog-content'][data-dialog-state='open'],
+[data-theme='liquefy'] [data-slot='sheet-content'][data-sheet-state='open'],
+[data-theme='liquefy'] .modal.show .modal-dialog,
+[data-theme='liquefy'] .offcanvas.show {
+  animation: liquefy-surface-enter 220ms var(--lq-easing) both;
+}
+
+[data-theme='liquefy'] .lq-dialog__backdrop,
+[data-theme='liquefy'] .lq-drawer__backdrop {
+  animation: liquefy-overlay-enter 180ms ease-out both;
+}
+
+[data-theme='liquefy'] .lq-dialog[data-open] {
+  animation: liquefy-surface-enter 220ms var(--lq-easing) both;
+}
+
+[data-theme='liquefy'] [data-slot='dialog-close'],
+[data-theme='liquefy'] .btn-close,
+[data-theme='liquefy'] .lq-dialog__header > .lq-button,
+[data-theme='liquefy'] .lq-drawer__close {
+  box-sizing: border-box;
+  display: inline-grid;
+  width: 2.25rem !important;
+  min-width: 2.25rem !important;
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+  place-items: center;
+  padding: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--lq-glass-bright) 72%, var(--lq-accent));
+  border-radius: 999px !important;
+  background-color: color-mix(in srgb, var(--lq-glass-soft) 74%, transparent) !important;
+  box-shadow: inset 0 1px 0 var(--lq-glass-bright), 0 5px 16px color-mix(in srgb, var(--lq-shadow-color) 48%, transparent);
+  color: var(--lq-foreground);
+  opacity: 1;
+  transition: background-color 160ms var(--lq-easing), border-color 160ms var(--lq-easing), box-shadow 160ms var(--lq-easing), transform 160ms var(--lq-easing);
+}
+
+[data-theme='liquefy'] .lq-dialog__header > .lq-button {
+  aspect-ratio: 1;
+  flex: 0 0 2.25rem;
+  font-size: 1.35rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+[data-theme='liquefy'] .lq-dialog__header > .lq-button .lq-button__content {
+  color: var(--lq-foreground);
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+  width: 100%;
+}
+
+[data-theme='liquefy'] .lq-dialog__header > .lq-button .lq-button__content > span {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+[data-theme='liquefy'] [data-slot='dialog-close']:hover,
+[data-theme='liquefy'] .btn-close:hover,
+[data-theme='liquefy'] .lq-dialog__header > .lq-button:hover,
+[data-theme='liquefy'] .lq-drawer__close:hover {
+  background-color: color-mix(in srgb, var(--lq-accent) 18%, var(--lq-glass-soft)) !important;
+  border-color: color-mix(in srgb, var(--lq-accent) 60%, var(--lq-glass-bright));
+  box-shadow: inset 0 1px 0 var(--lq-glass-bright), 0 8px 20px color-mix(in srgb, var(--lq-shadow-color) 58%, transparent);
+  transform: translateY(-1px);
+}
+
+[data-theme='liquefy'] [data-slot='dialog-close']:focus-visible,
+[data-theme='liquefy'] .btn-close:focus-visible,
+[data-theme='liquefy'] .lq-dialog__header > .lq-button:focus-visible,
+[data-theme='liquefy'] .lq-drawer__close:focus-visible {
+  outline: 2px solid var(--ui-focus-ring);
+  outline-offset: 3px;
+}
+
+@keyframes liquefy-route-enter {
+  from { transform: translateY(6px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes liquefy-tab-content-enter {
+  from { transform: translateY(4px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes liquefy-pagination-enter {
+  from { transform: translateY(3px) scale(0.99); }
+  to { transform: translateY(0) scale(1); }
+}
+
+@keyframes liquefy-overlay-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes liquefy-surface-enter {
+  from { opacity: 0; transform: translateY(7px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='liquefy'] .route-view-transition,
+  [data-theme='liquefy'] .pagination-view-transition,
+  [data-theme='liquefy'] [data-pagination-page],
+  [data-theme='liquefy'] [data-slot='tabs-content'][data-state='active'],
+  [data-theme='liquefy'] .tab-pane.show.active,
+  [data-theme='liquefy'] [data-slot='dialog-overlay'][data-dialog-state='open'],
+  [data-theme='liquefy'] [data-slot='sheet-overlay'][data-sheet-state='open'],
+  [data-theme='liquefy'] [data-slot='dialog-content'][data-dialog-state='open'],
+  [data-theme='liquefy'] [data-slot='sheet-content'][data-sheet-state='open'],
+  [data-theme='liquefy'] .modal.show .modal-dialog,
+  [data-theme='liquefy'] .offcanvas.show,
+  [data-theme='liquefy'] .lq-dialog__backdrop,
+  [data-theme='liquefy'] .lq-drawer__backdrop,
+  [data-theme='liquefy'] .lq-dialog[data-open] {
+    animation: none !important;
+    transition: none !important;
   }
 }

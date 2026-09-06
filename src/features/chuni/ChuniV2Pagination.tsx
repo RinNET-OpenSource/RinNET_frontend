@@ -62,7 +62,7 @@ export function ChuniV2Pagination({
   );
 
   return (
-    <div className="user-select-none d-inline-block" style={{ cursor: 'default' }}>
+    <div key={normalizedCurrent} className="user-select-none d-inline-block pagination-view-transition" data-pagination-page={normalizedCurrent} style={{ cursor: 'default' }}>
       <ul className={listClassName}>
         <li className={`page-item${normalizedCurrent <= 1 ? ' disabled' : ''}`}>
           <a

@@ -85,7 +85,11 @@ function ImportPanel({
           <p className="liquefy-import-panel__hint">{t('ImportPage.FileHint')}</p>
         </div>
         {input}
-        <LiquidButton type="button" onClick={() => inputRef.current?.click()}>
+        <LiquidButton
+          className="liquefy-import-panel__button"
+          type="button"
+          onClick={() => inputRef.current?.click()}
+        >
           {t('ImportPage.SelectFile')}
         </LiquidButton>
       </LiquidSurface>

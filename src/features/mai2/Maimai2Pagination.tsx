@@ -56,7 +56,7 @@ export function Maimai2Pagination({
   const pages = useMemo(() => pageEntries(current, totalPages), [current, totalPages]);
 
   return (
-    <ul className="pagination pagination-sm justify-content-center mb-2 user-select-none">
+    <ul key={current} data-pagination-page={current} className="pagination pagination-sm justify-content-center mb-2 user-select-none">
       <li className={`page-item${current <= 1 ? ' disabled' : ''}`}>
         <a className="page-link" onClick={() => current > 1 && onPageChange(current - 1)}>
           &nbsp;&lt;&nbsp;

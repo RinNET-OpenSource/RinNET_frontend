@@ -378,7 +378,11 @@ export function AppShell() {
               className={'order-1 ms-0' + (accessLayout ? '' : ' ms-lg-3 me-lg-2')}
               style={{ marginTop: accessLayout ? '0' : isLiquefy ? '5.45rem' : '4.6rem', gridArea: 'main' }}
             >
-              <div>
+              <div
+                key={location.key}
+                className="route-view-transition"
+                data-route-view={location.pathname}
+              >
                 <Outlet />
               </div>
             </main>

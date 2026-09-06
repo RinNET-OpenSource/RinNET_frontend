@@ -36,18 +36,20 @@ export function Pagination({
 
   if (family === 'liquefy') {
     return (
-      <LiquidPagination
-        className={`liquefy-pagination liquefy-pagination--${size}`}
-        count={totalPages}
-        page={Math.min(totalPages, Math.max(1, current))}
-        siblingCount={3}
-        onPageChange={onPageChange}
-      />
+      <div key={current} className="pagination-view-transition" data-pagination-page={current}>
+        <LiquidPagination
+          className={`liquefy-pagination liquefy-pagination--${size}`}
+          count={totalPages}
+          page={Math.min(totalPages, Math.max(1, current))}
+          siblingCount={3}
+          onPageChange={onPageChange}
+        />
+      </div>
     );
   }
 
   return (
-    <ul className={`pagination pagination${size === 'sm' ? '-sm' : ''} justify-content-center mb-2`}>
+    <ul key={current} data-pagination-page={current} className={`pagination pagination${size === 'sm' ? '-sm' : ''} justify-content-center mb-2`}>
       <li className={'page-item' + (current <= 1 ? ' disabled' : '')}>
         <a className="page-link" onClick={() => current > 1 && onPageChange(current - 1)}>
           &nbsp;&lt;&nbsp;

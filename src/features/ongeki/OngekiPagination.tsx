@@ -83,7 +83,7 @@ export function OngekiPagination({
   }, [current, normalizedCurrent, onPageChange]);
 
   return (
-    <div className="d-flex user-select-none" style={{ cursor: 'default' }}>
+    <div key={normalizedCurrent} className="d-flex user-select-none pagination-view-transition" data-pagination-page={normalizedCurrent} style={{ cursor: 'default' }}>
       <ul className={`pagination pagination-sm justify-content-center ${marginClassName}`}>
         <li className={'page-item' + (normalizedCurrent <= 1 ? ' disabled' : '')}>
           <a
