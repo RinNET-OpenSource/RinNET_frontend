@@ -1,0 +1,36 @@
+/* Tailwind consumes RinNET semantics; it does not define theme values. */
+@custom-variant dark (&:where([data-color-scheme='dark'], [data-color-scheme='dark'] *));
+
+@theme inline {
+  --font-sans: var(--ui-font-family);
+
+  --color-background: var(--ui-background);
+  --color-foreground: var(--ui-foreground);
+  --color-card: var(--ui-card);
+  --color-card-foreground: var(--ui-card-foreground);
+  --color-popover: var(--ui-popover);
+  --color-popover-foreground: var(--ui-popover-foreground);
+  --color-primary: var(--ui-primary);
+  --color-primary-foreground: var(--ui-primary-foreground);
+  --color-secondary: var(--ui-secondary-surface);
+  --color-secondary-foreground: var(--ui-secondary-foreground);
+  --color-muted: var(--ui-muted-surface);
+  --color-muted-foreground: var(--ui-muted-foreground);
+  --color-accent: var(--ui-accent-surface);
+  --color-accent-foreground: var(--ui-accent-foreground);
+  --color-destructive: var(--ui-destructive);
+  --color-destructive-foreground: var(--ui-destructive-foreground);
+  --color-destructive-subtle: var(--ui-destructive-subtle);
+  --color-destructive-control-hover: var(--ui-destructive-control-hover-background);
+  --color-destructive-control-active: var(--ui-destructive-control-active-background);
+  --color-invalid: var(--ui-invalid);
+  --color-overlay: var(--ui-overlay);
+  --color-border: var(--ui-border);
+  --color-input: var(--ui-input-border);
+  --color-ring: var(--ui-focus-ring);
+
+  --radius-sm: var(--ui-radius-sm);
+  --radius-md: var(--ui-radius-md);
+  --radius-lg: var(--ui-radius-lg);
+  --radius-xl: var(--ui-radius-xl);
+}

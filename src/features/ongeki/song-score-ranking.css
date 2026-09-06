@@ -101,12 +101,12 @@
   overflow: hidden;
 }
 
-[data-bs-theme='light'] .ongeki-song-score-ranking .music-info-container {
+[data-color-scheme='light'] .ongeki-song-score-ranking .music-info-container {
   --color-from: rgba(255, 255, 255, 0.3);
   --color-to: rgba(255, 255, 255, 1);
 }
 
-[data-bs-theme='dark'] .ongeki-song-score-ranking .music-info-container {
+[data-color-scheme='dark'] .ongeki-song-score-ranking .music-info-container {
   --color-from: rgba(33, 37, 41, 0.3);
   --color-to: rgba(33, 37, 41, 1);
 }

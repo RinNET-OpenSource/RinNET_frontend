@@ -178,8 +178,8 @@
 
 .chuni-v2-userbox-dialog-overlay {
   z-index: 1050;
-  background: #000;
-  opacity: 0.5;
+  background: var(--ui-overlay);
+  opacity: 1;
 }
 
 .chuni-v2-userbox-dialog {

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-theme-family="liquefy" data-bs-theme="light">
+<html lang="zh-CN" data-theme="liquefy" data-color-scheme="light">
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="noindex">
@@ -7,40 +7,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link href="/assets/turtle.svg" rel="icon" type="image/x-icon">
   <link href="/manifest.webmanifest" rel="manifest">
-  <meta name="theme-color" content="#eefbff">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <script>
-    // 首屏前应用主题，避免暗色或非默认主题闪烁。
+    // 首屏只恢复通用主题状态；catalog 校验与兼容 adapter 由主 bundle 负责。
     (function () {
-      var family = 'liquefy';
+      var root = document.documentElement;
+      var storedTheme = null;
       var colorTheme = 'auto';
       try {
-        var savedFamily = localStorage.getItem('themeFamily');
+        storedTheme = localStorage.getItem('themeFamily');
         var savedColorTheme = localStorage.getItem('colorTheme');
-        if (savedFamily === 'modern') {
-          family = 'liquefy';
-          localStorage.setItem('themeFamily', family);
-        } else if (savedFamily === 'legacy' || savedFamily === 'liquefy') {
-          family = savedFamily;
-        }
         if (savedColorTheme === 'auto' || savedColorTheme === 'light' || savedColorTheme === 'dark') {
           colorTheme = savedColorTheme;
         }
       } catch (e) { /* ignore */ }
+      if (storedTheme) root.dataset.theme = storedTheme;
       var dark = colorTheme === 'dark';
       if (colorTheme === 'auto') {
         try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { dark = false; }
       }
-      var resolved = dark ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme-family', family);
-      document.documentElement.setAttribute('data-bs-theme', resolved);
-      var themeColors = family === 'liquefy'
-        ? { light: '#eefbff', dark: '#101c28' }
-        : { light: '#f9fafa', dark: '#2a2f33' };
-      document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[resolved]);
-      document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')
-        .setAttribute('content', dark ? 'black' : 'default');
+      root.dataset.colorScheme = dark ? 'dark' : 'light';
     })();
   </script>
 </head>

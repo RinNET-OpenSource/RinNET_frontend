@@ -556,7 +556,7 @@ test.describe('Maimai2 recent and rating visual parity', () => {
     await waitForCatalog(page);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await settle(page, '.record > .card', recentRows.length);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
     const rankBadge = page.locator('.record > .card').first().locator('.recent-rank-icon');
     await expect(rankBadge).toHaveCSS('bottom', '5.6px');
     await expect(rankBadge).toHaveCSS('right', '5.6px');

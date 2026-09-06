@@ -547,13 +547,13 @@ test.describe('Mai2 server missions and point exchanges parity', () => {
     const page = await context.newPage();
     await page.goto(`${REACT_ORIGIN}/mai2/servermissions`, { waitUntil: 'domcontentloaded' });
     await settleServerMissions(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
     await page.getByRole('button', { name: '兑换', exact: true }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.getByRole('dialog').getByRole('button', { name: '关闭', exact: true }).click();
     await page.goto(`${REACT_ORIGIN}/mai2/pointexchanges`, { waitUntil: 'domcontentloaded' });
     await settlePointExchanges(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
     await page.locator('.exchange-card').first().getByRole('button', { name: '兑换', exact: true }).click();
     await expect(page.getByRole('dialog')).toContainText('确认兑换');
     await page.getByRole('dialog').getByRole('button', { name: '取消', exact: true }).click();

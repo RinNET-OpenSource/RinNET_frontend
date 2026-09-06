@@ -1,0 +1,211 @@
+/* Bootstrap 5.3-inspired implementation of the RinNET semantic contract. */
+:root[data-theme='legacy'] {
+  color-scheme: light;
+
+  --ui-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans',
+    'Liberation Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+
+  --ui-background: #fff;
+  --ui-background-rgb: 255, 255, 255;
+  --ui-foreground: #212529;
+  --ui-foreground-rgb: 33, 37, 41;
+  --ui-secondary-foreground: rgba(33, 37, 41, 0.75);
+  --ui-secondary-foreground-rgb: 33, 37, 41;
+  --ui-muted-foreground: rgba(33, 37, 41, 0.75);
+  --ui-muted-foreground-rgb: 33, 37, 41;
+  --ui-emphasis: #000;
+  --ui-emphasis-rgb: 0, 0, 0;
+  --ui-card: var(--ui-background);
+  --ui-card-foreground: var(--ui-foreground);
+  --ui-card-cap: rgba(0, 0, 0, 0.03);
+  --ui-popover: var(--ui-background);
+  --ui-popover-foreground: var(--ui-foreground);
+  --ui-secondary-surface: #e9ecef;
+  --ui-secondary-surface-rgb: 233, 236, 239;
+  --ui-muted-surface: #f8f9fa;
+  --ui-muted-surface-rgb: 248, 249, 250;
+  --ui-accent-surface: var(--ui-muted-surface);
+  --ui-accent-foreground: var(--ui-foreground);
+
+  --ui-primary: #0d6efd;
+  --ui-primary-rgb: 13, 110, 253;
+  --ui-primary-foreground: #fff;
+  --ui-primary-text: #053c86;
+  --ui-primary-subtle: #cfe2ff;
+  --ui-primary-border: #9ec5fe;
+  --ui-primary-hover: #0b5ed7;
+  --ui-primary-hover-border: #0a58ca;
+  --ui-primary-active: #0a58ca;
+
+  --ui-secondary: #6c757d;
+  --ui-secondary-rgb: 108, 117, 125;
+  --ui-secondary-text: #2f3640;
+  --ui-secondary-subtle: #e2e3e5;
+  --ui-secondary-border: #c4c8cb;
+  --ui-success: #198754;
+  --ui-success-rgb: 25, 135, 84;
+  --ui-success-text: #0a3622;
+  --ui-success-subtle: #d1e7dd;
+  --ui-success-border: #a3cfbb;
+  --ui-info: #0dcaf0;
+  --ui-info-rgb: 13, 202, 240;
+  --ui-info-text: #055160;
+  --ui-info-subtle: #cff4fc;
+  --ui-info-border: #9eeaf9;
+  --ui-warning: #ffc107;
+  --ui-warning-rgb: 255, 193, 7;
+  --ui-warning-text: #664d03;
+  --ui-warning-subtle: #fff3cd;
+  --ui-warning-border: #ffe69c;
+  --ui-destructive: #dc3545;
+  --ui-destructive-rgb: 220, 53, 69;
+  --ui-destructive-foreground: #fff;
+  --ui-destructive-text: #842029;
+  --ui-destructive-subtle: #f8d7da;
+  --ui-destructive-border: #f1aeb5;
+  --ui-orange: #fd7e14;
+  --ui-orange-subtle: #ffe5d0;
+  --ui-light: #f8f9fa;
+  --ui-dark: #212529;
+
+  --ui-link: #0d6efd;
+  --ui-link-rgb: 13, 110, 253;
+  --ui-link-hover: #0a58ca;
+  --ui-link-hover-rgb: 10, 88, 202;
+  --ui-code: #d63384;
+  --ui-highlight-foreground: #212529;
+  --ui-highlight-background: #fff3cd;
+
+  --ui-border-width: 1px;
+  --ui-border: #dee2e6;
+  --ui-border-translucent: rgba(0, 0, 0, 0.175);
+  --ui-input-border: var(--ui-border);
+  --ui-radius-sm: 0.25rem;
+  --ui-radius-md: 0.375rem;
+  --ui-radius-lg: 0.5rem;
+  --ui-radius-xl: 1rem;
+  --ui-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --ui-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --ui-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  --ui-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+  --ui-focus-ring: #0d6efd;
+  --ui-valid: #198754;
+  --ui-invalid: #dc3545;
+  --ui-progress: var(--ui-primary);
+  --ui-overlay: rgb(0 0 0 / 50%);
+
+  --ui-control-background: transparent;
+  --ui-control-foreground: var(--ui-foreground);
+  --ui-control-border: transparent;
+  --ui-control-hover-background: transparent;
+  --ui-control-hover-foreground: var(--ui-foreground);
+  --ui-control-hover-border: transparent;
+  --ui-control-active-background: transparent;
+  --ui-control-active-foreground: var(--ui-foreground);
+  --ui-control-active-border: transparent;
+  --ui-primary-control-background: var(--ui-primary);
+  --ui-primary-control-border: var(--ui-primary);
+  --ui-primary-control-hover-background: var(--ui-primary-hover);
+  --ui-primary-control-hover-border: var(--ui-primary-hover-border);
+  --ui-primary-control-active-background: var(--ui-primary-active);
+  --ui-primary-control-active-border: var(--ui-primary-hover-border);
+  --ui-destructive-control-background: var(--ui-destructive);
+  --ui-destructive-control-border: var(--ui-destructive);
+  --ui-destructive-control-hover-background: color-mix(in srgb, var(--ui-destructive) 90%, black);
+  --ui-destructive-control-hover-border: color-mix(in srgb, var(--ui-destructive) 80%, black);
+  --ui-destructive-control-active-background: color-mix(in srgb, var(--ui-destructive) 80%, black);
+  --ui-destructive-control-active-border: color-mix(in srgb, var(--ui-destructive) 70%, black);
+  --ui-warning-control-foreground: #000;
+  --ui-outline-control-background: transparent;
+  --ui-outline-control-hover-foreground: var(--ui-primary-foreground);
+  --ui-outline-control-hover-mix: 100%;
+  --ui-link-control-background: transparent;
+  --ui-link-control-border: transparent;
+  --ui-link-control-hover-background: transparent;
+
+  --ui-table-foreground: var(--ui-emphasis);
+  --ui-table-background: var(--ui-background);
+  --ui-table-border: var(--ui-border);
+  --ui-table-striped-background: rgba(var(--ui-emphasis-rgb), 0.05);
+  --ui-table-hover-background: rgba(var(--ui-emphasis-rgb), 0.075);
+  --ui-table-hover-foreground: var(--ui-emphasis);
+
+  --ui-theme-menu-min-width: 10rem;
+  --ui-theme-menu-padding: 0.5rem 0;
+  --ui-theme-menu-background: var(--ui-background);
+  --ui-theme-menu-border: var(--ui-border-translucent);
+  --ui-theme-menu-radius: var(--ui-radius-md);
+  --ui-theme-menu-shadow: none;
+  --ui-theme-menu-label: var(--ui-muted-foreground);
+  --ui-theme-menu-label-padding-block: 0.375rem;
+  --ui-theme-menu-label-padding-inline: 0.5rem;
+  --ui-theme-menu-label-font-size: 0.875rem;
+  --ui-theme-menu-label-font-weight: 500;
+  --ui-theme-menu-item-min-height: auto;
+  --ui-theme-menu-item-margin: 0.25rem 0;
+  --ui-theme-menu-item-padding: 0.25rem 1rem;
+  --ui-theme-menu-item-radius: 0;
+  --ui-theme-menu-item-hover: var(--ui-muted-surface);
+  --ui-theme-menu-item-active: var(--ui-primary);
+  --ui-theme-menu-item-active-foreground: var(--ui-primary-foreground);
+  --ui-theme-menu-item-active-border: transparent;
+  --ui-theme-menu-item-active-shadow: none;
+  --ui-theme-menu-item-active-font-weight: 700;
+}
+
+:root[data-theme='legacy'][data-color-scheme='dark'] {
+  color-scheme: dark;
+
+  --ui-background: #212529;
+  --ui-background-rgb: 33, 37, 41;
+  --ui-foreground: #dee2e6;
+  --ui-foreground-rgb: 222, 226, 230;
+  --ui-secondary-foreground: rgba(222, 226, 230, 0.75);
+  --ui-secondary-foreground-rgb: 222, 226, 230;
+  --ui-muted-foreground: rgba(222, 226, 230, 0.75);
+  --ui-muted-foreground-rgb: 222, 226, 230;
+  --ui-emphasis: #fff;
+  --ui-emphasis-rgb: 255, 255, 255;
+  --ui-card-cap: rgba(255, 255, 255, 0.03);
+  --ui-secondary-surface: #343a40;
+  --ui-secondary-surface-rgb: 52, 58, 64;
+  --ui-muted-surface: #2b3035;
+  --ui-muted-surface-rgb: 43, 48, 53;
+
+  --ui-primary-text: #6ea8fe;
+  --ui-primary-subtle: #031633;
+  --ui-primary-border: #084298;
+  --ui-secondary-text: #a7acb1;
+  --ui-secondary-subtle: #161719;
+  --ui-secondary-border: #41464b;
+  --ui-success-text: #75b798;
+  --ui-success-subtle: #051b11;
+  --ui-success-border: #0f5132;
+  --ui-info-text: #6edff6;
+  --ui-info-subtle: #032830;
+  --ui-info-border: #087990;
+  --ui-warning-text: #ffda6a;
+  --ui-warning-subtle: #332701;
+  --ui-warning-border: #997404;
+  --ui-destructive-text: #ea868f;
+  --ui-destructive-subtle: #2c0b0e;
+  --ui-destructive-border: #842029;
+  --ui-orange-subtle: #381d08;
+
+  --ui-link: #6ea8fe;
+  --ui-link-rgb: 110, 168, 254;
+  --ui-link-hover: #8bbffc;
+  --ui-link-hover-rgb: 139, 191, 252;
+  --ui-code: #e685b5;
+  --ui-highlight-foreground: #dee2e6;
+  --ui-highlight-background: #664d03;
+  --ui-border: #495057;
+  --ui-border-translucent: rgba(255, 255, 255, 0.15);
+  --ui-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+  --ui-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+  --ui-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+  --ui-focus-ring: #6ea8fe;
+  --ui-valid: #75b798;
+  --ui-invalid: #ea868f;
+}

@@ -1,0 +1,187 @@
+/* Bootstrap is a compatibility consumer of the RinNET semantic contract. */
+:root {
+  --bs-blue: #0d6efd;
+  --bs-indigo: #6610f2;
+  --bs-purple: #6f42c1;
+  --bs-pink: #d63384;
+  --bs-red: #dc3545;
+  --bs-orange: var(--ui-orange);
+  --bs-yellow: #ffc107;
+  --bs-green: #198754;
+  --bs-teal: #20c997;
+  --bs-cyan: #0dcaf0;
+  --bs-black: #000;
+  --bs-white: #fff;
+  --bs-gray: #6c757d;
+  --bs-gray-dark: #343a40;
+  --bs-gray-100: #f8f9fa;
+  --bs-gray-200: #e9ecef;
+  --bs-gray-300: #dee2e6;
+  --bs-gray-400: #ced4da;
+  --bs-gray-500: #adb5bd;
+  --bs-gray-600: #6c757d;
+  --bs-gray-700: #495057;
+  --bs-gray-800: #343a40;
+  --bs-gray-900: #212529;
+
+  --bs-primary: var(--ui-primary);
+  --bs-primary-rgb: var(--ui-primary-rgb);
+  --bs-primary-text-emphasis: var(--ui-primary-text);
+  --bs-primary-bg-subtle: var(--ui-primary-subtle);
+  --bs-primary-border-subtle: var(--ui-primary-border);
+  --bs-secondary: var(--ui-secondary);
+  --bs-secondary-rgb: var(--ui-secondary-rgb);
+  --bs-secondary-text-emphasis: var(--ui-secondary-text);
+  --bs-secondary-bg-subtle: var(--ui-secondary-subtle);
+  --bs-secondary-border-subtle: var(--ui-secondary-border);
+  --bs-success: var(--ui-success);
+  --bs-success-rgb: var(--ui-success-rgb);
+  --bs-success-text-emphasis: var(--ui-success-text);
+  --bs-success-bg-subtle: var(--ui-success-subtle);
+  --bs-success-border-subtle: var(--ui-success-border);
+  --bs-info: var(--ui-info);
+  --bs-info-rgb: var(--ui-info-rgb);
+  --bs-info-text-emphasis: var(--ui-info-text);
+  --bs-info-bg-subtle: var(--ui-info-subtle);
+  --bs-info-border-subtle: var(--ui-info-border);
+  --bs-warning: var(--ui-warning);
+  --bs-warning-rgb: var(--ui-warning-rgb);
+  --bs-warning-text-emphasis: var(--ui-warning-text);
+  --bs-warning-bg-subtle: var(--ui-warning-subtle);
+  --bs-warning-border-subtle: var(--ui-warning-border);
+  --bs-danger: var(--ui-destructive);
+  --bs-danger-rgb: var(--ui-destructive-rgb);
+  --bs-danger-text-emphasis: var(--ui-destructive-text);
+  --bs-danger-bg-subtle: var(--ui-destructive-subtle);
+  --bs-danger-border-subtle: var(--ui-destructive-border);
+  --bs-orange-bg-subtle: var(--ui-orange-subtle);
+  --bs-light: var(--ui-light);
+  --bs-dark: var(--ui-dark);
+
+  --bs-body-color: var(--ui-foreground);
+  --bs-body-color-rgb: var(--ui-foreground-rgb);
+  --bs-body-bg: var(--ui-background);
+  --bs-body-bg-rgb: var(--ui-background-rgb);
+  --bs-secondary-color: var(--ui-secondary-foreground);
+  --bs-secondary-color-rgb: var(--ui-secondary-foreground-rgb);
+  --bs-tertiary-color: var(--ui-muted-foreground);
+  --bs-tertiary-color-rgb: var(--ui-muted-foreground-rgb);
+  --bs-secondary-bg: var(--ui-secondary-surface);
+  --bs-secondary-bg-rgb: var(--ui-secondary-surface-rgb);
+  --bs-tertiary-bg: var(--ui-muted-surface);
+  --bs-tertiary-bg-rgb: var(--ui-muted-surface-rgb);
+  --bs-emphasis-color: var(--ui-emphasis);
+  --bs-emphasis-color-rgb: var(--ui-emphasis-rgb);
+  --bs-link-color: var(--ui-link);
+  --bs-link-color-rgb: var(--ui-link-rgb);
+  --bs-link-hover-color: var(--ui-link-hover);
+  --bs-link-hover-color-rgb: var(--ui-link-hover-rgb);
+  --bs-code-color: var(--ui-code);
+  --bs-highlight-color: var(--ui-highlight-foreground);
+  --bs-highlight-bg: var(--ui-highlight-background);
+
+  --bs-border-width: var(--ui-border-width);
+  --bs-border-style: solid;
+  --bs-border-color: var(--ui-border);
+  --bs-border-color-translucent: var(--ui-border-translucent);
+  --bs-border-radius-sm: var(--ui-radius-sm);
+  --bs-border-radius: var(--ui-radius-md);
+  --bs-border-radius-lg: var(--ui-radius-lg);
+  --bs-border-radius-xl: var(--ui-radius-xl);
+  --bs-box-shadow: var(--ui-shadow);
+  --bs-box-shadow-sm: var(--ui-shadow-sm);
+  --bs-box-shadow-lg: var(--ui-shadow-lg);
+  --bs-box-shadow-inset: var(--ui-shadow-inset);
+  --bs-focus-ring-color: var(--ui-focus-ring);
+  --bs-form-valid-color: var(--ui-valid);
+  --bs-form-valid-border-color: var(--ui-valid);
+  --bs-form-invalid-color: var(--ui-invalid);
+  --bs-form-invalid-border-color: var(--ui-invalid);
+  --bs-body-font-family: var(--ui-font-family);
+  --bs-card-cap-bg: var(--ui-card-cap);
+  --bs-card-bg: var(--ui-card);
+  --bs-btn-hover-bg-primary: var(--ui-primary-hover);
+  --bs-btn-hover-border-primary: var(--ui-primary-hover-border);
+  --bs-btn-active-bg-primary: var(--ui-primary-active);
+  --bs-progress-bar-bg: var(--ui-progress);
+  --app-progress-bar-color: var(--ui-progress);
+}
+
+:where([data-theme='liquefy']) .btn {
+  --bs-btn-border-width: var(--ui-border-width);
+  --bs-btn-color: var(--ui-control-foreground);
+  --bs-btn-bg: var(--ui-control-background);
+  --bs-btn-border-color: var(--ui-control-border);
+  --bs-btn-hover-color: var(--ui-control-hover-foreground);
+  --bs-btn-hover-bg: var(--ui-control-hover-background);
+  --bs-btn-hover-border-color: var(--ui-control-hover-border);
+  --bs-btn-active-color: var(--ui-control-active-foreground);
+  --bs-btn-active-bg: var(--ui-control-active-background);
+  --bs-btn-active-border-color: var(--ui-control-active-border);
+}
+
+.btn-primary {
+  --bs-btn-color: var(--ui-primary-foreground);
+  --bs-btn-bg: var(--ui-primary-control-background);
+  --bs-btn-border-color: var(--ui-primary-control-border);
+  --bs-btn-hover-color: var(--ui-primary-foreground);
+  --bs-btn-hover-bg: var(--ui-primary-control-hover-background);
+  --bs-btn-hover-border-color: var(--ui-primary-control-hover-border);
+  --bs-btn-active-color: var(--ui-primary-foreground);
+  --bs-btn-active-bg: var(--ui-primary-control-active-background);
+  --bs-btn-active-border-color: var(--ui-primary-control-active-border);
+}
+
+.btn-danger {
+  --bs-btn-color: var(--ui-destructive-foreground);
+  --bs-btn-bg: var(--ui-destructive-control-background);
+  --bs-btn-border-color: var(--ui-destructive-control-border);
+  --bs-btn-hover-color: var(--ui-destructive-foreground);
+  --bs-btn-hover-bg: var(--ui-destructive-control-hover-background);
+  --bs-btn-hover-border-color: var(--ui-destructive-control-hover-border);
+  --bs-btn-active-color: var(--ui-destructive-foreground);
+  --bs-btn-active-bg: var(--ui-destructive-control-active-background);
+  --bs-btn-active-border-color: var(--ui-destructive-control-active-border);
+}
+
+[data-theme='liquefy'] .btn-warning,
+[data-theme='liquefy'] .btn-outline-warning:hover {
+  --bs-btn-color: var(--ui-warning-control-foreground);
+}
+
+[data-theme='liquefy'] .btn-outline-primary,
+[data-theme='liquefy'] .btn-outline-secondary,
+[data-theme='liquefy'] .btn-outline-success,
+[data-theme='liquefy'] .btn-outline-danger,
+[data-theme='liquefy'] .btn-outline-warning,
+[data-theme='liquefy'] .btn-outline-info {
+  --bs-btn-bg: var(--ui-outline-control-background);
+  --bs-btn-hover-color: var(--ui-outline-control-hover-foreground);
+  --bs-btn-hover-bg: color-mix(
+    in srgb,
+    var(--bs-btn-border-color) var(--ui-outline-control-hover-mix),
+    var(--ui-control-background)
+  );
+}
+
+[data-theme='liquefy'] .btn-link {
+  --bs-btn-bg: var(--ui-link-control-background);
+  --bs-btn-border-color: var(--ui-link-control-border);
+  --bs-btn-hover-bg: var(--ui-link-control-hover-background);
+}
+
+.table {
+  --bs-table-color: var(--ui-table-foreground);
+  --bs-table-bg: var(--ui-table-background);
+  --bs-table-border-color: var(--ui-table-border);
+  --bs-table-striped-bg: var(--ui-table-striped-background);
+  --bs-table-hover-bg: var(--ui-table-hover-background);
+  --bs-table-hover-color: var(--ui-table-hover-foreground);
+}
+
+.modal-backdrop,
+.offcanvas-backdrop {
+  --bs-backdrop-bg: var(--ui-overlay);
+  --bs-backdrop-opacity: 1;
+  background-color: var(--ui-overlay);
+}

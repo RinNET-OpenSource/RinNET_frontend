@@ -111,7 +111,7 @@ test('Liquefy announcement detail close button receives clicks above its scrolla
 
   const page = await context.newPage();
   await page.goto(`${REACT_ORIGIN}/announcements`, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
 
   await page.locator('.list-group-item.card-btn').click();
   const dialog = page.getByRole('dialog');

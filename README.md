@@ -26,7 +26,7 @@ RinNET 门户前端重写版：**React 19 + Vite + TypeScript + Tailwind v4 + sh
 - `localStorage`：`currentAccount`、`currentUser`、`colorTheme`、`lang`、`dbVersion`、`oauth_state`、`chusanMusicDb`
 - `sessionStorage`（iframe 夺舍）：`impersonatedAccount`
 - `IndexedDB`：库 `Aqua` v6，16 个 object store（游戏静态数据缓存）
-- 主题属性：`<html data-bs-theme="dark|light">`（Bootstrap 5.3 观感 = 第一套主题）
+- 主题属性：`<html data-theme="legacy|liquefy" data-color-scheme="dark|light">`；`data-bs-theme` 仅作为 Bootstrap 兼容输出
 
 ## 目录
 

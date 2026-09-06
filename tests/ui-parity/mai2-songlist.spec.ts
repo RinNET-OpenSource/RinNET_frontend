@@ -503,7 +503,7 @@ test.describe('Maimai2 song list visual parity', () => {
     await waitForCatalog(page);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await settleList(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
 
     await page.getByRole('button', { name: '流派' }).click();
     await page.getByRole('button', { name: '版本' }).click();

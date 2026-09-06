@@ -288,7 +288,7 @@ hr {
 .btn-close:hover {
   opacity: 0.75;
 }
-[data-bs-theme='dark'] .btn-close {
+[data-color-scheme='dark'] .btn-close {
   filter: invert(1) grayscale(100%) brightness(200%);
 }
 
@@ -507,7 +507,7 @@ textarea.form-control {
   print-color-adjust: exact;
   cursor: pointer;
 }
-[data-bs-theme='dark'] .form-check-input {
+[data-color-scheme='dark'] .form-check-input {
   border-color: rgba(255, 255, 255, 0.25);
 }
 .form-check-input[type='checkbox'] {

@@ -69,8 +69,10 @@ function updateMetaTag(name: string, content: string) {
 }
 
 function applyDocumentTheme(next: ThemeSnapshot) {
-  document.documentElement.setAttribute('data-theme-family', next.family);
-  document.documentElement.setAttribute('data-bs-theme', next.resolvedColorTheme);
+  document.documentElement.dataset.theme = next.family;
+  document.documentElement.dataset.colorScheme = next.resolvedColorTheme;
+  // Compatibility output only. RinNET, Tailwind and themes consume data-color-scheme.
+  document.documentElement.dataset.bsTheme = next.resolvedColorTheme;
 
   const statusBar = getThemeFamily(next.family).statusBar[next.resolvedColorTheme];
   updateMetaTag('theme-color', statusBar);
@@ -93,7 +95,10 @@ function storedTheme(): ThemeSnapshot {
     ? 'liquefy'
     : isThemeFamily(storedFamily) ? storedFamily : DEFAULT_FAMILY;
   const colorTheme = isColorTheme(storedColorTheme) ? storedColorTheme : DEFAULT_COLOR_THEME;
-  if (storedFamily === 'modern') writeStorage('themeFamily', family);
+  if (storedFamily !== null && storedFamily !== family) writeStorage('themeFamily', family);
+  if (storedColorTheme !== null && storedColorTheme !== colorTheme) {
+    writeStorage('colorTheme', colorTheme);
+  }
   return {
     family,
     colorTheme,

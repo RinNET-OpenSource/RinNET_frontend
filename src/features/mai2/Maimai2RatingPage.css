@@ -12,5 +12,5 @@
 .maimai2-rating-page .your-maimai-rating-text { margin-right: 3px; }
 .maimai2-rating-page .rank-icon { height: 2rem; width: auto; }
 
-[data-bs-theme='light'] .maimai2-rating-page .player-rating { color: #323232; }
-[data-bs-theme='dark'] .maimai2-rating-page .player-rating { color: #d2d2d2; }
+[data-color-scheme='light'] .maimai2-rating-page .player-rating { color: #323232; }
+[data-color-scheme='dark'] .maimai2-rating-page .player-rating { color: #d2d2d2; }

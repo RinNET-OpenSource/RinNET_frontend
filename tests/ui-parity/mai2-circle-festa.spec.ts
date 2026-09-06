@@ -534,7 +534,7 @@ test.describe('Maimai2 Circle and Festa parity', () => {
 
     await page.goto(`${REACT_ORIGIN}/mai2/circle`, { waitUntil: 'domcontentloaded' });
     await settle(page, 'Fixture Circle');
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
     await page.getByRole('button', { name: '编辑圈子' }).click();
     await expect(page.locator('#circleNameInput')).toHaveValue('Fixture Circle');
     await page.getByRole('button', { name: '取消' }).click();

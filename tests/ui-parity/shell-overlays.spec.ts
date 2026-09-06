@@ -457,7 +457,7 @@ test.describe('application shell responsive and overlay parity', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`${REACT_ORIGIN}/mai2/profile`, { waitUntil: 'domcontentloaded' });
     await settle(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
     await expect(page.locator('canvas.lq-surface__shader')).toHaveCount(0);
     await expectLiquefyMobileHeaderToStayWithinViewport(page);
     await page.getByLabel('导航', { exact: true }).click();

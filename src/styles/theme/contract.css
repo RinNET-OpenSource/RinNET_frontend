@@ -1,0 +1,88 @@
+/*
+ * RinNET UI semantic token contract.
+ *
+ * Theme implementations MUST provide every token below on their data-theme
+ * root. Application code consumes only this vocabulary. Tailwind and Bootstrap
+ * names belong in their adapters, never in a theme implementation.
+ *
+ * Canvas and typography
+ *   --ui-font-family
+ *   --ui-background, --ui-background-rgb
+ *   --ui-foreground, --ui-foreground-rgb
+ *   --ui-emphasis, --ui-emphasis-rgb
+ *
+ * Surfaces and content
+ *   --ui-card, --ui-card-foreground, --ui-card-cap
+ *   --ui-popover, --ui-popover-foreground
+ *   --ui-secondary-surface, --ui-secondary-surface-rgb
+ *   --ui-secondary-foreground, --ui-secondary-foreground-rgb
+ *   --ui-muted-surface, --ui-muted-surface-rgb, --ui-muted-foreground,
+ *     --ui-muted-foreground-rgb
+ *   --ui-accent-surface, --ui-accent-foreground
+ *
+ * Intent colors
+ *   --ui-primary, --ui-primary-rgb, --ui-primary-foreground,
+ *     --ui-primary-text, --ui-primary-subtle, --ui-primary-border,
+ *     --ui-primary-hover, --ui-primary-hover-border, --ui-primary-active
+ *   --ui-secondary, --ui-secondary-rgb, --ui-secondary-text,
+ *     --ui-secondary-subtle, --ui-secondary-border
+ *   --ui-success, --ui-success-rgb, --ui-success-text,
+ *     --ui-success-subtle, --ui-success-border
+ *   --ui-info, --ui-info-rgb, --ui-info-text, --ui-info-subtle,
+ *     --ui-info-border
+ *   --ui-warning, --ui-warning-rgb, --ui-warning-text,
+ *     --ui-warning-subtle, --ui-warning-border
+ *   --ui-destructive, --ui-destructive-rgb, --ui-destructive-foreground,
+ *     --ui-destructive-text, --ui-destructive-subtle, --ui-destructive-border
+ *   --ui-orange, --ui-orange-subtle, --ui-light, --ui-dark
+ *   --ui-valid, --ui-invalid, --ui-progress
+ *
+ * Links and inline content
+ *   --ui-link, --ui-link-rgb, --ui-link-hover, --ui-link-hover-rgb
+ *   --ui-code, --ui-highlight-foreground, --ui-highlight-background
+ *
+ * Geometry and effects
+ *   --ui-border-width, --ui-border, --ui-border-translucent, --ui-input-border
+ *   --ui-radius-sm, --ui-radius-md, --ui-radius-lg, --ui-radius-xl
+ *   --ui-shadow, --ui-shadow-sm, --ui-shadow-lg, --ui-shadow-inset
+ *   --ui-focus-ring, --ui-overlay
+ *
+ * Controls
+ *   --ui-control-background, --ui-control-foreground, --ui-control-border
+ *   --ui-control-hover-background, --ui-control-hover-foreground,
+ *     --ui-control-hover-border
+ *   --ui-control-active-background, --ui-control-active-foreground,
+ *     --ui-control-active-border
+ *   --ui-primary-control-background, --ui-primary-control-border,
+ *     --ui-primary-control-hover-background, --ui-primary-control-hover-border,
+ *     --ui-primary-control-active-background, --ui-primary-control-active-border
+ *   --ui-destructive-control-background, --ui-destructive-control-border,
+ *     --ui-destructive-control-hover-background,
+ *     --ui-destructive-control-hover-border,
+ *     --ui-destructive-control-active-background,
+ *     --ui-destructive-control-active-border
+ *   --ui-warning-control-foreground
+ *   --ui-outline-control-background, --ui-outline-control-hover-foreground,
+ *     --ui-outline-control-hover-mix
+ *   --ui-link-control-background, --ui-link-control-border,
+ *     --ui-link-control-hover-background
+ *
+ * Tables
+ *   --ui-table-foreground, --ui-table-background, --ui-table-border
+ *   --ui-table-striped-background, --ui-table-hover-background,
+ *     --ui-table-hover-foreground
+ *
+ * Theme menu
+ *   --ui-theme-menu-min-width, --ui-theme-menu-padding,
+ *     --ui-theme-menu-background, --ui-theme-menu-border,
+ *     --ui-theme-menu-radius, --ui-theme-menu-shadow
+ *   --ui-theme-menu-label, --ui-theme-menu-label-padding-block,
+ *     --ui-theme-menu-label-padding-inline,
+ *     --ui-theme-menu-label-font-size, --ui-theme-menu-label-font-weight
+ *   --ui-theme-menu-item-min-height, --ui-theme-menu-item-margin,
+ *     --ui-theme-menu-item-padding, --ui-theme-menu-item-radius,
+ *     --ui-theme-menu-item-hover, --ui-theme-menu-item-active,
+ *     --ui-theme-menu-item-active-foreground,
+ *     --ui-theme-menu-item-active-border, --ui-theme-menu-item-active-shadow,
+ *     --ui-theme-menu-item-active-font-weight
+ */

@@ -1,8 +1,8 @@
-[data-theme-family='liquefy'] .announcement-detail-dialog .lq-dialog__header {
+[data-theme='liquefy'] .announcement-detail-dialog .lq-dialog__header {
   z-index: 4;
 }
 
-[data-theme-family='liquefy'] .announcement-detail-dialog .lq-dialog__header > .lq-button {
+[data-theme='liquefy'] .announcement-detail-dialog .lq-dialog__header > .lq-button {
   pointer-events: auto;
   position: relative;
   touch-action: manipulation;

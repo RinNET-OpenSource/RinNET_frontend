@@ -73,7 +73,7 @@
 }
 
 /* Liquefy's rounded cards clip overflow, so keep the rank badge clear of their curved edge. */
-[data-theme-family='liquefy'] .maimai2-recent-page .recent-rank-icon {
+[data-theme='liquefy'] .maimai2-recent-page .recent-rank-icon {
   right: 0.35rem;
   bottom: 0.35rem;
 }
@@ -90,5 +90,5 @@
 .maimai2-recent-page .table-grade-color > tr > td:nth-child(6),
 .maimai2-recent-page .table-grade-color > tr > th:nth-child(6) { color: #868686; font-weight: bold; }
 
-[data-bs-theme='light'] .maimai2-recent-page .track-num-title { color: #323232; }
-[data-bs-theme='dark'] .maimai2-recent-page .track-num-title { color: #d2d2d2; }
+[data-color-scheme='light'] .maimai2-recent-page .track-num-title { color: #323232; }
+[data-color-scheme='dark'] .maimai2-recent-page .track-num-title { color: #d2d2d2; }

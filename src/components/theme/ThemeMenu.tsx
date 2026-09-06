@@ -22,20 +22,14 @@ export function ThemeMenu() {
   const theme = useTheme();
   const icon =
     theme.colorTheme === 'auto' ? <CircleHalf /> : theme.colorTheme === 'light' ? <Sun /> : <Stars />;
-  const isLiquefy = String(theme.family) === 'liquefy';
   const itemClassName = (selected: boolean) =>
-    theme.family === 'legacy'
-      ? 'shell-dropdown-item small my-1' + (selected ? ' active bg-[var(--bs-tertiary-bg)] font-bold' : '')
-      : 'theme-menu-item' + (selected ? ' theme-menu-item--active' : '');
+    'theme-menu-item' + (selected ? ' theme-menu-item--active' : '');
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <a
-          className={
-            'theme-menu-trigger dropdown-toggle d-flex align-items-center cursor-pointer' +
-            (isLiquefy ? ' theme-menu-trigger--liquefy' : '')
-          }
+          className="theme-menu-trigger dropdown-toggle d-flex align-items-center cursor-pointer"
           aria-label={t('App.Footer.Theme')}
         >
           {icon}
@@ -44,14 +38,12 @@ export function ThemeMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        sideOffset={theme.family === 'legacy' ? 2 : 4}
-        className={
-          theme.family === 'legacy'
-            ? 'shell-legacy-dropdown'
-            : 'theme-menu-content theme-menu-content--liquefy'
-        }
+        sideOffset={4}
+        className="theme-menu-content"
       >
-        <DropdownMenuLabel>{t('App.Footer.ThemeFamily')}</DropdownMenuLabel>
+        <DropdownMenuLabel className="theme-menu-label p-[0]">
+          {t('App.Footer.ThemeFamily')}
+        </DropdownMenuLabel>
         {THEME_FAMILIES.map((item) => (
           <DropdownMenuItem
             key={item.id}
@@ -62,7 +54,9 @@ export function ThemeMenu() {
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>{t('App.Footer.ColorTheme')}</DropdownMenuLabel>
+        <DropdownMenuLabel className="theme-menu-label p-[0]">
+          {t('App.Footer.ColorTheme')}
+        </DropdownMenuLabel>
         {colorThemes.map((item) => (
           <DropdownMenuItem
             key={item}

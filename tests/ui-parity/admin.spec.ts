@@ -891,7 +891,7 @@ test.describe('Admin page parity and safety', () => {
     const page = await context.newPage();
     await page.goto(`${REACT_ORIGIN}/admin`, { waitUntil: 'domcontentloaded' });
     await settleUsers(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
     await page.locator('.row-cols-xl-3 .card-btn').first().click();
     await expect(page.getByRole('dialog')).toContainText('卡片与游戏档案');
     await page.getByRole('dialog').getByRole('button', { name: '原始 JSON' }).click();

@@ -80,7 +80,7 @@ test('Liquefy importer keeps its warning prominent and its toast dismissible', a
 
   const page = await context.newPage();
   await page.goto(`${REACT_ORIGIN}/import`, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquefy');
   await expect(page.getByRole('heading', { name: '导入' })).toBeVisible();
 
   const warning = page.locator('.liquefy-import-warning');
