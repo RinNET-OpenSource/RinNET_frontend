@@ -21,7 +21,7 @@ export type ThemeChange = Readonly<{
   colorTheme?: ColorTheme;
 }>;
 
-const DEFAULT_FAMILY: ThemeFamily = 'legacy';
+const DEFAULT_FAMILY: ThemeFamily = 'liquefy';
 const DEFAULT_COLOR_THEME: ColorTheme = 'auto';
 const listeners = new Set<() => void>();
 
@@ -89,8 +89,11 @@ function publish(next: ThemeSnapshot) {
 function storedTheme(): ThemeSnapshot {
   const storedFamily = readStorage('themeFamily');
   const storedColorTheme = readStorage('colorTheme');
-  const family = isThemeFamily(storedFamily) ? storedFamily : DEFAULT_FAMILY;
+  const family = storedFamily === 'modern'
+    ? 'liquefy'
+    : isThemeFamily(storedFamily) ? storedFamily : DEFAULT_FAMILY;
   const colorTheme = isColorTheme(storedColorTheme) ? storedColorTheme : DEFAULT_COLOR_THEME;
+  if (storedFamily === 'modern') writeStorage('themeFamily', family);
   return {
     family,
     colorTheme,

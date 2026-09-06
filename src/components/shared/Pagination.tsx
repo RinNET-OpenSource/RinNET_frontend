@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { LiquidPagination } from '@liquefy-ui/react';
+import { useTheme } from '@/lib/theme';
 
 /**
  * 等价旧版 pagination-template + ngx-pagination 的分页控件（.pagination 结构）。
@@ -17,6 +19,7 @@ export function Pagination({
   onPageChange: (page: number) => void;
   size?: 'sm' | 'md';
 }) {
+  const { family } = useTheme();
   const totalPages = Math.ceil(totalItems / pageSize);
 
   const pages = useMemo(() => {
@@ -30,6 +33,18 @@ export function Pagination({
   }, [current, totalPages]);
 
   if (totalPages <= 1) return null;
+
+  if (family === 'liquefy') {
+    return (
+      <LiquidPagination
+        className={`liquefy-pagination liquefy-pagination--${size}`}
+        count={totalPages}
+        page={Math.min(totalPages, Math.max(1, current))}
+        siblingCount={3}
+        onPageChange={onPageChange}
+      />
+    );
+  }
 
   return (
     <ul className={`pagination pagination${size === 'sm' ? '-sm' : ''} justify-content-center mb-2`}>

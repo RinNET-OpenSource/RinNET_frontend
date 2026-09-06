@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { confirm } from '@/components/shell/ConfirmDialog';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import { getCurrentUser, loadUser } from '@/lib/user';
@@ -287,7 +288,7 @@ export function Maimai2CirclePage() {
   }
 
   async function kick(member: Maimai2CircleMemberInfo) {
-    if (!window.confirm(t('Maimai2.CirclePage.KickUserConfirm', { userName: member.userProfile.userName }))) return;
+    if (!(await confirm(t('Maimai2.CirclePage.KickUserConfirm', { userName: member.userProfile.userName })))) return;
     if (await mutate('api/game/maimai2/deleteUserToCircle', 'KickUserSuccess', 'KickUserFailed', { userCode: member.userCode })) {
       await loadMembers(aimeId, memberPage);
     }
@@ -296,7 +297,7 @@ export function Maimai2CirclePage() {
   async function leaveOrDissolve(dissolve: boolean) {
     const circleName = userCircleInfo?.joinedCircle?.circleName ?? '';
     const confirmKey = dissolve ? 'DissolveCircleConfirm' : 'ExitCircleConfirm';
-    if (!window.confirm(t(`Maimai2.CirclePage.${confirmKey}`, { circleName }))) return;
+    if (!(await confirm(t(`Maimai2.CirclePage.${confirmKey}`, { circleName })))) return;
     const ok = await mutate(
       dissolve ? 'api/game/maimai2/dissolveCircle' : 'api/game/maimai2/exitCircle',
       dissolve ? 'DissolveCircleSuccess' : 'ExitCircleSuccess',

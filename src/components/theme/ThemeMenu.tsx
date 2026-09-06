@@ -22,11 +22,22 @@ export function ThemeMenu() {
   const theme = useTheme();
   const icon =
     theme.colorTheme === 'auto' ? <CircleHalf /> : theme.colorTheme === 'light' ? <Sun /> : <Stars />;
+  const isLiquefy = String(theme.family) === 'liquefy';
+  const itemClassName = (selected: boolean) =>
+    theme.family === 'legacy'
+      ? 'shell-dropdown-item small my-1' + (selected ? ' active bg-[var(--bs-tertiary-bg)] font-bold' : '')
+      : 'theme-menu-item' + (selected ? ' theme-menu-item--active' : '');
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <a className="dropdown-toggle d-flex align-items-center cursor-pointer" aria-label={t('App.Footer.Theme')}>
+        <a
+          className={
+            'theme-menu-trigger dropdown-toggle d-flex align-items-center cursor-pointer' +
+            (isLiquefy ? ' theme-menu-trigger--liquefy' : '')
+          }
+          aria-label={t('App.Footer.Theme')}
+        >
           {icon}
           <span className="ms-1">{t(`App.Footer.${titleCase(theme.colorTheme)}`)}</span>
         </a>
@@ -34,16 +45,17 @@ export function ThemeMenu() {
       <DropdownMenuContent
         align="start"
         sideOffset={theme.family === 'legacy' ? 2 : 4}
-        className={theme.family === 'legacy' ? 'shell-legacy-dropdown' : undefined}
+        className={
+          theme.family === 'legacy'
+            ? 'shell-legacy-dropdown'
+            : 'theme-menu-content theme-menu-content--liquefy'
+        }
       >
         <DropdownMenuLabel>{t('App.Footer.ThemeFamily')}</DropdownMenuLabel>
         {THEME_FAMILIES.map((item) => (
           <DropdownMenuItem
             key={item.id}
-            className={
-              `${theme.family === 'legacy' ? 'shell-dropdown-item small my-1' : ''}` +
-              (theme.family === item.id ? ' active bg-[var(--bs-tertiary-bg)] font-bold' : '')
-            }
+            className={itemClassName(theme.family === item.id)}
             onSelect={() => setTheme({ family: item.id })}
           >
             {t(item.labelKey)}
@@ -54,10 +66,7 @@ export function ThemeMenu() {
         {colorThemes.map((item) => (
           <DropdownMenuItem
             key={item}
-            className={
-              `${theme.family === 'legacy' ? 'shell-dropdown-item small my-1' : ''}` +
-              (theme.colorTheme === item ? ' active bg-[var(--bs-tertiary-bg)] font-bold' : '')
-            }
+            className={itemClassName(theme.colorTheme === item)}
             onSelect={() => setTheme({ colorTheme: item })}
           >
             {t(`App.Footer.${titleCase(item)}`)}

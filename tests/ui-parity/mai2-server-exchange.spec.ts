@@ -303,7 +303,7 @@ async function installFixtureApi(context: BrowserContext): Promise<FixtureAudit>
 async function installStorage(
   context: BrowserContext,
   colorTheme: 'light' | 'dark',
-  themeFamily: 'legacy' | 'modern' = 'legacy',
+  themeFamily: 'legacy' | 'liquefy' = 'legacy',
 ) {
   await context.addInitScript(
     ({ account, user, selectedColor, selectedFamily, origins, dbVersion }) => {
@@ -532,7 +532,7 @@ test.describe('Mai2 server missions and point exchanges parity', () => {
     await context.close();
   });
 
-  test('modern theme smoke renders both pages and a safe modal', async ({ browser }) => {
+  test('liquefy theme smoke renders both pages and a safe modal', async ({ browser }) => {
     const context = await browser.newContext({
       colorScheme: 'light',
       deviceScaleFactor: 1,
@@ -543,17 +543,17 @@ test.describe('Mai2 server missions and point exchanges parity', () => {
       viewport: { width: 1280, height: 720 },
     });
     const audit = await installFixtureApi(context);
-    await installStorage(context, 'light', 'modern');
+    await installStorage(context, 'light', 'liquefy');
     const page = await context.newPage();
     await page.goto(`${REACT_ORIGIN}/mai2/servermissions`, { waitUntil: 'domcontentloaded' });
     await settleServerMissions(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
+    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
     await page.getByRole('button', { name: '兑换', exact: true }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.getByRole('dialog').getByRole('button', { name: '关闭', exact: true }).click();
     await page.goto(`${REACT_ORIGIN}/mai2/pointexchanges`, { waitUntil: 'domcontentloaded' });
     await settlePointExchanges(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
+    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
     await page.locator('.exchange-card').first().getByRole('button', { name: '兑换', exact: true }).click();
     await expect(page.getByRole('dialog')).toContainText('确认兑换');
     await page.getByRole('dialog').getByRole('button', { name: '取消', exact: true }).click();

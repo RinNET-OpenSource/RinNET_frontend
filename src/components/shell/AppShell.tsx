@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Outlet, useLocation, useNavigate, Link, useMatches } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { List, Person, Translate } from 'react-bootstrap-icons';
+import { LiquidDrawer, LiquidIconButton } from '@liquefy-ui/react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +22,7 @@ import { menu, showItem, showMenu } from '@/lib/menu';
 import { languages, languageKeys, langStore, setLang } from '@/lib/i18n';
 import { assetsHost } from '@/lib/utils';
 import { setNavigator } from '@/lib/nav';
+import { useTheme } from '@/lib/theme';
 
 export interface RouteHandle {
   title?: string;
@@ -158,9 +160,17 @@ function UserPopover() {
   const { t } = useTranslation();
   const user = useStore(userStore);
   const isActive = useIsActive();
+  const location = useLocation();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => setOpen(false), [location.pathname]);
+
   if (!user) return null;
+
+  const close = () => setOpen(false);
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button className="btn btn-icon d-flex align-items-center" type="button">
           <Person size="1.4rem" />
@@ -170,16 +180,22 @@ function UserPopover() {
         <div className="vstack user-popover">
           <label className="text-start mx-2 h5">{user.name}</label>
           <hr className="my-2 border" />
-          <Link to="/profile" className={'link-btn rounded mb-2' + (isActive('profile') ? ' active' : '')}>
+          <Link to="/profile" className={'link-btn rounded mb-2' + (isActive('profile') ? ' active' : '')} onClick={close}>
             {t('App.UserPopup.Profile')}
           </Link>
-          <Link to="/cards" className={'link-btn rounded mb-2' + (isActive('cards') ? ' active' : '')}>
+          <Link to="/cards" className={'link-btn rounded mb-2' + (isActive('cards') ? ' active' : '')} onClick={close}>
             {t('App.UserPopup.MyCards')}
           </Link>
-          <Link to="/keychip" className={'link-btn rounded mb-2' + (isActive('keychip') ? ' active' : '')}>
+          <Link to="/keychip" className={'link-btn rounded mb-2' + (isActive('keychip') ? ' active' : '')} onClick={close}>
             {t('App.UserPopup.Keychip')}
           </Link>
-          <a className="link-btn link-btn-danger rounded" onClick={doLogout}>
+          <a
+            className="link-btn link-btn-danger rounded"
+            onClick={() => {
+              close();
+              doLogout();
+            }}
+          >
             {t('App.UserPopup.SignOut')}
           </a>
         </div>
@@ -191,9 +207,10 @@ function UserPopover() {
 function Footer() {
   const { t } = useTranslation();
   const currentLang = useStore(langStore);
+  const { family } = useTheme();
 
   return (
-    <footer className="footer container-xxl mb-2">
+    <footer className={'footer container-xxl' + (family === 'liquefy' ? '' : ' mb-2')}>
       <hr className="m-0 pt-2" />
       <div className="d-flex justify-content-between flex-wrap px-2 px-lg-3 py-3 column-gap-3">
         <div className="row fw-bold my-2">
@@ -252,6 +269,7 @@ export function AppShell() {
   const location = useLocation();
   const matches = useMatches() as Array<{ handle?: RouteHandle }>;
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const deepest = [...matches].reverse().find((m) => m.handle)?.handle ?? {};
   const accessLayout = deepest.accessLayout === true;
@@ -264,6 +282,7 @@ export function AppShell() {
 
   const togglerHidden = isRouterHome && account ? 'v-hidden' : '';
   const togglerNotLogin = disableSidebar && !account ? 'v-not-login' : '';
+  const isLiquefy = String(theme.family) === 'liquefy';
 
   return (
     <div className="app-container">
@@ -272,15 +291,26 @@ export function AppShell() {
         {!accessLayout && (
           <nav className="app-navbar navbar navbar-expand-lg position-fixed shadow w-100">
             <div className="container-xxl">
-              <button
-                className={`navbar-toggler btn btn-icon d-lg-none ${togglerHidden} ${togglerNotLogin}`}
-                type="button"
-                onClick={() => setSheetOpen(true)}
-              >
-                <div className="d-flex align-items-center">
+              {isLiquefy ? (
+                <LiquidIconButton
+                  className={`app-navbar-menu-trigger d-lg-none ${togglerHidden} ${togglerNotLogin}`}
+                  label={t('App.Sidebar.Navigation')}
+                  onClick={() => setSheetOpen(true)}
+                  shape="rounded"
+                >
                   <List size="1.4rem" />
-                </div>
-              </button>
+                </LiquidIconButton>
+              ) : (
+                <button
+                  className={`navbar-toggler btn btn-icon d-lg-none ${togglerHidden} ${togglerNotLogin}`}
+                  type="button"
+                  onClick={() => setSheetOpen(true)}
+                >
+                  <div className="d-flex align-items-center">
+                    <List size="1.4rem" />
+                  </div>
+                </button>
+              )}
               <Link to="/" className="navbar-brand sm-center">
                 <img
                   src={assetsHost + 'assets/turtle.svg'}
@@ -292,6 +322,7 @@ export function AppShell() {
                 RinNET
               </Link>
               <div className="hstack gap-1 ms-auto">
+                {account && <LoadingBar inNavbar />}
                 {account && <UserPopover />}
               </div>
             </div>
@@ -313,27 +344,39 @@ export function AppShell() {
                 <SidebarNav />
               </div>
             </aside>
-            {account && (
-              <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-                <SheetContent
+            {account &&
+              (isLiquefy ? (
+                <LiquidDrawer
+                  className="shell-mobile-liquid-drawer"
+                  closeLabel={t('KeychipPage.GameVersions.Close')}
+                  onOpenChange={setSheetOpen}
+                  open={sheetOpen}
                   side="left"
-                  className="shell-mobile-sheet"
-                  overlayClassName="shell-mobile-sheet-overlay"
+                  title={t('App.Sidebar.Navigation')}
                 >
-                  <SheetHeader className="shell-mobile-sheet-header">
-                    <SheetTitle className="shell-mobile-sheet-title">
-                      {t('App.Sidebar.Navigation')}
-                    </SheetTitle>
-                  </SheetHeader>
-                  <div className="shell-mobile-sheet-body">
-                    <SidebarNav onNavigate={() => setSheetOpen(false)} />
-                  </div>
-                </SheetContent>
-              </Sheet>
-            )}
+                  <SidebarNav onNavigate={() => setSheetOpen(false)} />
+                </LiquidDrawer>
+              ) : (
+                <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                  <SheetContent
+                    side="left"
+                    className="shell-mobile-sheet"
+                    overlayClassName="shell-mobile-sheet-overlay"
+                  >
+                    <SheetHeader className="shell-mobile-sheet-header">
+                      <SheetTitle className="shell-mobile-sheet-title">
+                        {t('App.Sidebar.Navigation')}
+                      </SheetTitle>
+                    </SheetHeader>
+                    <div className="shell-mobile-sheet-body">
+                      <SidebarNav onNavigate={() => setSheetOpen(false)} />
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              ))}
             <main
               className={'order-1 ms-0' + (accessLayout ? '' : ' ms-lg-3 me-lg-2')}
-              style={{ marginTop: accessLayout ? '0' : '4.6rem', gridArea: 'main' }}
+              style={{ marginTop: accessLayout ? '0' : isLiquefy ? '5.45rem' : '4.6rem', gridArea: 'main' }}
             >
               <div>
                 <Outlet />

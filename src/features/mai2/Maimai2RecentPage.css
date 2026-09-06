@@ -67,6 +67,16 @@
 .maimai2-recent-page .clear-img { height: 1.2em; aspect-ratio: 5; }
 .maimai2-recent-page .dx-score-container { white-space: nowrap; }
 .maimai2-recent-page .rank-icon { height: 3rem; width: auto; }
+.maimai2-recent-page .recent-rank-icon {
+  right: 0;
+  bottom: -0.25rem;
+}
+
+/* Liquefy's rounded cards clip overflow, so keep the rank badge clear of their curved edge. */
+[data-theme-family='liquefy'] .maimai2-recent-page .recent-rank-icon {
+  right: 0.35rem;
+  bottom: 0.35rem;
+}
 
 .maimai2-recent-page .table-first-col > tr > td:first-child { color: #3f5bae; font-weight: bold; }
 .maimai2-recent-page .table-grade-color > tr > td:nth-child(2),

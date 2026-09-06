@@ -12,6 +12,7 @@ import { getCurrentLang, langStore } from '@/lib/i18n';
 import { getCurrentUser } from '@/lib/user';
 import { useStore } from '@/lib/store';
 import { Announcement, AnnouncementType } from '@/features/announcements/announcement';
+import '@/features/announcements/AnnouncementDialog.css';
 
 const PAGE_SIZE = 10;
 
@@ -261,7 +262,12 @@ export function AnnouncementsPage() {
         onPageChange={pageChanged}
       />
 
-      <BModal open={!!detail} onClose={() => setDetail(null)} scrollable>
+      <BModal
+        className="announcement-detail-dialog"
+        open={!!detail}
+        onClose={() => setDetail(null)}
+        scrollable
+      >
         {detail && (
           <div
             className="announcement-content"

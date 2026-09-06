@@ -5,9 +5,9 @@ export const THEME_FAMILIES = [
     statusBar: { light: '#f9fafa', dark: '#2a2f33' },
   },
   {
-    id: 'modern',
-    labelKey: 'App.Footer.Modern',
-    statusBar: { light: '#f4fbf7', dark: '#111815' },
+    id: 'liquefy',
+    labelKey: 'App.Footer.Liquefy',
+    statusBar: { light: '#eefbff', dark: '#101c28' },
   },
 ] as const;
 

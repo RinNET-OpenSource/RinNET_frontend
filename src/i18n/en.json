@@ -4,6 +4,7 @@
     "ChuniV2": "CHUNITHM NEW",
     "Mai2": "Maimai DX",
     "Colon": ": ",
+    "Close": "Close",
     "OK": "OK",
     "FailedToLoad": "Failed to load"
   },
@@ -13,7 +14,7 @@
       "ThemeFamily": "Interface style",
       "ColorTheme": "Color mode",
       "Legacy": "Classic",
-      "Modern": "Modern",
+      "Liquefy": "Liquid Glass",
       "Auto": "Auto",
       "Light": "Light",
       "Dark": "Dark",
@@ -337,7 +338,9 @@
   "ImportPage": {
     "Title": "Import",
     "WarningTitle": "Warning!",
-    "WarningContent": "While this could work, it is not recommended to use this feature."
+    "WarningContent": "While this could work, it is not recommended to use this feature.",
+    "SelectFile": "Choose .json file",
+    "FileHint": "Only the matching game's .json export is supported."
   },
   "Ongeki": {
     "ProfilePage": {

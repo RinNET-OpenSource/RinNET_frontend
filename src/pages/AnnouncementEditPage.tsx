@@ -8,6 +8,7 @@ import { api } from '@/lib/api/client';
 import { languages } from '@/lib/i18n';
 import { notice } from '@/lib/message';
 import { StatusCode } from '@/lib/models';
+import '@/features/announcements/AnnouncementDialog.css';
 import './AnnouncementEditPage.css';
 
 /** Equivalent to the legacy announcement editor. */
@@ -191,7 +192,12 @@ export function AnnouncementEditPage() {
         </>
       )}
 
-      <BModal open={previewOpen} onClose={() => setPreviewOpen(false)} scrollable>
+      <BModal
+        className="announcement-detail-dialog"
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        scrollable
+      >
         <div
           className="announcement-content"
           aria-label={previewTitle}

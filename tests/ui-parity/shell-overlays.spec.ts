@@ -117,7 +117,7 @@ async function installFixtureApi(context: BrowserContext) {
 async function installStorage(
   context: BrowserContext,
   theme: 'light' | 'dark',
-  family: 'legacy' | 'modern' = 'legacy',
+  family: 'legacy' | 'liquefy' = 'legacy',
 ) {
   await context.addInitScript(
     ({ account, user, selectedTheme, selectedFamily, origins, dbVersion }) => {
@@ -232,6 +232,93 @@ function footerTrigger(page: Page, index: number) {
   return page.locator('footer .row.fw-bold > .col-auto').nth(index).locator('a').first();
 }
 
+async function expectUserPopoverAboveNavbar(page: Page) {
+  const layers = await page.locator('.shell-user-popover').evaluate((popover) => {
+    const navbar = document.querySelector<HTMLElement>('.app-navbar');
+    if (!navbar) throw new Error('Expected the application navbar to be present.');
+
+    return {
+      navbar: Number.parseInt(getComputedStyle(navbar).zIndex, 10),
+      popover: Number.parseInt(getComputedStyle(popover).zIndex, 10),
+    };
+  });
+
+  expect(layers.popover, 'The portalized user popover must render above the fixed navbar.').toBeGreaterThan(
+    layers.navbar,
+  );
+}
+
+async function expectLiquefyFooterToFloatAtViewportBottom(page: Page) {
+  const geometry = await page.locator('footer.footer').evaluate((footer) => {
+    const bounds = footer.getBoundingClientRect();
+    return {
+      bottomGap: window.innerHeight - bounds.bottom,
+      position: getComputedStyle(footer).position,
+    };
+  });
+
+  expect(geometry.position).toBe('fixed');
+  expect(geometry.bottomGap).toBeGreaterThanOrEqual(0);
+  expect(geometry.bottomGap).toBeLessThanOrEqual(12);
+}
+
+async function expectLiquefyHeaderAndFooterToShareGlassMaterial(page: Page) {
+  const surfaces = await page.locator('.app-navbar, footer.footer').evaluateAll((elements) =>
+    elements.map((element) => {
+      const styles = getComputedStyle(element);
+      return {
+        backgroundColor: styles.backgroundColor,
+        borderTopColor: styles.borderTopColor,
+        boxShadow: styles.boxShadow,
+        backdropFilter: styles.backdropFilter,
+      };
+    }),
+  );
+
+  expect(surfaces).toHaveLength(2);
+  expect(surfaces[0]).toEqual(surfaces[1]);
+}
+
+async function expectLiquefyMobileHeaderToStayWithinViewport(page: Page) {
+  const geometry = await page.locator('.app-navbar').evaluate((navbar) => {
+    const bounds = navbar.getBoundingClientRect();
+    return {
+      leftInset: bounds.left,
+      rightInset: window.innerWidth - bounds.right,
+      viewportWidth: window.innerWidth,
+      width: bounds.width,
+    };
+  });
+
+  expect(geometry.leftInset).toBeGreaterThanOrEqual(7.5);
+  expect(geometry.rightInset).toBeGreaterThanOrEqual(7.5);
+  expect(Math.abs(geometry.leftInset - geometry.rightInset)).toBeLessThanOrEqual(0.5);
+  expect(geometry.width).toBeCloseTo(
+    geometry.viewportWidth - geometry.leftInset - geometry.rightInset,
+    4,
+  );
+}
+
+async function expectLiquefyMobileDrawerToCoverHeader(page: Page) {
+  const layers = await page.locator('.shell-mobile-liquid-drawer').evaluate((drawer) => {
+    const navbar = document.querySelector<HTMLElement>('.app-navbar');
+    const backdrop = document.querySelector<HTMLElement>('.lq-drawer__backdrop');
+    if (!navbar || !backdrop) throw new Error('Expected the Liquefy mobile drawer and shell surfaces.');
+
+    const headerStyles = getComputedStyle(navbar);
+    return {
+      backdrop: Number.parseInt(getComputedStyle(backdrop).zIndex, 10),
+      drawer: Number.parseInt(getComputedStyle(drawer).zIndex, 10),
+      header: Number.parseInt(headerStyles.zIndex, 10),
+      headerBottomBorder: headerStyles.borderBottomColor,
+    };
+  });
+
+  expect(layers.backdrop).toBeGreaterThan(layers.header);
+  expect(layers.drawer).toBeGreaterThan(layers.backdrop);
+  expect(layers.headerBottomBorder).toBe('rgba(0, 0, 0, 0)');
+}
+
 test.describe('application shell responsive and overlay parity', () => {
   test.describe.configure({ timeout: 120_000 });
 
@@ -285,6 +372,7 @@ test.describe('application shell responsive and overlay parity', () => {
           .locator('.shell-user-popover')
           .waitFor({ state: 'visible', timeout: 10_000 }),
       ]);
+      await expectUserPopoverAboveNavbar(desktop.reactPage);
       comparisons.push({
         label: `user-popover-${theme}`,
         ratio: await capturePair(
@@ -352,7 +440,7 @@ test.describe('application shell responsive and overlay parity', () => {
     });
   }
 
-  test('modern shell overlays remain functional and read-only', async ({ browser }) => {
+  test('liquefy shell overlays remain functional and read-only', async ({ browser }) => {
     const context = await browser.newContext({
       colorScheme: 'light',
       deviceScaleFactor: 1,
@@ -363,31 +451,41 @@ test.describe('application shell responsive and overlay parity', () => {
       timezoneId: 'Asia/Hong_Kong',
     });
     const blockedStateChanges = await installFixtureApi(context);
-    await installStorage(context, 'light', 'modern');
+    await installStorage(context, 'light', 'liquefy');
 
     const page = await context.newPage();
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`${REACT_ORIGIN}/mai2/profile`, { waitUntil: 'domcontentloaded' });
     await settle(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
-    await page.locator('.navbar-toggler:visible').click();
-    await expect(page.locator('.shell-mobile-sheet')).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    await expect(page.locator('canvas.lq-surface__shader')).toHaveCount(0);
+    await expectLiquefyMobileHeaderToStayWithinViewport(page);
+    await page.getByLabel('导航', { exact: true }).click();
+    await expect(page.locator('.shell-mobile-liquid-drawer')).toBeVisible();
+    await expectLiquefyMobileDrawerToCoverHeader(page);
     await page.keyboard.press('Escape');
 
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.reload({ waitUntil: 'domcontentloaded' });
     await settle(page);
+    await expectLiquefyFooterToFloatAtViewportBottom(page);
+    await expectLiquefyHeaderAndFooterToShareGlassMaterial(page);
     await visibleNavbarButton(page).click();
     await expect(page.locator('.shell-user-popover')).toBeVisible();
+    await expectUserPopoverAboveNavbar(page);
     await page.keyboard.press('Escape');
+    await visibleNavbarButton(page).click();
+    await page.locator('.shell-user-popover a[href="/profile"]').click();
+    await expect(page).toHaveURL(/\/profile$/);
+    await expect(page.locator('.shell-user-popover')).toHaveCount(0);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await footerTrigger(page, 0).click();
     await expect(page.getByRole('menu')).toBeVisible();
     await page.keyboard.press('Escape');
     await footerTrigger(page, 1).click();
-    await expect(page.getByRole('menuitem', { name: '现代', exact: true })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: '液态玻璃', exact: true })).toBeVisible();
 
-    expect(blockedStateChanges, 'Modern shell smoke test must stay read-only').toEqual([]);
+    expect(blockedStateChanges, 'Liquefy shell smoke test must stay read-only').toEqual([]);
     await context.close();
   });
 });

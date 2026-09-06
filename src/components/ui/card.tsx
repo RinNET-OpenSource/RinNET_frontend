@@ -1,15 +1,32 @@
 import * as React from "react"
+import { LiquidSurface } from "@liquefy-ui/react"
 
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/lib/theme"
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
+  const theme = useTheme()
+  const cardClassName = cn(
+    "flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm",
+    className
+  )
+
+  if (String(theme.family) === "liquefy") {
+    return (
+      <LiquidSurface
+        data-slot="card"
+        className={cn("liquefy-card flex flex-col gap-6 py-6 text-card-foreground", className)}
+        interactive={false}
+        lens={false}
+        {...props}
+      />
+    )
+  }
+
   return (
     <div
       data-slot="card"
-      className={cn(
-        "flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm",
-        className
-      )}
+      className={cardClassName}
       {...props}
     />
   )

@@ -263,7 +263,7 @@ async function installFixtureApi(context: BrowserContext) {
 async function installFixtureStorage(
   context: BrowserContext,
   theme: 'light' | 'dark',
-  family: 'legacy' | 'modern' = 'legacy',
+  family: 'legacy' | 'liquefy' = 'legacy',
 ) {
   await context.addInitScript(
     ({ account, user, selectedTheme, selectedFamily, origins, dbVersion }) => {
@@ -486,7 +486,7 @@ test.describe('Maimai2 song list visual parity', () => {
     });
   }
 
-  test('Modern theme keeps the song browser and detail interaction functional', async ({ browser }) => {
+  test('Liquefy theme keeps the song browser and detail interaction functional', async ({ browser }) => {
     const context = await browser.newContext({
       colorScheme: 'light',
       deviceScaleFactor: 1,
@@ -497,13 +497,13 @@ test.describe('Maimai2 song list visual parity', () => {
       viewport: { width: 1280, height: 720 },
     });
     const blockedBusinessWrites = await installFixtureApi(context);
-    await installFixtureStorage(context, 'light', 'modern');
+    await installFixtureStorage(context, 'light', 'liquefy');
     const page = await context.newPage();
     await page.goto(`${REACT_ORIGIN}/mai2/songlist`, { waitUntil: 'domcontentloaded' });
     await waitForCatalog(page);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await settleList(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
+    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
 
     await page.getByRole('button', { name: '流派' }).click();
     await page.getByRole('button', { name: '版本' }).click();
@@ -514,7 +514,7 @@ test.describe('Maimai2 song list visual parity', () => {
     await settleDetail(page, false);
     await page.locator('.maimai2-song-detail .btn-close').click();
     await expect(page.locator('.maimai2-song-detail')).toHaveCount(0);
-    expect(blockedBusinessWrites, 'Modern-theme interactions must remain read-only').toEqual([]);
+    expect(blockedBusinessWrites, 'Liquefy-theme interactions must remain read-only').toEqual([]);
     await context.close();
   });
 });

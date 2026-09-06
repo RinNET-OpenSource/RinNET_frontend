@@ -4,6 +4,7 @@
     "ChuniV2": "中二节奏NEW",
     "Mai2": "舞萌DX",
     "Colon": "：",
+    "Close": "关闭",
     "OK": "确定",
     "FailedToLoad": "加载失败"
   },
@@ -13,7 +14,7 @@
       "ThemeFamily": "界面风格",
       "ColorTheme": "明暗模式",
       "Legacy": "经典",
-      "Modern": "现代",
+      "Liquefy": "液态玻璃",
       "Auto": "自动",
       "Light": "浅色",
       "Dark": "深色",
@@ -340,7 +341,9 @@
   "ImportPage": {
     "Title": "导入",
     "WarningTitle": "警告！",
-    "WarningContent": "虽然这可以工作，但不建议使用此功能"
+    "WarningContent": "虽然这可以工作，但不建议使用此功能",
+    "SelectFile": "选择 .json 文件",
+    "FileHint": "仅支持对应游戏的 .json 导出文件"
   },
   "Ongeki": {
     "ProfilePage": {

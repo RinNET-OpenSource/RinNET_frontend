@@ -205,7 +205,7 @@ export function Maimai2RecentPage() {
                               </h3>
                             </div>
                           </div>
-                          <div className="position-absolute end-0" style={{ bottom: '-0.25rem' }}>
+                          <div className="recent-rank-icon position-absolute">
                             <img
                               className="rank-icon"
                               src={`${assetsHost}assets/mai2/common/${rankIcon(item.scoreRank)}.webp`}

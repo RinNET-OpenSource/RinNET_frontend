@@ -24,30 +24,40 @@ async function themeContext(
   return context;
 }
 
-test('defaults to the legacy family and preserves the old colorTheme contract', async ({ browser }) => {
+test('defaults to the Liquefy family and preserves the colorTheme contract', async ({ browser }) => {
   const context = await themeContext(browser, { colorTheme: 'dark' });
   const page = await context.newPage();
   await page.goto(REACT_ORIGIN, { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'legacy');
+  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
   await expect(page.locator('html')).toHaveAttribute('data-bs-theme', 'dark');
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#2a2f33');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#101c28');
   expect(await page.evaluate(() => localStorage.getItem('colorTheme'))).toBe('dark');
 
   await context.close();
 });
 
-test('applies a saved modern theme before the app becomes interactive', async ({ browser }) => {
+test('applies a saved Liquefy theme before the app becomes interactive', async ({ browser }) => {
+  const context = await themeContext(browser, { colorTheme: 'dark', themeFamily: 'liquefy' });
+  const page = await context.newPage();
+  await page.goto(REACT_ORIGIN, { waitUntil: 'domcontentloaded' });
+
+  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+  await expect(page.locator('html')).toHaveAttribute('data-bs-theme', 'dark');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#101c28');
+  expect(await page.evaluate(() => localStorage.getItem('themeFamily'))).toBe('liquefy');
+
+  await context.close();
+});
+
+test('normalizes a saved modern family to Liquefy before the app becomes interactive', async ({ browser }) => {
   const context = await themeContext(browser, { colorTheme: 'dark', themeFamily: 'modern' });
   const page = await context.newPage();
   await page.goto(REACT_ORIGIN, { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
-  await expect(page.locator('html')).toHaveAttribute('data-bs-theme', 'dark');
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#111815');
-  expect(
-    await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim()),
-  ).toBe('#a9c83f');
+  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#101c28');
+  expect(await page.evaluate(() => localStorage.getItem('themeFamily'))).toBe('liquefy');
 
   await context.close();
 });
@@ -57,9 +67,9 @@ test('invalid persisted values fall back without breaking the document theme', a
   const page = await context.newPage();
   await page.goto(REACT_ORIGIN, { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'legacy');
+  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
   await expect(page.locator('html')).toHaveAttribute('data-bs-theme', 'light');
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#f9fafa');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#eefbff');
 
   await context.close();
 });
@@ -70,27 +80,27 @@ test('the footer theme menu commits family and color changes atomically', async 
   await page.goto(REACT_ORIGIN, { waitUntil: 'domcontentloaded' });
 
   await page.getByLabel('主题', { exact: true }).click();
-  await page.getByRole('menuitem', { name: '现代', exact: true }).click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
-  expect(await page.evaluate(() => localStorage.getItem('themeFamily'))).toBe('modern');
-  await page.getByRole('menuitem', { name: '现代', exact: true }).waitFor({ state: 'hidden' });
+  await page.getByRole('menuitem', { name: '液态玻璃', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+  expect(await page.evaluate(() => localStorage.getItem('themeFamily'))).toBe('liquefy');
+  await page.getByRole('menuitem', { name: '液态玻璃', exact: true }).waitFor({ state: 'hidden' });
 
   await page.getByLabel('主题', { exact: true }).click();
   await page.getByRole('menuitem', { name: '深色', exact: true }).click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
+  await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
   await expect(page.locator('html')).toHaveAttribute('data-bs-theme', 'dark');
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#111815');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#101c28');
   expect(
     await page.evaluate(() => ({
       colorTheme: localStorage.getItem('colorTheme'),
       themeFamily: localStorage.getItem('themeFamily'),
     })),
-  ).toEqual({ colorTheme: 'dark', themeFamily: 'modern' });
+  ).toEqual({ colorTheme: 'dark', themeFamily: 'liquefy' });
 
   await context.close();
 });
 
-test('the legacy theme menu uses the same family-over-color layout as modern', async ({ browser }) => {
+test('the legacy theme menu uses the same family-over-color layout as Liquefy', async ({ browser }) => {
   const context = await themeContext(browser, { colorTheme: 'dark', themeFamily: 'legacy' });
   const page = await context.newPage();
   await page.goto(REACT_ORIGIN, { waitUntil: 'domcontentloaded' });
@@ -101,7 +111,7 @@ test('the legacy theme menu uses the same family-over-color layout as modern', a
   await expect(menu.getByText('明暗模式', { exact: true })).toBeVisible();
   await expect(menu.getByRole('separator')).toHaveCount(1);
   await expect(menu.getByRole('menuitem', { name: '经典', exact: true })).toBeVisible();
-  await expect(menu.getByRole('menuitem', { name: '现代', exact: true })).toBeVisible();
+  await expect(menu.getByRole('menuitem', { name: '液态玻璃', exact: true })).toBeVisible();
   await expect(menu.getByRole('menuitem', { name: '自动', exact: true })).toBeVisible();
   await expect(menu.getByRole('menuitem', { name: '浅色', exact: true })).toBeVisible();
   await expect(menu.getByRole('menuitem', { name: '深色', exact: true })).toHaveClass(/active/);

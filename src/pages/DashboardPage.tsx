@@ -19,6 +19,7 @@ import { assetsHost, enableImages } from '@/lib/utils';
 import { characterImage, compareVersion, formatNumber, fullWidth, padDigits } from '@/lib/format';
 import { preloadStates, checkingUpdate, dbVersionStore, reload } from '@/lib/db/preload';
 import { Announcement } from '@/features/announcements/announcement';
+import '@/features/announcements/AnnouncementDialog.css';
 
 interface GameProfile {
   accessCode?: string;
@@ -511,7 +512,12 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <BModal open={!!detail} onClose={() => setDetail(null)} scrollable>
+      <BModal
+        className="announcement-detail-dialog"
+        open={!!detail}
+        onClose={() => setDetail(null)}
+        scrollable
+      >
         {detail && (
           <div
             className="announcement-content"

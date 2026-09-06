@@ -326,7 +326,7 @@ async function installFixtureApi(context: BrowserContext) {
 async function installFixtureStorage(
   context: BrowserContext,
   theme: 'light' | 'dark',
-  family: 'legacy' | 'modern' = 'legacy',
+  family: 'legacy' | 'liquefy' = 'legacy',
 ) {
   await context.addInitScript(
     ({ account, user, selectedTheme, selectedFamily, origins, dbVersion }) => {
@@ -537,7 +537,7 @@ test.describe('Maimai2 recent and rating visual parity', () => {
     });
   }
 
-  test('Modern theme keeps both pages and their read-only interactions functional', async ({ browser }) => {
+  test('Liquefy theme keeps both pages and their read-only interactions functional', async ({ browser }) => {
     const context = await browser.newContext({
       colorScheme: 'light',
       deviceScaleFactor: 1,
@@ -549,14 +549,17 @@ test.describe('Maimai2 recent and rating visual parity', () => {
       viewport: { width: 1280, height: 720 },
     });
     const blockedBusinessWrites = await installFixtureApi(context);
-    await installFixtureStorage(context, 'light', 'modern');
+    await installFixtureStorage(context, 'light', 'liquefy');
     const page = await context.newPage();
 
     await page.goto(`${REACT_ORIGIN}/mai2/recent`, { waitUntil: 'domcontentloaded' });
     await waitForCatalog(page);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await settle(page, '.record > .card', recentRows.length);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
+    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
+    const rankBadge = page.locator('.record > .card').first().locator('.recent-rank-icon');
+    await expect(rankBadge).toHaveCSS('bottom', '5.6px');
+    await expect(rankBadge).toHaveCSS('right', '5.6px');
     await page.getByRole('button', { name: '详细信息' }).first().click();
     await expect(page.locator('.record > .card').first().locator('.collapse')).toHaveClass(/show/);
 
@@ -567,7 +570,7 @@ test.describe('Maimai2 recent and rating visual parity', () => {
     await page.locator('.maimai2-song-detail .btn-close').click();
     const songDetailSheet = page.locator('.maimai2-song-detail');
     await expect(songDetailSheet).toHaveCount(0, { timeout: 1_000 });
-    expect(blockedBusinessWrites, 'Modern-theme interactions must stay read-only').toEqual([]);
+    expect(blockedBusinessWrites, 'Liquefy-theme interactions must stay read-only').toEqual([]);
     await context.close();
   });
 });

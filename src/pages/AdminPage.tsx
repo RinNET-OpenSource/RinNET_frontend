@@ -8,6 +8,7 @@ import {
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { confirm } from '@/components/shell/ConfirmDialog';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import { StatusCode, type Card, type User } from '@/lib/models';
@@ -673,7 +674,7 @@ export function AdminPage() {
     const warning = banned
       ? `封禁 ${item.user.username}？其现有 Chusan、Maimai2、Ongeki 档案会设为 2，所有 refresh 会话会撤销。`
       : `解除 ${item.user.username} 的面板封禁？游戏封禁值不会自动恢复。`;
-    if (!window.confirm(warning)) return;
+    if (!(await confirm(warning))) return;
     try {
       const response = await api.post(`api/admin/accounts/${item.user.username}/${banned ? 'ban' : 'unban'}`, {}) as ApiEnvelope<unknown>;
       notice(response?.status?.message ?? '');
@@ -715,7 +716,7 @@ export function AdminPage() {
   }
 
   async function revokeSessions(username: string) {
-    if (!window.confirm(`撤销 ${username} 的全部 refresh 会话？现有 access token 最多约 5 分钟后失效。`)) return;
+    if (!(await confirm(`撤销 ${username} 的全部 refresh 会话？现有 access token 最多约 5 分钟后失效。`))) return;
     try {
       const response = await api.post(`api/admin/accounts/${username}/sessions/revoke`, {}) as ApiEnvelope<unknown>;
       notice(response?.status?.message ?? '');
@@ -725,7 +726,7 @@ export function AdminPage() {
   }
 
   async function deletePasskey(username: string, id: number) {
-    if (!window.confirm('删除此 Passkey 并撤销该用户全部 refresh 会话？')) return;
+    if (!(await confirm('删除此 Passkey 并撤销该用户全部 refresh 会话？'))) return;
     try {
       await api.delete(`api/admin/accounts/${username}/passkeys/${id}`);
       await loadSupport(username);
@@ -735,7 +736,7 @@ export function AdminPage() {
   }
 
   async function deleteOauth(username: string, id: number) {
-    if (!window.confirm('解绑此 OAuth identity 并撤销该用户全部 refresh 会话？')) return;
+    if (!(await confirm('解绑此 OAuth identity 并撤销该用户全部 refresh 会话？'))) return;
     try {
       await api.delete(`api/admin/accounts/${username}/oauth/${id}`);
       await loadSupport(username);
@@ -745,7 +746,7 @@ export function AdminPage() {
   }
 
   async function setDefaultCard(username: string, extId: number) {
-    if (!window.confirm(`将 ExtId ${extId} 设为 ${username} 的默认卡？`)) return;
+    if (!(await confirm(`将 ExtId ${extId} 设为 ${username} 的默认卡？`))) return;
     try {
       await api.put(`api/admin/accounts/${username}/cards/${extId}/default`, {});
       await loadSupport(username);
@@ -755,7 +756,7 @@ export function AdminPage() {
   }
 
   async function unbindCardByExtId(username: string, extId: number) {
-    if (!window.confirm(`解绑 ${username} 的 ExtId ${extId}？关联 Access Code 会一并移除。`)) return;
+    if (!(await confirm(`解绑 ${username} 的 ExtId ${extId}？关联 Access Code 会一并移除。`))) return;
     try {
       await api.delete(`api/admin/accounts/${username}/cards/${extId}`);
       await Promise.all([loadSupport(username), refreshUsers()]);
@@ -765,7 +766,7 @@ export function AdminPage() {
   }
 
   async function removeExternal(username: string, extId: number, luid: string) {
-    if (!window.confirm(`从 ExtId ${extId} 删除外部 Access Code ${luid}？`)) return;
+    if (!(await confirm(`从 ExtId ${extId} 删除外部 Access Code ${luid}？`))) return;
     try {
       await api.delete(`api/admin/accounts/${username}/cards/${extId}/external/${luid}`);
       await loadSupport(username);
@@ -775,7 +776,7 @@ export function AdminPage() {
   }
 
   async function resetTotp(username: string) {
-    if (!window.confirm(`确定要重置 ${username} 的两步验证吗？该用户的所有会话会被登出。`)) return;
+    if (!(await confirm(`确定要重置 ${username} 的两步验证吗？该用户的所有会话会被登出。`))) return;
     try {
       const response = await api.delete(`api/admin/users/${username}/totp`) as ApiEnvelope<unknown>;
       notice(response?.status?.message ?? '');
@@ -842,7 +843,7 @@ export function AdminPage() {
   }
 
   async function publishEula() {
-    if (!window.confirm('发布新版本后，全部用户（包括管理员）都必须重新同意。继续发布？')) return;
+    if (!(await confirm('发布新版本后，全部用户（包括管理员）都必须重新同意。继续发布？'))) return;
     try {
       await api.post('api/admin/eula/publish', {});
       window.location.assign('/eula');
@@ -870,7 +871,7 @@ export function AdminPage() {
   }
 
   async function deleteKeychip(id: number) {
-    if (!window.confirm('确定要删除这个 Keychip 吗？')) return;
+    if (!(await confirm('确定要删除这个 Keychip 吗？'))) return;
     try {
       await api.delete(`api/admin/keychip/${id}`);
       await loadKeychips(keychipPage - 1, keychipPattern);

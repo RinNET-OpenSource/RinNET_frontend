@@ -1,10 +1,12 @@
-@layer properties, theme, base, legacy-bootstrap, components, utilities;
+@layer properties, liquefy-ui, theme, base, legacy-bootstrap, components, utilities;
 
+@import "@liquefy-ui/react/tailwind.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 /* Legacy 主题必须使用与 Angular 基线完全相同的 Bootstrap CSS。
    shadcn 继续负责 React 交互组件；Bootstrap 只提供原版页面的视觉契约。 */
 @import "bootstrap/dist/css/bootstrap.css" layer(legacy-bootstrap);
+@import "./liquefy-theme.css";
 
 /*
  * 主题基座：Bootstrap 5.3 观感 = 第一套主题（未来多主题体系的一号成员）。
@@ -195,68 +197,6 @@
   --bs-card-bg: var(--bs-body-bg);
 }
 
-:root[data-theme-family="modern"] {
-  --bs-primary: #5f7f1c;
-  --bs-primary-rgb: 95, 127, 28;
-  --bs-primary-text-emphasis: #33470e;
-  --bs-primary-bg-subtle: #e5efc8;
-  --bs-primary-border-subtle: #c9dc8f;
-  --bs-body-color: #18201b;
-  --bs-body-color-rgb: 24, 32, 27;
-  --bs-body-bg: #f7faf7;
-  --bs-body-bg-rgb: 247, 250, 247;
-  --bs-secondary-color: rgba(24, 32, 27, 0.75);
-  --bs-secondary-color-rgb: 24, 32, 27;
-  --bs-tertiary-color: rgba(24, 32, 27, 0.5);
-  --bs-tertiary-color-rgb: 24, 32, 27;
-  --bs-secondary-bg: #e7ede8;
-  --bs-secondary-bg-rgb: 231, 237, 232;
-  --bs-tertiary-bg: #eff4ef;
-  --bs-tertiary-bg-rgb: 239, 244, 239;
-  --bs-emphasis-color: #0d130f;
-  --bs-emphasis-color-rgb: 13, 19, 15;
-  --bs-link-color: #4d6817;
-  --bs-link-color-rgb: 77, 104, 23;
-  --bs-link-hover-color: #3b5011;
-  --bs-link-hover-color-rgb: 59, 80, 17;
-  --bs-border-color: #cfd9d1;
-  --bs-border-color-translucent: rgba(24, 32, 27, 0.18);
-  --bs-border-radius: 0.625rem;
-  --bs-border-radius-sm: 0.45rem;
-  --bs-border-radius-lg: 0.85rem;
-  --bs-card-bg: #fff;
-}
-
-:root[data-theme-family="modern"][data-bs-theme="dark"] {
-  --bs-primary: #a9c83f;
-  --bs-primary-rgb: 169, 200, 63;
-  --bs-primary-text-emphasis: #cde77a;
-  --bs-primary-bg-subtle: #293410;
-  --bs-primary-border-subtle: #657925;
-  --bs-body-color: #e5eee8;
-  --bs-body-color-rgb: 229, 238, 232;
-  --bs-body-bg: #111815;
-  --bs-body-bg-rgb: 17, 24, 21;
-  --bs-secondary-color: rgba(229, 238, 232, 0.75);
-  --bs-secondary-color-rgb: 229, 238, 232;
-  --bs-tertiary-color: rgba(229, 238, 232, 0.5);
-  --bs-tertiary-color-rgb: 229, 238, 232;
-  --bs-secondary-bg: #263129;
-  --bs-secondary-bg-rgb: 38, 49, 41;
-  --bs-tertiary-bg: #1b251f;
-  --bs-tertiary-bg-rgb: 27, 37, 31;
-  --bs-emphasis-color: #fff;
-  --bs-emphasis-color-rgb: 255, 255, 255;
-  --bs-link-color: #b7d95a;
-  --bs-link-color-rgb: 183, 217, 90;
-  --bs-link-hover-color: #cae979;
-  --bs-link-hover-color-rgb: 202, 233, 121;
-  --bs-border-color: #39483e;
-  --bs-border-color-translucent: rgba(229, 238, 232, 0.16);
-  --bs-card-bg: #151e19;
-  --theme-primary-foreground: #17200f;
-}
-
 /* ===== shadcn/ui 令牌桥接到 --bs-* ===== */
 @theme inline {
   --font-sans: var(--bs-body-font-family);
@@ -328,18 +268,6 @@
   .ui-title,
   .ui-description {
     margin: 0;
-  }
-
-  [data-theme-family="modern"] .btn-primary {
-    --bs-btn-color: var(--theme-primary-foreground);
-    --bs-btn-bg: var(--bs-primary);
-    --bs-btn-border-color: var(--bs-primary);
-    --bs-btn-hover-color: var(--theme-primary-foreground);
-    --bs-btn-hover-bg: color-mix(in srgb, var(--bs-primary) 86%, #000);
-    --bs-btn-hover-border-color: color-mix(in srgb, var(--bs-primary) 82%, #000);
-    --bs-btn-active-color: var(--theme-primary-foreground);
-    --bs-btn-active-bg: color-mix(in srgb, var(--bs-primary) 78%, #000);
-    --bs-btn-active-border-color: color-mix(in srgb, var(--bs-primary) 75%, #000);
   }
 
   /* 与旧 Angular/CDK 弹窗适配层保持同一套 Bootstrap 几何契约。 */

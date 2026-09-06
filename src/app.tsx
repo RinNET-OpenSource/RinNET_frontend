@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { registerSW } from 'virtual:pwa-register';
+import { LiquefyProvider } from '@liquefy-ui/react';
 import { router } from '@/router';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { navigate } from '@/lib/nav';
@@ -12,6 +13,7 @@ import { checkDbUpdate } from '@/lib/db/preload';
 import { notice } from '@/lib/message';
 import { t } from 'i18next';
 import supportedBrowsers from '@/lib/supportedBrowsers';
+import { useTheme } from '@/lib/theme';
 import '@/lib/i18n';
 
 const queryClient = new QueryClient();
@@ -39,6 +41,30 @@ function initializeApp(): Promise<void> {
   return initializationPromise;
 }
 
+function ThemeRuntime({ children }: { children: ReactNode }) {
+  const theme = useTheme();
+
+  if (theme.family !== 'liquefy') return children;
+
+  const tint = theme.resolvedColorTheme === 'dark' ? '#7abcf3' : '#087f8c';
+
+  return (
+    <LiquefyProvider
+      className="liquefy-app"
+      theme={theme.resolvedColorTheme}
+      tint={tint}
+      intensity={0.76}
+      lens
+      motion
+      transparency
+      webgl={false}
+      wobbliness={0.24}
+    >
+      {children}
+    </LiquefyProvider>
+  );
+}
+
 export default function App() {
   useEffect(() => {
     // SW 静默自动更新（等价旧版 VERSION_READY → activateUpdate → reload）
@@ -51,9 +77,11 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <RouterProvider router={router} />
-      </TooltipProvider>
+      <ThemeRuntime>
+        <TooltipProvider>
+          <RouterProvider router={router} />
+        </TooltipProvider>
+      </ThemeRuntime>
     </QueryClientProvider>
   );
 }

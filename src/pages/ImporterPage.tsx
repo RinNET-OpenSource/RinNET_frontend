@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { useRef } from 'react';
+import { LiquidAlert, LiquidButton, LiquidSurface } from '@liquefy-ui/react';
+import { useId, useRef, type RefObject } from 'react';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
+import { useTheme } from '@/lib/theme';
 
 function uploadDocument(file: File, path: string, type: string) {
   const fileReader = new FileReader();
@@ -25,6 +27,79 @@ function uploadDocument(file: File, path: string, type: string) {
   notice('Uploading...');
 }
 
+function ImportWarning() {
+  const { t } = useTranslation();
+  const { family } = useTheme();
+
+  if (family === 'liquefy') {
+    return (
+      <LiquidAlert className="liquefy-import-warning my-4" severity="warning">
+        <strong>{t('ImportPage.WarningTitle')}</strong>
+        <span className="ms-2">{t('ImportPage.WarningContent')}</span>
+      </LiquidAlert>
+    );
+  }
+
+  return (
+    <div className="card my-3">
+      <div className="card-header">{t('ImportPage.WarningTitle')}</div>
+      <div className="card-body">{t('ImportPage.WarningContent')}</div>
+    </div>
+  );
+}
+
+function ImportPanel({
+  inputRef,
+  path,
+  title,
+  type,
+}: {
+  inputRef: RefObject<HTMLInputElement | null>;
+  path: string;
+  title: string;
+  type: string;
+}) {
+  const { t } = useTranslation();
+  const { family } = useTheme();
+  const inputId = useId();
+  const onFileChange = (file?: File) => {
+    if (file) uploadDocument(file, path, type);
+    if (inputRef.current) inputRef.current.value = '';
+  };
+  const input = (
+    <input
+      id={inputId}
+      ref={inputRef}
+      accept=".json"
+      className={family === 'liquefy' ? 'visually-hidden' : 'form-control'}
+      type="file"
+      onChange={(event) => onFileChange(event.target.files?.[0])}
+    />
+  );
+
+  if (family === 'liquefy') {
+    return (
+      <LiquidSurface className="liquefy-import-panel my-4" interactive={false} lens>
+        <div className="liquefy-import-panel__meta">
+          <h2 className="liquefy-import-panel__title">{title}</h2>
+          <p className="liquefy-import-panel__hint">{t('ImportPage.FileHint')}</p>
+        </div>
+        {input}
+        <LiquidButton type="button" onClick={() => inputRef.current?.click()}>
+          {t('ImportPage.SelectFile')}
+        </LiquidButton>
+      </LiquidSurface>
+    );
+  }
+
+  return (
+    <div className="card my-3">
+      <div className="card-header">{title}</div>
+      <div className="card-body">{input}</div>
+    </div>
+  );
+}
+
 /** 等价旧版 importer.component */
 export function ImporterPage() {
   const { t } = useTranslation();
@@ -35,59 +110,25 @@ export function ImporterPage() {
   return (
     <div className="content">
       <h1 className="page-heading">{t('ImportPage.Title')}</h1>
-
-      <div className="card my-3">
-        <div className="card-header">{t('ImportPage.WarningTitle')}</div>
-        <div className="card-body">{t('ImportPage.WarningContent')}</div>
-      </div>
-
-      <div className="card my-3">
-        <div className="card-header">{t('Common.Ongeki')}</div>
-        <div className="card-body">
-          <input
-            ref={ongekiRef}
-            accept=".json"
-            className="form-control"
-            type="file"
-            onChange={(e) => {
-              if (e.target.files?.[0]) uploadDocument(e.target.files[0], 'api/game/ongeki/import', 'SDDT');
-              if (ongekiRef.current) ongekiRef.current.value = '';
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="card my-3">
-        <div className="card-header">{t('Common.ChuniV2')}</div>
-        <div className="card-body">
-          <input
-            ref={chusanRef}
-            accept=".json"
-            className="form-control"
-            type="file"
-            onChange={(e) => {
-              if (e.target.files?.[0]) uploadDocument(e.target.files[0], 'api/game/chuni/v2/import', 'SDHD');
-              if (chusanRef.current) chusanRef.current.value = '';
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="card my-3">
-        <div className="card-header">{t('Common.Mai2')}</div>
-        <div className="card-body">
-          <input
-            ref={mai2Ref}
-            accept=".json"
-            className="form-control"
-            type="file"
-            onChange={(e) => {
-              if (e.target.files?.[0]) uploadDocument(e.target.files[0], 'api/game/maimai2/import', 'SDEZ');
-              if (mai2Ref.current) mai2Ref.current.value = '';
-            }}
-          />
-        </div>
-      </div>
+      <ImportWarning />
+      <ImportPanel
+        inputRef={ongekiRef}
+        path="api/game/ongeki/import"
+        title={t('Common.Ongeki')}
+        type="SDDT"
+      />
+      <ImportPanel
+        inputRef={chusanRef}
+        path="api/game/chuni/v2/import"
+        title={t('Common.ChuniV2')}
+        type="SDHD"
+      />
+      <ImportPanel
+        inputRef={mai2Ref}
+        path="api/game/maimai2/import"
+        title={t('Common.Mai2')}
+        type="SDEZ"
+      />
     </div>
   );
 }

@@ -345,7 +345,7 @@ async function installFixtureApi(context: BrowserContext) {
   return { blockedStateChanges, observedReads };
 }
 
-async function installStorage(context: BrowserContext, theme: 'light' | 'dark', family: 'legacy' | 'modern' = 'legacy') {
+async function installStorage(context: BrowserContext, theme: 'light' | 'dark', family: 'legacy' | 'liquefy' = 'legacy') {
   await context.addInitScript(
     ({ account, user, selectedTheme, selectedFamily, origins, dbVersion }) => {
       if (!origins.includes(window.location.origin)) return;
@@ -517,7 +517,7 @@ test.describe('Maimai2 Circle and Festa parity', () => {
     });
   }
 
-  test('Modern theme keeps Circle and Festa read-only interactions functional', async ({ browser }) => {
+  test('Liquefy theme keeps Circle and Festa read-only interactions functional', async ({ browser }) => {
     const context = await browser.newContext({
       colorScheme: 'light',
       deviceScaleFactor: 1,
@@ -529,12 +529,12 @@ test.describe('Maimai2 Circle and Festa parity', () => {
       viewport: { width: 1280, height: 720 },
     });
     const audit = await installFixtureApi(context);
-    await installStorage(context, 'light', 'modern');
+    await installStorage(context, 'light', 'liquefy');
     const page = await context.newPage();
 
     await page.goto(`${REACT_ORIGIN}/mai2/circle`, { waitUntil: 'domcontentloaded' });
     await settle(page, 'Fixture Circle');
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
+    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
     await page.getByRole('button', { name: '编辑圈子' }).click();
     await expect(page.locator('#circleNameInput')).toHaveValue('Fixture Circle');
     await page.getByRole('button', { name: '取消' }).click();
@@ -543,7 +543,7 @@ test.describe('Maimai2 Circle and Festa parity', () => {
     await settle(page, 'Fixture Festa');
     await page.getByRole('checkbox', { name: '全服' }).first().check();
     await expect(page.getByText('Circle One #291')).toBeVisible();
-    expect(audit.blockedStateChanges, 'Modern smoke must stay read-only').toEqual([]);
+    expect(audit.blockedStateChanges, 'Liquefy smoke must stay read-only').toEqual([]);
     await context.close();
   });
 });

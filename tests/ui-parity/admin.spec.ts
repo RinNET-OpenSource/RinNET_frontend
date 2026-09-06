@@ -279,7 +279,7 @@ async function installFixtureApi(
 async function installStorage(
   context: BrowserContext,
   colorTheme: 'light' | 'dark',
-  themeFamily: 'legacy' | 'modern' = 'legacy',
+  themeFamily: 'legacy' | 'liquefy' = 'legacy',
   overrides: { account?: unknown; user?: unknown } = {},
 ) {
   await context.addInitScript(
@@ -877,7 +877,7 @@ test.describe('Admin page parity and safety', () => {
     }
   });
 
-  test('modern theme smoke renders Admin sections and dialogs without writes', async ({ browser }) => {
+  test('liquefy theme smoke renders Admin sections and dialogs without writes', async ({ browser }) => {
     const context = await browser.newContext({
       colorScheme: 'dark',
       ignoreHTTPSErrors: true,
@@ -887,11 +887,11 @@ test.describe('Admin page parity and safety', () => {
       viewport: { width: 1280, height: 720 },
     });
     const audit = await installFixtureApi(context);
-    await installStorage(context, 'dark', 'modern');
+    await installStorage(context, 'dark', 'liquefy');
     const page = await context.newPage();
     await page.goto(`${REACT_ORIGIN}/admin`, { waitUntil: 'domcontentloaded' });
     await settleUsers(page);
-    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'modern');
+    await expect(page.locator('html')).toHaveAttribute('data-theme-family', 'liquefy');
     await page.locator('.row-cols-xl-3 .card-btn').first().click();
     await expect(page.getByRole('dialog')).toContainText('卡片与游戏档案');
     await page.getByRole('dialog').getByRole('button', { name: '原始 JSON' }).click();

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-theme-family="legacy" data-bs-theme="light">
+<html lang="zh-CN" data-theme-family="liquefy" data-bs-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="noindex">
@@ -7,18 +7,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link href="/assets/turtle.svg" rel="icon" type="image/x-icon">
   <link href="/manifest.webmanifest" rel="manifest">
-  <meta name="theme-color" content="#f9fafa">
+  <meta name="theme-color" content="#eefbff">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <script>
     // 首屏前应用主题，避免暗色或非默认主题闪烁。
     (function () {
-      var family = 'legacy';
+      var family = 'liquefy';
       var colorTheme = 'auto';
       try {
         var savedFamily = localStorage.getItem('themeFamily');
         var savedColorTheme = localStorage.getItem('colorTheme');
-        if (savedFamily === 'legacy' || savedFamily === 'modern') family = savedFamily;
+        if (savedFamily === 'modern') {
+          family = 'liquefy';
+          localStorage.setItem('themeFamily', family);
+        } else if (savedFamily === 'legacy' || savedFamily === 'liquefy') {
+          family = savedFamily;
+        }
         if (savedColorTheme === 'auto' || savedColorTheme === 'light' || savedColorTheme === 'dark') {
           colorTheme = savedColorTheme;
         }
@@ -30,8 +35,8 @@
       var resolved = dark ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme-family', family);
       document.documentElement.setAttribute('data-bs-theme', resolved);
-      var themeColors = family === 'modern'
-        ? { light: '#f4fbf7', dark: '#111815' }
+      var themeColors = family === 'liquefy'
+        ? { light: '#eefbff', dark: '#101c28' }
         : { light: '#f9fafa', dark: '#2a2f33' };
       document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[resolved]);
       document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')
