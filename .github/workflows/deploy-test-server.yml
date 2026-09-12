@@ -3,7 +3,7 @@ name: Angular CI/CD
 on:
   push:
     branches:
-      - master
+      - backup
   workflow_dispatch:
 
 jobs:
