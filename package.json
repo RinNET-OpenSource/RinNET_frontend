@@ -42,7 +42,7 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/crypto-js": "^4.2.2",
     "@types/pixelmatch": "^5.2.6",
