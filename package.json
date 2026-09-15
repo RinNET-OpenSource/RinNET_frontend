@@ -45,7 +45,7 @@
     "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/crypto-js": "^4.2.2",
-    "@types/pixelmatch": "^5.2.6",
+    "@types/pixelmatch": "^7.1.0",
     "@types/pngjs": "^6.0.5",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.18",
