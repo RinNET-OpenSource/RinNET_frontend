@@ -1404,6 +1404,11 @@
 
 [data-theme='liquefy'] .liquefy-toast {
   --lq-alert-tint: var(--lq-accent);
+  /* 4.1rem is the shell row height (same as .app-navbar), but `.lq-alert` is
+     align-items: flex-start — without centring here the surplus height is dumped
+     entirely below the text (measured 16px above vs 27.6px below on a one-line
+     toast). Centring splits it evenly. Mirrors .liquefy-import-warning below. */
+  align-items: center;
   border-radius: 1rem;
   box-shadow:
     0 14px 30px color-mix(in srgb, var(--lq-shadow-color) 36%, transparent),
