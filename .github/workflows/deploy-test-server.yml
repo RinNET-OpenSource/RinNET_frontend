@@ -3,7 +3,7 @@ name: React test-server CI/CD
 on:
   push:
     branches:
-      - next
+      - main
   workflow_dispatch:
 
 permissions:
