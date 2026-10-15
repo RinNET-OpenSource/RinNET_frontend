@@ -31,6 +31,7 @@ export const menu = new Map<string, Menu[]>([
       { id: 7, name: 'MusicRanking', url: 'ongeki/musicRanking', displayCondition: DisplayCondition.Always },
       { id: 8, name: 'UserRanking', url: 'ongeki/userRanking', displayCondition: DisplayCondition.Always },
       { id: 9, name: 'Setting', url: 'ongeki/settings', displayCondition: DisplayCondition.HasProfile },
+      { id: 10, name: 'Events', url: 'ongeki/events', displayCondition: DisplayCondition.HasProfile },
     ],
   ],
   [

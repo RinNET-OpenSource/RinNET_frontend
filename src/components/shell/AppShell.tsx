@@ -140,11 +140,18 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
               </a>
             </li>
             {admin && (
-              <li className="pb-2">
-                <a className={'link-btn rounded' + (isActive('admin') ? ' active' : '')} onClick={() => go('admin')}>
-                  {t('App.Sidebar.Admin')}
-                </a>
-              </li>
+              <>
+                <li className="pb-2">
+                  <a className={'link-btn rounded' + (isActive('admin') ? ' active' : '')} onClick={() => go('admin')}>
+                    {t('App.Sidebar.Admin')}
+                  </a>
+                </li>
+                <li className="pb-2">
+                  <a className={'link-btn rounded' + (isActive('admin/ongeki-events') ? ' active' : '')} onClick={() => go('admin/ongeki-events')}>
+                    Ongeki Events
+                  </a>
+                </li>
+              </>
             )}
           </ul>
         </li>
@@ -237,7 +244,7 @@ function Footer() {
       }
     >
       {family === 'animal-island' && (
-        <AnimalFooter className="animal-island-footer-decoration" type="tree" />
+        <AnimalFooter className="animal-island-footer-decoration" />
       )}
       <hr className="m-0 pt-2" />
       <div className="shell-footer-layout d-flex justify-content-between flex-wrap px-2 px-lg-3 py-3 column-gap-3">

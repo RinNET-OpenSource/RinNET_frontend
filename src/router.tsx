@@ -33,6 +33,8 @@ import { OngekiRatingPage } from '@/features/ongeki/OngekiRatingPage';
 import { OngekiSongListPage } from '@/features/ongeki/OngekiSongListPage';
 import { OngekiCardPage } from '@/features/ongeki/OngekiCardPage';
 import { OngekiCardGalleryPage } from '@/features/ongeki/OngekiCardGalleryPage';
+import { OngekiEventsPage } from '@/features/ongeki/OngekiEventsPage';
+import { OngekiEventAdminPage } from '@/features/admin/OngekiEventAdminPage';
 import { Maimai2ProfilePage } from '@/features/mai2/Maimai2ProfilePage';
 import { Maimai2PhotosPage } from '@/features/mai2/Maimai2PhotosPage';
 import { Maimai2DxPassPage } from '@/features/mai2/Maimai2DxPassPage';
@@ -149,6 +151,7 @@ export const router = createBrowserRouter([
           { path: 'rival', element: <OngekiRivalPage />, handle: { title: 'Rival' } },
           { path: 'musicRanking', element: <OngekiMusicRankingPage />, handle: { title: 'MusicRanking' } },
           { path: 'userRanking', element: <OngekiUserRankingPage />, handle: { title: 'UserRanking' } },
+          { path: 'events', element: <OngekiEventsPage />, handle: { title: 'Events' } },
           { path: 'settings', element: <OngekiSettingPage />, handle: { title: 'Setting' } },
         ],
       },
@@ -202,6 +205,7 @@ export const router = createBrowserRouter([
       { path: '/eula', element: <EulaPage />, handle: { title: 'EULA', disableSidebar: true } },
       { path: '/banned', element: <BannedPage />, handle: { title: 'Account Banned', disableSidebar: true } },
       { path: '/admin', element: <RequireAdmin><AdminPage /></RequireAdmin>, handle: { title: 'Admin' } },
+      { path: '/admin/ongeki-events', element: <RequireAdmin><OngekiEventAdminPage /></RequireAdmin>, handle: { title: 'Ongeki Events' } },
       { path: '/not-found', element: <NotFoundPage />, handle: { title: 'NotFound', disableSidebar: true } },
       { path: '*', element: <Navigate to="/not-found" replace /> },
     ],

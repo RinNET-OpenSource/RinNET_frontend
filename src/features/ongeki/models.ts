@@ -287,9 +287,40 @@ export enum TechnicalRank {
   SSS1 = 12,
 }
 
-export enum AttributeType {
-  Fire = 1,
-  Aqua = 2,
-  Leaf = 3,
-  Max = 4,
+export interface OngekiTechChallengeEvent {
+  id: number;
+  chapterId: number;
+  name: string;
+  type: number;
+  kopId: number;
+  iconId: number;
+  startDate: string;
+  endDate: string;
+  active: boolean;
+}
+
+export interface OngekiTechChallengeRankingEntry {
+  rank: number;
+  userId: number;
+  userName: string;
+  totalTechScore: number;
+  totalPlatinumScore: number;
+  techRecordDate: string | null;
+}
+
+export interface OngekiTechChallengeDetail {
+  eventId: number;
+  chapterId: number;
+  name: string;
+  type: number;
+  kopId: number;
+  areaId: number;
+  userId: number;
+  rank: number | null;
+  totalTechScore: number;
+  totalPlatinumScore: number;
+  techRecordDate: string | null;
+  startDate: string;
+  endDate: string;
+  active: boolean;
 }
