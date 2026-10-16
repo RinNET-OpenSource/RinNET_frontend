@@ -32,6 +32,7 @@
     },
     "Sidebar": {
       "Navigation": "导航",
+      "OngekiEvents": "音击活动",
       "Dashboard": "仪表板",
       "Admin": "管理员",
       "Import": "导入",
@@ -539,6 +540,10 @@
       "Add": "添加",
       "SaveSongs": "保存课题曲",
       "MusicIdPlaceholder": "乐曲 ID",
+      "Edit": "编辑",
+      "Cancel": "取消",
+      "EditTitle": "编辑活动 {{name}}",
+      "MusicTitle": "课题曲 · {{name}}",
       "UnknownType": "类型 {{type}}",
       "UnknownDifficulty": "难度 {{level}}",
       "Column": {

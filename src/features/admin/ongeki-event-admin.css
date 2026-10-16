@@ -1,0 +1,35 @@
+/* 音击活动管理（管理页 → 音击活动 tab）
+   表格保持自然宽度、由容器横向滚动拖动；日期/时间弹层需要下方留白。 */
+
+.ongeki-event-admin .table-responsive {
+  overflow-x: auto;
+}
+
+/* 覆盖 Bootstrap .table 的 width: 100%，让列宽由内容决定，而不是被压缩成逐字换行 */
+.ongeki-event-admin .table-responsive > table {
+  width: max-content;
+  min-width: 100%;
+}
+
+.ongeki-event-admin .table-responsive > table th,
+.ongeki-event-admin .table-responsive > table td {
+  white-space: nowrap;
+}
+
+/* 编辑面板盖住下方内容，避免 animal-island 的弹层被后续元素遮挡 */
+.ongeki-event-editor,
+.ongeki-music-editor {
+  position: relative;
+  z-index: 3;
+}
+
+/* animal-island 主题的 DatePicker / TimePicker 弹层是绝对定位（约 300px 高），
+   这里预留垂直空间，否则会被页面底部裁掉 */
+.ongeki-event-editor-spacer {
+  height: 15rem;
+}
+
+.ongeki-music-editor .table-responsive {
+  max-height: 24rem;
+  overflow-y: auto;
+}

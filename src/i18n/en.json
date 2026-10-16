@@ -32,6 +32,7 @@
     },
     "Sidebar": {
       "Navigation": "Navigation",
+      "OngekiEvents": "Ongeki Events",
       "Dashboard": "Dashboard",
       "Admin": "Admin",
       "Import": "Import",
@@ -51,6 +52,9 @@
       "Setting": "Setting",
       "Photos": "Photos",
       "Dxpass": "Deluxe Pass",
+      "Circle": "Circle",
+      "Festa": "Festa",
+      "ServerMissions": "Server Missions",
       "OnlineBattle": "Online Battle"
     },
     "Messages": {
@@ -536,6 +540,10 @@
       "Add": "Add",
       "SaveSongs": "Save songs",
       "MusicIdPlaceholder": "Music ID",
+      "Edit": "Edit",
+      "Cancel": "Cancel",
+      "EditTitle": "Edit event {{name}}",
+      "MusicTitle": "Challenge songs · {{name}}",
       "UnknownType": "Type {{type}}",
       "UnknownDifficulty": "Level {{level}}",
       "Column": {
