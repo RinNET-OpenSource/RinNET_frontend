@@ -290,13 +290,25 @@ export enum TechnicalRank {
 export interface OngekiTechChallengeEvent {
   id: number;
   chapterId: number;
+  chapterName: string;
   name: string;
   type: number;
   kopId: number;
   iconId: number;
+  songCount: number;
   startDate: string;
   endDate: string;
   active: boolean;
+}
+
+export interface OngekiTechChallengeMusic {
+  eventId: number;
+  musicId: number;
+  /** Client difficulty id: 0 basic, 1 advanced, 2 expert, 3 master, 4/10 lunatic. */
+  level: number;
+  name: string;
+  artistName: string;
+  chartLevel: string;
 }
 
 export interface OngekiTechChallengeRankingEntry {

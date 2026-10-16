@@ -1,0 +1,38 @@
+.ongeki-events-page .difficulty-basic {
+  background: #2da060;
+  border: 1px solid #145830;
+  color: white;
+}
+
+.ongeki-events-page .difficulty-advanced {
+  background: #e6a047;
+  border: 1px solid #995014;
+  color: white;
+}
+
+.ongeki-events-page .difficulty-expert {
+  background: #e55353;
+  border: 1px solid #7b1f18;
+  color: white;
+}
+
+.ongeki-events-page .difficulty-master {
+  background: #9d5cb9;
+  border: 1px solid #381c47;
+  color: white;
+}
+
+.ongeki-events-page .difficulty-lunatic {
+  background: var(--bs-white);
+  border: 1px solid var(--bs-danger);
+  color: var(--bs-danger);
+}
+
+/* A wrapping event title must not stretch the badge that sits on its right. */
+.ongeki-events-page .event-heading {
+  align-items: flex-start;
+}
+
+.ongeki-events-page .event-heading > .badge {
+  flex: 0 0 auto;
+}

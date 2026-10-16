@@ -17,11 +17,12 @@ import { getAccount, IMPERSONATED_USER_KEY, IMPERSONATION_KEY, type Account } fr
 import { IMPERSONATE_GRANT, IMPERSONATE_REQUEST } from '@/lib/auth/impersonation';
 import { useTheme } from '@/lib/theme';
 import { AdminPlaylogs } from '@/features/admin/AdminPlaylogs';
+import { OngekiEventAdmin } from '@/features/admin/OngekiEventAdmin';
 import './AdminPage.css';
 
 const PAGE_SIZE = 12;
 
-type AdminTab = 'users' | 'keychips' | 'eula' | 'playlogs';
+type AdminTab = 'users' | 'keychips' | 'eula' | 'playlogs' | 'ongeki-events';
 type GameKey = 'CHUSAN' | 'MAIMAI2' | 'ONGEKI';
 
 interface ApiEnvelope<T> {
@@ -932,9 +933,14 @@ export function AdminPage() {
         <div className="col-auto">
           <button type="button" className={`tab-selector${tab === 'playlogs' ? ' tab-selector-active' : ''}`} onClick={() => setTab('playlogs')}>游玩记录</button>
         </div>
+        <div className="col-auto">
+          <button type="button" className={`tab-selector${tab === 'ongeki-events' ? ' tab-selector-active' : ''}`} onClick={() => setTab('ongeki-events')}>音击活动</button>
+        </div>
       </div>
 
       {tab === 'playlogs' && <AdminPlaylogs />}
+
+      {tab === 'ongeki-events' && <OngekiEventAdmin />}
 
       {tab === 'users' && (
         <div>

@@ -140,18 +140,11 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
               </a>
             </li>
             {admin && (
-              <>
-                <li className="pb-2">
-                  <a className={'link-btn rounded' + (isActive('admin') ? ' active' : '')} onClick={() => go('admin')}>
-                    {t('App.Sidebar.Admin')}
-                  </a>
-                </li>
-                <li className="pb-2">
-                  <a className={'link-btn rounded' + (isActive('admin/ongeki-events') ? ' active' : '')} onClick={() => go('admin/ongeki-events')}>
-                    Ongeki Events
-                  </a>
-                </li>
-              </>
+              <li className="pb-2">
+                <a className={'link-btn rounded' + (isActive('admin') ? ' active' : '')} onClick={() => go('admin')}>
+                  {t('App.Sidebar.Admin')}
+                </a>
+              </li>
             )}
           </ul>
         </li>
