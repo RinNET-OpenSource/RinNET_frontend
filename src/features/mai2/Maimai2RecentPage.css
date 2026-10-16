@@ -78,6 +78,13 @@
   bottom: 0.35rem;
 }
 
+/* Liquefy's 20px card radius swallows the 4px this score strip leaves on each side, so give it the
+   horizontal padding a card body would have. Scoped to the theme: the legacy card radius is small
+   enough that the original spacing reads fine there. */
+[data-theme='liquefy'] .maimai2-recent-page .card.bg-secondary-subtle {
+  padding-inline: 1rem;
+}
+
 .maimai2-recent-page .table-first-col > tr > td:first-child { color: #3f5bae; font-weight: bold; }
 .maimai2-recent-page .table-grade-color > tr > td:nth-child(2),
 .maimai2-recent-page .table-grade-color > tr > th:nth-child(2) { color: #ffb900; text-shadow: 0 0 5px #ffee00; font-weight: bold; }
