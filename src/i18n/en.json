@@ -509,7 +509,43 @@
       "Recorded": "Recorded",
       "NoRanking": "No record has been saved for this event yet.",
       "MyRecord": "Your Result",
-      "NotPlayed": "You have not played this event yet."
+      "NotPlayed": "You have not played this event yet.",
+      "TabRecord": "My Scores & Records",
+      "SongScores": "Challenge Song Scores",
+      "PlayRecords": "Play Records",
+      "NoPlayRecords": "No play record of this event yet.",
+      "PlayCount": "Plays",
+      "Marks": "Marks"
+    },
+    "EventAdmin": {
+      "Description": "Edit the type, open period and challenge songs of a Tech Challenge event. The period must match the client package and the chapter name comes from the server chapter table; the type and KoP ID must mirror TechChallengeEventData's Type and KopID in the client package, otherwise the client's KoP Qualify and the rankings will disagree.",
+      "Empty": "No Tech Challenge event has been configured.",
+      "NeedDates": "Fill in both the start and the end time.",
+      "EndBeforeStart": "The end time must be later than the start time.",
+      "NeedKopId": "KoP Qualify needs a valid KoP ID.",
+      "Saved": "Event settings saved.",
+      "NeedMusicId": "Enter a valid music ID.",
+      "DuplicateMusic": "That song is already in the challenge song list.",
+      "MusicSaved": "Challenge songs saved.",
+      "Save": "Save",
+      "Saving": "Saving…",
+      "SongButton": "Songs {{count}}",
+      "LoadingSongs": "Loading challenge songs…",
+      "NoSongs": "This event has no challenge song yet; add one below.",
+      "Remove": "Remove",
+      "Add": "Add",
+      "SaveSongs": "Save songs",
+      "MusicIdPlaceholder": "Music ID",
+      "UnknownType": "Type {{type}}",
+      "UnknownDifficulty": "Level {{level}}",
+      "Column": {
+        "Event": "Event",
+        "Type": "Type",
+        "Kop": "KoP",
+        "Start": "Start",
+        "End": "End",
+        "Actions": "Actions"
+      }
     }
   },
   "ChuniV2": {

@@ -1,15 +1,22 @@
 import { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DateTimeField } from '@/components/shared/DateTimeField';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
 import type { OngekiTechChallengeEvent, OngekiTechChallengeMusic } from '@/features/ongeki/models';
 
+/** 游戏内难度名称，与乐曲列表保持一致，不翻译。 */
 const DIFFICULTY_OPTIONS = [
   { value: 0, label: 'BASIC' },
   { value: 1, label: 'ADVANCED' },
   { value: 2, label: 'EXPERT' },
   { value: 3, label: 'MASTER' },
   { value: 10, label: 'LUNATIC' },
+];
+
+const TYPE_OPTIONS = [
+  { value: 1, labelKey: 'Ongeki.EventsPage.TechChallenge' },
+  { value: 2, labelKey: 'Ongeki.EventsPage.KoPQualify' },
 ];
 
 interface EventDraft {
@@ -19,11 +26,6 @@ interface EventDraft {
   type: number;
   kopId: number;
 }
-
-const TYPE_OPTIONS = [
-  { value: 1, label: '音击挑战' },
-  { value: 2, label: 'KoP 预选' },
-];
 
 function toDateTimeLocal(value: string | null | undefined): string {
   if (!value) return '';
@@ -46,6 +48,7 @@ function toIso(value: string): string | null {
  * 客户端包中 TechChallengeEventData 的 Type / KopID 保持一致（客户端自行读取该数据）。
  */
 export function OngekiEventAdmin() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<OngekiTechChallengeEvent[]>([]);
   const [drafts, setDrafts] = useState<Record<string, EventDraft>>({});
   const [loading, setLoading] = useState(true);
@@ -101,15 +104,15 @@ export function OngekiEventAdmin() {
     const type = draft ? draft.type : event.type;
     const kopId = draft ? draft.kopId : event.kopId;
     if (!startDate || !endDate) {
-      notice('请填写完整的开始与结束时间。', 'warning');
+      notice(t('Ongeki.EventAdmin.NeedDates'), 'warning');
       return;
     }
     if (startDate >= endDate) {
-      notice('结束时间必须晚于开始时间。', 'warning');
+      notice(t('Ongeki.EventAdmin.EndBeforeStart'), 'warning');
       return;
     }
     if (type === 2 && (!Number.isFinite(kopId) || kopId < 0)) {
-      notice('KoP 预选需要填写有效的 KoP ID。', 'warning');
+      notice(t('Ongeki.EventAdmin.NeedKopId'), 'warning');
       return;
     }
 
@@ -132,7 +135,7 @@ export function OngekiEventAdmin() {
           kopId: updated.kopId,
         },
       }));
-      notice('活动设置已保存。', 'success');
+      notice(t('Ongeki.EventAdmin.Saved'), 'success');
     } catch (reason: unknown) {
       const message = String(reason);
       setError(message);
@@ -184,12 +187,12 @@ export function OngekiEventAdmin() {
   function addSong(eventId: number) {
     const musicId = Number.parseInt(newSongId, 10);
     if (!Number.isFinite(musicId) || musicId <= 0) {
-      notice('请输入有效的乐曲 ID。', 'warning');
+      notice(t('Ongeki.EventAdmin.NeedMusicId'), 'warning');
       return;
     }
     const list = songs[String(eventId)] ?? [];
     if (list.some((song) => song.musicId === musicId)) {
-      notice('该乐曲已在课题曲列表中。', 'warning');
+      notice(t('Ongeki.EventAdmin.DuplicateMusic'), 'warning');
       return;
     }
     setSongs((current) => ({
@@ -211,7 +214,7 @@ export function OngekiEventAdmin() {
       setSongs((current) => ({ ...current, [String(event.id)]: next }));
       setEvents((current) => current.map((item) =>
         item.id === event.id ? { ...item, songCount: next.length } : item));
-      notice('课题曲已保存。', 'success');
+      notice(t('Ongeki.EventAdmin.MusicSaved'), 'success');
     } catch (reason: unknown) {
       const message = String(reason);
       setError(message);
@@ -221,30 +224,30 @@ export function OngekiEventAdmin() {
     }
   }
 
-  if (loading) return <p className="text-secondary">加载中…</p>;
+  if (loading) return <p className="text-secondary">{t('Ongeki.EventsPage.Loading')}</p>;
 
   return (
     <div>
-      <p className="text-secondary small">
-        编辑音击挑战活动的类型、开放时间与课题曲。期号必须与客户端包中的数据一致，章节名称来自服务端章节表；
-        类型与 KoP ID 必须与客户端包中 TechChallengeEventData 的 Type / KopID 一致，否则客户端的 KoP 预选与排行榜会对不上。
-      </p>
+      <p className="text-secondary small">{t('Ongeki.EventAdmin.Description')}</p>
       {error && <div className="alert alert-danger" role="alert">{error}</div>}
-      {events.length === 0 && <div className="alert alert-info" role="status">没有配置任何音击挑战活动。</div>}
+      {events.length === 0 && (
+        <div className="alert alert-info" role="status">{t('Ongeki.EventAdmin.Empty')}</div>
+      )}
 
       {events.length > 0 && (
         <div className="table-responsive">
-          <table className="table table-hover align-middle">
+          {/* 窄屏时整表横向滚动，避免中文列被压成一字一行。 */}
+          <table className="table table-hover align-middle" style={{ minWidth: '76rem' }}>
             <thead>
               <tr>
-                <th scope="col">活动</th>
-                <th scope="col">期号</th>
-                <th scope="col">章节</th>
-                <th scope="col">类型</th>
-                <th scope="col">KoP</th>
-                <th scope="col">开始时间</th>
-                <th scope="col">结束时间</th>
-                <th scope="col">操作</th>
+                <th scope="col" style={{ whiteSpace: 'nowrap' }}>{t('Ongeki.EventAdmin.Column.Event')}</th>
+                <th scope="col" style={{ whiteSpace: 'nowrap' }}>{t('Ongeki.EventsPage.Period')}</th>
+                <th scope="col" style={{ whiteSpace: 'nowrap' }}>{t('Ongeki.EventsPage.Chapter')}</th>
+                <th scope="col" style={{ whiteSpace: 'nowrap' }}>{t('Ongeki.EventAdmin.Column.Type')}</th>
+                <th scope="col" style={{ whiteSpace: 'nowrap' }}>{t('Ongeki.EventAdmin.Column.Kop')}</th>
+                <th scope="col" style={{ whiteSpace: 'nowrap' }}>{t('Ongeki.EventAdmin.Column.Start')}</th>
+                <th scope="col" style={{ whiteSpace: 'nowrap' }}>{t('Ongeki.EventAdmin.Column.End')}</th>
+                <th scope="col" style={{ whiteSpace: 'nowrap' }}>{t('Ongeki.EventAdmin.Column.Actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -252,84 +255,89 @@ export function OngekiEventAdmin() {
                 const draft = drafts[String(event.id)]
                   ?? { startDate: '', endDate: '', type: event.type, kopId: event.kopId };
                 const list = songs[String(event.id)] ?? [];
+                const title = event.name || event.chapterName || String(event.id);
                 return (
                   <Fragment key={event.id}>
                     <tr>
-                      <td>{event.name || '—'}</td>
-                      <td>{event.id}</td>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>{event.name || '—'}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>{event.id}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         {event.chapterName || '—'}
                         <span className="text-secondary small ms-1">({event.chapterId})</span>
                       </td>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         <select
                           className="form-select form-select-sm"
                           style={{ width: '9rem' }}
                           value={draft.type}
-                          aria-label={`${event.name} 类型`}
+                          aria-label={`${title} ${t('Ongeki.EventAdmin.Column.Type')}`}
                           disabled={savingId === event.id}
                           onChange={(input) => updateDraft(event.id, 'type', Number(input.target.value))}
                         >
                           {TYPE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
+                            <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
                           ))}
                           {TYPE_OPTIONS.every((option) => option.value !== draft.type) && (
-                            <option value={draft.type}>类型 {draft.type}</option>
+                            <option value={draft.type}>
+                              {t('Ongeki.EventAdmin.UnknownType', { type: draft.type })}
+                            </option>
                           )}
                         </select>
                       </td>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         <input
                           type="number"
                           min="0"
                           className="form-control form-control-sm"
                           style={{ width: '6rem' }}
                           value={draft.kopId}
-                          aria-label={`${event.name} KoP ID`}
+                          aria-label={`${title} ${t('Ongeki.EventAdmin.Column.Kop')}`}
                           disabled={savingId === event.id || draft.type !== 2}
                           onChange={(input) => updateDraft(event.id, 'kopId', Number(input.target.value))}
                         />
                       </td>
-                      <td style={{ minWidth: '17rem' }}>
+                      <td style={{ minWidth: '16rem', whiteSpace: 'nowrap' }}>
                         <DateTimeField
                           value={draft.startDate}
-                          label={`${event.name} 开始时间`}
+                          label={`${title} ${t('Ongeki.EventAdmin.Column.Start')}`}
                           disabled={savingId === event.id}
                           onChange={(value) => updateDraft(event.id, 'startDate', value)}
                         />
                       </td>
-                      <td style={{ minWidth: '17rem' }}>
+                      <td style={{ minWidth: '16rem', whiteSpace: 'nowrap' }}>
                         <DateTimeField
                           value={draft.endDate}
-                          label={`${event.name} 结束时间`}
+                          label={`${title} ${t('Ongeki.EventAdmin.Column.End')}`}
                           disabled={savingId === event.id}
                           onChange={(value) => updateDraft(event.id, 'endDate', value)}
                         />
                       </td>
-                      <td className="text-nowrap">
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         <button
                           type="button"
                           className="btn btn-primary btn-sm me-1"
                           disabled={savingId === event.id}
                           onClick={() => void saveEvent(event)}
                         >
-                          {savingId === event.id ? '保存中…' : '保存'}
+                          {savingId === event.id ? t('Ongeki.EventAdmin.Saving') : t('Ongeki.EventAdmin.Save')}
                         </button>
                         <button
                           type="button"
                           className="btn btn-outline-secondary btn-sm"
                           onClick={() => toggleSongs(event)}
                         >
-                          课题曲 {event.songCount}
+                          {t('Ongeki.EventAdmin.SongButton', { count: event.songCount })}
                         </button>
                       </td>
                     </tr>
                     {expandedId === event.id && (
                       <tr>
                         <td colSpan={8}>
-                          {loadingSongsId === event.id && <p className="text-secondary small mb-2">加载课题曲…</p>}
+                          {loadingSongsId === event.id && (
+                            <p className="text-secondary small mb-2">{t('Ongeki.EventAdmin.LoadingSongs')}</p>
+                          )}
                           {loadingSongsId !== event.id && list.length === 0 && (
-                            <p className="text-secondary small mb-2">该活动还没有课题曲，可在下方添加。</p>
+                            <p className="text-secondary small mb-2">{t('Ongeki.EventAdmin.NoSongs')}</p>
                           )}
                           {loadingSongsId !== event.id && list.length > 0 && (
                             <div className="table-responsive mb-2">
@@ -337,10 +345,10 @@ export function OngekiEventAdmin() {
                                 <thead>
                                   <tr>
                                     <th scope="col" style={{ width: '4rem' }}>#</th>
-                                    <th scope="col">乐曲</th>
-                                    <th scope="col">难度</th>
-                                    <th scope="col">定数</th>
-                                    <th scope="col" style={{ width: '5rem' }}>操作</th>
+                                    <th scope="col">{t('Ongeki.EventsPage.SongTitle')}</th>
+                                    <th scope="col">{t('Ongeki.EventsPage.Difficulty')}</th>
+                                    <th scope="col">{t('Ongeki.EventsPage.ChartLevel')}</th>
+                                    <th scope="col" style={{ width: '5rem' }}>{t('Ongeki.EventAdmin.Column.Actions')}</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -349,7 +357,7 @@ export function OngekiEventAdmin() {
                                       <th scope="row">{index + 1}</th>
                                       <td>
                                         <span className="text-secondary me-2">{song.musicId}</span>
-                                        {song.name || '未知曲目'}
+                                        {song.name || t('Ongeki.EventsPage.UnknownSong')}
                                       </td>
                                       <td>
                                         <select
@@ -362,7 +370,9 @@ export function OngekiEventAdmin() {
                                             <option key={option.value} value={option.value}>{option.label}</option>
                                           ))}
                                           {DIFFICULTY_OPTIONS.every((option) => option.value !== song.level) && (
-                                            <option value={song.level}>难度 {song.level}</option>
+                                            <option value={song.level}>
+                                              {t('Ongeki.EventAdmin.UnknownDifficulty', { level: song.level })}
+                                            </option>
                                           )}
                                         </select>
                                       </td>
@@ -373,7 +383,7 @@ export function OngekiEventAdmin() {
                                           className="btn btn-outline-danger btn-sm"
                                           onClick={() => removeSong(event.id, song.musicId)}
                                         >
-                                          移除
+                                          {t('Ongeki.EventAdmin.Remove')}
                                         </button>
                                       </td>
                                     </tr>
@@ -388,12 +398,12 @@ export function OngekiEventAdmin() {
                               min="1"
                               className="form-control form-control-sm"
                               style={{ width: '9rem' }}
-                              placeholder="乐曲 ID"
+                              placeholder={t('Ongeki.EventAdmin.MusicIdPlaceholder')}
                               value={newSongId}
                               onChange={(input) => setNewSongId(input.target.value)}
                             />
                             <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => addSong(event.id)}>
-                              添加
+                              {t('Ongeki.EventAdmin.Add')}
                             </button>
                             <button
                               type="button"
@@ -401,7 +411,7 @@ export function OngekiEventAdmin() {
                               disabled={savingSongsId === event.id}
                               onClick={() => void saveSongs(event)}
                             >
-                              {savingSongsId === event.id ? '保存中…' : '保存课题曲'}
+                              {savingSongsId === event.id ? t('Ongeki.EventAdmin.Saving') : t('Ongeki.EventAdmin.SaveSongs')}
                             </button>
                           </div>
                         </td>

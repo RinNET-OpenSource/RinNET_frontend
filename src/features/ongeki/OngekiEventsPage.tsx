@@ -2,11 +2,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
+import { assetsHost, enableImages } from '@/lib/utils';
+import { padDigits } from '@/lib/format';
+import { OngekiPagination } from './OngekiPagination';
+import { OngekiRecentItem } from './OngekiRecentItem';
+import { hydratePlaylogs } from './playlog-hydrate';
 import type {
   OngekiTechChallengeDetail,
   OngekiTechChallengeEvent,
   OngekiTechChallengeMusic,
   OngekiTechChallengeRankingEntry,
+  OngekiTechChallengeScore,
+  PlayerPlaylog,
 } from './models';
 import './events.css';
 
@@ -19,6 +26,17 @@ const DIFFICULTY_BADGES: Record<number, { className: string; label: string }> = 
   4: { className: 'difficulty-lunatic', label: 'LUNATIC' },
   10: { className: 'difficulty-lunatic', label: 'LUNATIC' },
 };
+
+/** 用户侧页面的选项卡：课题曲目、个人成绩与游玩记录、排行榜。 */
+type EventTab = 'songs' | 'record' | 'ranking';
+
+const TABS: { key: EventTab; labelKey: string }[] = [
+  { key: 'songs', labelKey: 'Ongeki.EventsPage.SongList' },
+  { key: 'record', labelKey: 'Ongeki.EventsPage.TabRecord' },
+  { key: 'ranking', labelKey: 'Ongeki.EventsPage.Ranking' },
+];
+
+const PLAYLOG_PAGE_SIZE = 5;
 
 /** Renders `YYYY-MM-DD HH:mm` so the client never shows a raw timestamp. */
 function formatDateTime(value: string | null | undefined): string {
@@ -33,12 +51,18 @@ export function OngekiEventsPage() {
   const { t } = useTranslation();
   const [events, setEvents] = useState<OngekiTechChallengeEvent[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [tab, setTab] = useState<EventTab>('songs');
   const [areaId, setAreaId] = useState('0');
   const [music, setMusic] = useState<OngekiTechChallengeMusic[]>([]);
   const [ranking, setRanking] = useState<OngekiTechChallengeRankingEntry[]>([]);
   const [detail, setDetail] = useState<OngekiTechChallengeDetail | null>(null);
+  const [scores, setScores] = useState<OngekiTechChallengeScore[]>([]);
+  const [playlogs, setPlaylogs] = useState<PlayerPlaylog[]>([]);
+  const [playlogPage, setPlaylogPage] = useState(1);
+  const [playlogTotal, setPlaylogTotal] = useState(0);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [loadingResults, setLoadingResults] = useState(false);
+  const [loadingRecord, setLoadingRecord] = useState(false);
   const [error, setError] = useState('');
 
   const selected = useMemo(
@@ -114,6 +138,46 @@ export function OngekiEventsPage() {
       active = false;
     };
   }, [selected, areaId]);
+
+  // 个人成绩与游玩记录只在打开该选项卡时读取。
+  useEffect(() => {
+    if (!selected || tab !== 'record') {
+      return;
+    }
+    let active = true;
+    setLoadingRecord(true);
+    void Promise.all([
+      api.get(`api/game/ongeki/tech-challenge-event/${selected.id}/score`),
+      api.get(`api/game/ongeki/tech-challenge-event/${selected.id}/playlog`, { page: playlogPage - 1 }),
+    ])
+      .then(async ([scoreData, playlogData]) => {
+        if (!active) return;
+        setScores((scoreData ?? []) as OngekiTechChallengeScore[]);
+        setPlaylogTotal(playlogData?.totalElements ?? 0);
+        setPlaylogs(await hydratePlaylogs((playlogData?.content ?? []) as PlayerPlaylog[]));
+      })
+      .catch((reason: unknown) => {
+        if (active) {
+          const message = String(reason);
+          setError(message);
+          setScores([]);
+          setPlaylogs([]);
+          setPlaylogTotal(0);
+          notice(message, 'danger');
+        }
+      })
+      .finally(() => {
+        if (active) setLoadingRecord(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [selected, tab, playlogPage]);
+
+  // 换活动时回到第一页游玩记录。
+  useEffect(() => {
+    setPlaylogPage(1);
+  }, [selectedId]);
 
   return (
     <div className="content ongeki-events-page">
@@ -199,42 +263,132 @@ export function OngekiEventsPage() {
                   </div>
                 </div>
 
-                <div className="card mb-3">
-                  <div className="card-body">
-                    <h2 className="h6">{t('Ongeki.EventsPage.SongList')}</h2>
-                    {loadingResults && <p className="text-secondary small mb-0">{t('Ongeki.EventsPage.Loading')}</p>}
+                <div className="d-flex flex-wrap gap-2 mb-3">
+                  {TABS.map((item) => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      className={'tab-selector' + (tab === item.key ? ' tab-selector-active' : '')}
+                      onClick={() => setTab(item.key)}
+                    >
+                      {t(item.labelKey)}
+                    </button>
+                  ))}
+                </div>
+
+                {tab === 'songs' && (
+                  <>
+                    {loadingResults && <p className="text-secondary small">{t('Ongeki.EventsPage.Loading')}</p>}
                     {!loadingResults && music.length === 0 && (
-                      <p className="text-secondary small mb-0">{t('Ongeki.EventsPage.NoSongs')}</p>
+                      <p className="text-secondary small">{t('Ongeki.EventsPage.NoSongs')}</p>
                     )}
-                    {music.length > 0 && (
-                      <div className="table-responsive">
+                    {music.map((song) => {
+                      const badge = DIFFICULTY_BADGES[song.level];
+                      return (
+                        <div className="card mb-2" key={`${song.musicId}-${song.level}`}>
+                          <div className="song-info card-body hstack gap-2 p-0">
+                            <div className="jacket-container ratio ratio-1x1">
+                              {enableImages && (
+                                <img
+                                  className="position-absolute rounded-start"
+                                  src={assetsHost + `assets/ongeki/jacket/UI_Jacket_${padDigits(song.musicId, 4)}.webp`}
+                                  alt=""
+                                />
+                              )}
+                            </div>
+                            <div className="overflow-hidden">
+                              <div className="song-info-title text-truncate fw-bold">
+                                <span>
+                                  {song.musicId}.「{song.name || t('Ongeki.EventsPage.UnknownSong')}」
+                                </span>
+                              </div>
+                              <div className="song-info-artist text-truncate mb-1">
+                                <span>{song.artistName || '—'}</span>
+                              </div>
+                              <div className="row m-0 align-items-center gap-2">
+                                <span className={'col-auto difficulty ' + (badge?.className ?? '') + ' badge rounded-pill'}>
+                                  {badge?.label ?? song.level} {song.chartLevel || '—'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+
+                {tab === 'record' && (
+                  <>
+                    <div className="card mb-3">
+                      <div className="card-body">
+                        <h2 className="h6">{t('Ongeki.EventsPage.MyRecord')}</h2>
+                        {loadingResults && <p className="text-secondary small mb-0">{t('Ongeki.EventsPage.Loading')}</p>}
+                        {detail && detail.rank == null && (
+                          <p className="text-secondary small mb-2">{t('Ongeki.EventsPage.NotPlayed')}</p>
+                        )}
+                        {detail && (
+                          <div className="row g-2 small">
+                            <div className="col-6 col-md-3">
+                              <span className="text-secondary">{t('Ongeki.EventsPage.Rank')}</span>
+                              <div className="fs-5">{detail.rank ?? '—'}</div>
+                            </div>
+                            <div className="col-6 col-md-3">
+                              <span className="text-secondary">{t('Ongeki.EventsPage.TechScore')}</span>
+                              <div className="fs-5">{detail.totalTechScore}</div>
+                            </div>
+                            <div className="col-6 col-md-3">
+                              <span className="text-secondary">{t('Ongeki.EventsPage.PlatinumScore')}</span>
+                              <div className="fs-5">{detail.totalPlatinumScore}</div>
+                            </div>
+                            <div className="col-6 col-md-3">
+                              <span className="text-secondary">{t('Ongeki.EventsPage.Recorded')}</span>
+                              <div>{formatDateTime(detail.techRecordDate)}</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <h2 className="h6">{t('Ongeki.EventsPage.SongScores')}</h2>
+                    {loadingRecord && <p className="text-secondary small">{t('Ongeki.EventsPage.Loading')}</p>}
+                    {!loadingRecord && scores.length > 0 && (
+                      <div className="table-responsive mb-3">
                         <table className="table table-sm table-hover align-middle mb-0">
                           <thead>
                             <tr>
-                              <th scope="col" style={{ width: '3rem' }}>#</th>
                               <th scope="col">{t('Ongeki.EventsPage.SongTitle')}</th>
                               <th scope="col">{t('Ongeki.EventsPage.Difficulty')}</th>
-                              <th scope="col">{t('Ongeki.EventsPage.ChartLevel')}</th>
-                              <th scope="col">{t('Ongeki.EventsPage.Artist')}</th>
+                              <th scope="col">{t('Ongeki.EventsPage.TechScore')}</th>
+                              <th scope="col">{t('Ongeki.EventsPage.PlatinumScore')}</th>
+                              <th scope="col">{t('Ongeki.EventsPage.PlayCount')}</th>
+                              <th scope="col">{t('Ongeki.EventsPage.Marks')}</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {music.map((song, index) => {
-                              const badge = DIFFICULTY_BADGES[song.level];
+                            {scores.map((score) => {
+                              const badge = DIFFICULTY_BADGES[score.level];
+                              const marks = score.played && !score.isFullCombo && !score.isAllBreak ? '—' : null;
                               return (
-                                <tr key={`${song.musicId}-${song.level}`}>
-                                  <th scope="row">{index + 1}</th>
+                                <tr key={`${score.musicId}-${score.level}`}>
                                   <td>
-                                    <span className="text-secondary me-2">{song.musicId}</span>
-                                    {song.name || t('Ongeki.EventsPage.UnknownSong')}
+                                    <span className="text-secondary me-2">{score.musicId}</span>
+                                    {score.name || t('Ongeki.EventsPage.UnknownSong')}
                                   </td>
                                   <td>
                                     <span className={'badge rounded-pill ' + (badge?.className ?? 'text-bg-secondary')}>
-                                      {badge?.label ?? song.level}
+                                      {badge?.label ?? score.level} {score.chartLevel || '—'}
                                     </span>
                                   </td>
-                                  <td>{song.chartLevel || '—'}</td>
-                                  <td className="text-secondary">{song.artistName || '—'}</td>
+                                  <td>{score.played ? score.techScoreMax : '—'}</td>
+                                  <td>{score.played ? score.platinumScoreMax : '—'}</td>
+                                  <td>{score.played ? score.playCount : '—'}</td>
+                                  <td style={{ whiteSpace: 'nowrap' }}>
+                                    {!score.played && '—'}
+                                    {marks}
+                                    {score.isFullCombo && <span className="badge text-bg-info me-1">FULL COMBO</span>}
+                                    {score.isAllBreak && <span className="badge text-bg-warning">ALL BREAK</span>}
+                                  </td>
                                 </tr>
                               );
                             })}
@@ -242,68 +396,63 @@ export function OngekiEventsPage() {
                         </table>
                       </div>
                     )}
-                  </div>
-                </div>
 
-                {!loadingResults && detail && (
-                  <div className="card mb-3">
-                    <div className="card-body">
-                      <h2 className="h6">{t('Ongeki.EventsPage.MyRecord')}</h2>
-                      {detail.rank == null && (
-                        <p className="text-secondary small mb-2">{t('Ongeki.EventsPage.NotPlayed')}</p>
+                    <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                      <h2 className="h6 mb-0">{t('Ongeki.EventsPage.PlayRecords')}</h2>
+                      {playlogTotal > 0 && (
+                        <OngekiPagination
+                          current={playlogPage}
+                          marginClassName="m-0"
+                          pageSize={PLAYLOG_PAGE_SIZE}
+                          totalItems={playlogTotal}
+                          onPageChange={setPlaylogPage}
+                        />
                       )}
-                      <div className="row g-2 small">
-                        <div className="col-6 col-md-3">
-                          <span className="text-secondary">{t('Ongeki.EventsPage.Rank')}</span>
-                          <div className="fs-5">{detail.rank ?? '—'}</div>
-                        </div>
-                        <div className="col-6 col-md-3">
-                          <span className="text-secondary">{t('Ongeki.EventsPage.TechScore')}</span>
-                          <div className="fs-5">{detail.totalTechScore}</div>
-                        </div>
-                        <div className="col-6 col-md-3">
-                          <span className="text-secondary">{t('Ongeki.EventsPage.PlatinumScore')}</span>
-                          <div className="fs-5">{detail.totalPlatinumScore}</div>
-                        </div>
-                        <div className="col-6 col-md-3">
-                          <span className="text-secondary">{t('Ongeki.EventsPage.Recorded')}</span>
-                          <div>{formatDateTime(detail.techRecordDate)}</div>
-                        </div>
-                      </div>
                     </div>
-                  </div>
+                    {!loadingRecord && playlogs.length === 0 && (
+                      <p className="text-secondary small mb-0">{t('Ongeki.EventsPage.NoPlayRecords')}</p>
+                    )}
+                    <div className="list-group gap-3 my-3">
+                      {playlogs.map((playLog, index) => (
+                        <div key={index}>
+                          <OngekiRecentItem playLog={playLog} />
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 )}
 
-                {!loadingResults && ranking.length === 0 && (
-                  <div className="alert alert-secondary" role="status">{t('Ongeki.EventsPage.NoRanking')}</div>
-                )}
-                {ranking.length > 0 && (
+                {tab === 'ranking' && (
                   <>
-                  <h2 className="h6">{t('Ongeki.EventsPage.Ranking')}</h2>
-                  <div className="table-responsive">
-                    <table className="table table-hover align-middle">
-                      <thead>
-                        <tr>
-                          <th scope="col">{t('Ongeki.EventsPage.Rank')}</th>
-                          <th scope="col">{t('Ongeki.EventsPage.Player')}</th>
-                          <th scope="col">{t('Ongeki.EventsPage.TechScore')}</th>
-                          <th scope="col">{t('Ongeki.EventsPage.PlatinumScore')}</th>
-                          <th scope="col">{t('Ongeki.EventsPage.Recorded')}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ranking.map((entry) => (
-                          <tr key={`${entry.userId}-${entry.rank}`}>
-                            <th scope="row">{entry.rank}</th>
-                            <td>{entry.userName || entry.userId}</td>
-                            <td>{entry.totalTechScore}</td>
-                            <td>{entry.totalPlatinumScore}</td>
-                            <td>{formatDateTime(entry.techRecordDate)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                    {!loadingResults && ranking.length === 0 && (
+                      <div className="alert alert-secondary" role="status">{t('Ongeki.EventsPage.NoRanking')}</div>
+                    )}
+                    {ranking.length > 0 && (
+                      <div className="table-responsive">
+                        <table className="table table-hover align-middle">
+                          <thead>
+                            <tr>
+                              <th scope="col">{t('Ongeki.EventsPage.Rank')}</th>
+                              <th scope="col">{t('Ongeki.EventsPage.Player')}</th>
+                              <th scope="col">{t('Ongeki.EventsPage.TechScore')}</th>
+                              <th scope="col">{t('Ongeki.EventsPage.PlatinumScore')}</th>
+                              <th scope="col">{t('Ongeki.EventsPage.Recorded')}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {ranking.map((entry) => (
+                              <tr key={`${entry.userId}-${entry.rank}`}>
+                                <th scope="row">{entry.rank}</th>
+                                <td>{entry.userName || entry.userId}</td>
+                                <td>{entry.totalTechScore}</td>
+                                <td>{entry.totalPlatinumScore}</td>
+                                <td>{formatDateTime(entry.techRecordDate)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </>
                 )}
               </>

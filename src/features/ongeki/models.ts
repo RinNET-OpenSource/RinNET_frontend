@@ -311,6 +311,26 @@ export interface OngekiTechChallengeMusic {
   chartLevel: string;
 }
 
+/** One challenge song with the current player's best record on the event difficulty. */
+export interface OngekiTechChallengeScore {
+  musicId: number;
+  level: number;
+  name: string;
+  artistName: string;
+  chartLevel: string;
+  played: boolean;
+  playCount: number;
+  techScoreMax: number;
+  techScoreRank: number;
+  battleScoreMax: number;
+  platinumScoreMax: number;
+  platinumScoreStar: number | null;
+  maxComboCount: number;
+  isFullCombo: boolean;
+  isAllBreak: boolean;
+  clearStatus: number;
+}
+
 export interface OngekiTechChallengeRankingEntry {
   rank: number;
   userId: number;

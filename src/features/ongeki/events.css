@@ -36,3 +36,30 @@
 .ongeki-events-page .event-heading > .badge {
   flex: 0 0 auto;
 }
+
+/* 课题曲目沿用乐曲列表的卡片样式（见 song-list.css）。 */
+.ongeki-events-page .song-info {
+  padding: 4px;
+}
+
+.ongeki-events-page .song-info .jacket-container {
+  width: 5.6rem;
+  min-width: 5.6rem;
+  aspect-ratio: 1;
+}
+
+.ongeki-events-page .song-info .song-info-title {
+  font-size: 16px;
+}
+
+.ongeki-events-page .song-info .song-info-artist {
+  font-size: 12px;
+}
+
+.ongeki-events-page .song-info .difficulty {
+  font-size: 12px;
+  /* The Angular build loads bootstrap-grid again after bootstrap.css, so its
+     later .row > * gutter padding wins over .badge's inline padding. */
+  padding-right: calc(var(--bs-gutter-x) * .5);
+  padding-left: calc(var(--bs-gutter-x) * .5);
+}

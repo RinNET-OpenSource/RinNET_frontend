@@ -3,13 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '@/lib/api/client';
 import { notice } from '@/lib/message';
-import { dbGetByKey } from '@/lib/db/db';
-import type {
-  OngekiCard,
-  OngekiCharacter,
-  OngekiMusic,
-  PlayerPlaylog,
-} from './models';
+import type { PlayerPlaylog } from './models';
+import { hydratePlaylogs } from './playlog-hydrate';
 import { OngekiRecentItem } from './OngekiRecentItem';
 import { OngekiPagination } from './OngekiPagination';
 
@@ -31,29 +26,7 @@ export function OngekiRecentPage() {
       .then(async (data) => {
         setTotalElements(data.totalElements);
         const content: PlayerPlaylog[] = data.content ?? [];
-        for (const x of content) {
-          x.isTechNewRecord = (x as any).techNewRecord ? (x as any).techNewRecord : x.isTechNewRecord;
-          x.isBattleNewRecord = (x as any).battleNewRecord ? (x as any).battleNewRecord : x.isBattleNewRecord;
-          x.isOverDamageNewRecord = (x as any).overDamageNewRecord
-            ? (x as any).overDamageNewRecord
-            : x.isOverDamageNewRecord;
-          x.isFullCombo = (x as any).fullCombo ? (x as any).fullCombo : x.isFullCombo;
-          x.isAllBreak = (x as any).allBreak ? (x as any).allBreak : x.isAllBreak;
-          x.isFullBell = (x as any).fullBell ? (x as any).fullBell : x.isFullBell;
-
-          const music = await dbGetByKey<OngekiMusic>('ongekiMusic', x.musicId);
-          if (music) {
-            x.songInfo = music;
-            const bossCard = await dbGetByKey<OngekiCard>('ongekiCard', music.bossCardId);
-            if (bossCard) x.bossCardInfo = bossCard;
-          }
-          const chara = await dbGetByKey<OngekiCharacter>('ongekiCharacter', x.bossCharaId);
-          if (chara) x.bossCharaInfo = chara;
-          x.cardInfo1 = (await dbGetByKey<OngekiCard>('ongekiCard', x.cardId1)) ?? undefined;
-          x.cardInfo2 = (await dbGetByKey<OngekiCard>('ongekiCard', x.cardId2)) ?? undefined;
-          x.cardInfo3 = (await dbGetByKey<OngekiCard>('ongekiCard', x.cardId3)) ?? undefined;
-        }
-        setRecent(content);
+        setRecent(await hydratePlaylogs(content));
         setLoading(false);
       })
       .catch((error) => {

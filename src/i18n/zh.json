@@ -512,7 +512,43 @@
       "Recorded": "记录时间",
       "NoRanking": "该活动还没有任何游玩记录。",
       "MyRecord": "我的成绩",
-      "NotPlayed": "你还没有游玩该活动。"
+      "NotPlayed": "你还没有游玩该活动。",
+      "TabRecord": "个人成绩与游玩记录",
+      "SongScores": "课题曲成绩",
+      "PlayRecords": "游玩记录",
+      "NoPlayRecords": "还没有该活动的游玩记录。",
+      "PlayCount": "游玩次数",
+      "Marks": "标记"
+    },
+    "EventAdmin": {
+      "Description": "编辑音击挑战活动的类型、开放时间与课题曲。活动期号必须与客户端包中的数据一致，章节名称来自服务端章节表；类型与 KoP ID 必须与客户端包中 TechChallengeEventData 的 Type / KopID 一致，否则客户端的 KoP 预选与排行榜会对不上。",
+      "Empty": "没有配置任何音击挑战活动。",
+      "NeedDates": "请填写完整的开始与结束时间。",
+      "EndBeforeStart": "结束时间必须晚于开始时间。",
+      "NeedKopId": "KoP 预选需要填写有效的 KoP ID。",
+      "Saved": "活动设置已保存。",
+      "NeedMusicId": "请输入有效的乐曲 ID。",
+      "DuplicateMusic": "该乐曲已在课题曲列表中。",
+      "MusicSaved": "课题曲已保存。",
+      "Save": "保存",
+      "Saving": "保存中…",
+      "SongButton": "课题曲 {{count}}",
+      "LoadingSongs": "加载课题曲…",
+      "NoSongs": "该活动还没有课题曲，可在下方添加。",
+      "Remove": "移除",
+      "Add": "添加",
+      "SaveSongs": "保存课题曲",
+      "MusicIdPlaceholder": "乐曲 ID",
+      "UnknownType": "类型 {{type}}",
+      "UnknownDifficulty": "难度 {{level}}",
+      "Column": {
+        "Event": "活动",
+        "Type": "类型",
+        "Kop": "KoP",
+        "Start": "开始时间",
+        "End": "结束时间",
+        "Actions": "操作"
+      }
     }
   },
   "ChuniV2": {
