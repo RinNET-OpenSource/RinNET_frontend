@@ -54,6 +54,7 @@ export const menu = new Map<string, Menu[]>([
       { id: 0, name: 'Profile', url: 'mai2/profile', displayCondition: DisplayCondition.HasProfile },
       { id: 2, name: 'Rating', url: 'mai2/rating', displayCondition: DisplayCondition.HasProfile },
       { id: 3, name: 'PlayRecord', url: 'mai2/recent', displayCondition: DisplayCondition.HasProfile },
+      { id: 11, name: 'KOP', url: 'mai2/kop', displayCondition: DisplayCondition.HasProfile },
       { id: 4, name: 'Photos', url: 'mai2/photos', displayCondition: DisplayCondition.HasProfile },
       { id: 5, name: 'Dxpass', url: 'mai2/dxpass', displayCondition: DisplayCondition.HasProfile },
       { id: 8, name: 'Circle', url: 'mai2/circle', displayCondition: DisplayCondition.HasProfile },
