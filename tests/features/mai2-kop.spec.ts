@@ -49,6 +49,8 @@ const previousTournament = {
   kopNo: 6,
   shortName: 'KOP6th',
   name: 'KING of Performai The 6th',
+  startDate: '2024-10-30T22:00:00Z',
+  endDate: '2024-12-08T14:59:59Z',
   isEnabled: false,
   isOpen: false,
 };

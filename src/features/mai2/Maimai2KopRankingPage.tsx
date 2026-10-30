@@ -169,6 +169,7 @@ export function Maimai2KopRankingPage() {
 
     let active = true;
     setLoadingRanking(true);
+    setRankings([]);
     setError('');
 
     void (async () => {
