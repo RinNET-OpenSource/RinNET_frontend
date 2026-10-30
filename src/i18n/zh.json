@@ -42,6 +42,7 @@
       "BattlePoint": "战斗点数",
       "Rating": "评级",
       "PlayRecord": "游玩记录",
+      "KOP": "KOP 榜单",
       "MusicList": "乐曲列表",
       "Card": "卡片",
       "Rival": "好友",
@@ -835,6 +836,21 @@
     },
     "FestaPage": {
       "Title": "Festa活动"
+    },
+    "KopPage": {
+      "Title": "KOP",
+      "Edition": "届次",
+      "Period": "举办期间",
+      "Rank": "排名",
+      "Name": "玩家",
+      "Score": "分数",
+      "Date": "时间",
+      "Loading": "加载中...",
+      "StatusUpcoming": "未开始",
+      "StatusOpen": "进行中",
+      "StatusClosed": "已结束",
+      "NoTournament": "当前没有配置 KOP 届次。",
+      "NoRanking": "没有正在进行的排名。"
     },
     "ServerMissions": {
       "Title": "服务器任务"

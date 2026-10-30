@@ -42,6 +42,7 @@
       "BattlePoint": "Battle Point",
       "Rating": "Rating",
       "PlayRecord": "Play Record",
+      "KOP": "KOP Ranking",
       "MusicList": "Music List",
       "Card": "Card",
       "Rival": "Rival",
@@ -833,6 +834,21 @@
       "DissolveCircleConfirm": "Dissolve circle {{circleName}}?",
       "DissolveCircleSuccess": "Circle dissolved.",
       "DissolveCircleFailed": "Failed to dissolve circle"
+    },
+    "KopPage": {
+      "Title": "KOP",
+      "Edition": "Edition",
+      "Period": "Period",
+      "Rank": "Rank",
+      "Name": "Player",
+      "Score": "Score",
+      "Date": "Date",
+      "Loading": "Loading...",
+      "StatusUpcoming": "Not started",
+      "StatusOpen": "In progress",
+      "StatusClosed": "Ended",
+      "NoTournament": "No KOP edition is configured.",
+      "NoRanking": "No ranking in progress."
     },
     "Setting": {
       "Title": "Setting",
