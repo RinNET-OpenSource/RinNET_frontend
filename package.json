@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "test:ui-parity": "playwright test -c playwright.parity.config.ts",
     "test:ui-parity:auth": "playwright test -c playwright.parity.config.ts authenticated-pages.spec.ts",
+    "test:features": "playwright test -c playwright.features.config.ts",
     "parity:legacy-server": "node scripts/serve-legacy-baseline.mjs",
     "gen:cert": "node scripts/gen-cert.mjs"
   },

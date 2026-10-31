@@ -1,0 +1,32 @@
+/* KOP leaderboard. Keep the table scoped so other pages' Bootstrap tables are unaffected. */
+.kop-ranking-page .kop-rank {
+  width: 3.5rem;
+  white-space: nowrap;
+}
+
+.kop-ranking-page .medal {
+  width: 2em;
+  height: 2em;
+}
+
+.kop-ranking-page th,
+.kop-ranking-page td {
+  vertical-align: middle;
+}
+
+.kop-ranking-page td:nth-child(3),
+.kop-ranking-page th:nth-child(3) {
+  white-space: nowrap;
+  text-align: right;
+}
+
+@media (max-width: 575.98px) {
+  .kop-ranking-page .medal {
+    width: 1.6em;
+    height: 1.6em;
+  }
+
+  .kop-ranking-page .kop-rank {
+    width: 2.6rem;
+  }
+}

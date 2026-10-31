@@ -46,6 +46,7 @@ import { Maimai2ServerMissionsPage } from '@/features/mai2/Maimai2ServerMissions
 import { Maimai2PointExchangesPage } from '@/features/mai2/Maimai2PointExchangesPage';
 import { Maimai2CirclePage } from '@/features/mai2/Maimai2CirclePage';
 import { Maimai2FestaPage } from '@/features/mai2/Maimai2FestaPage';
+import { Maimai2KopRankingPage } from '@/features/mai2/Maimai2KopRankingPage';
 import { ChuniV2ProfilePage } from '@/features/chuni/ChuniV2ProfilePage';
 import { ChuniV2UserRankingPage } from '@/features/chuni/ChuniV2UserRankingPage';
 import { ChuniV2RatingPage } from '@/features/chuni/ChuniV2RatingPage';
@@ -165,6 +166,7 @@ export const router = createBrowserRouter([
           { path: 'profile', element: <Maimai2ProfilePage />, handle: { title: 'Profile' } },
           { path: 'setting', element: <Maimai2SettingPage />, handle: { title: 'Setting' } },
           { path: 'recent', element: <Maimai2RecentPage />, handle: { title: 'PlayRecord' } },
+          { path: 'kop', element: <Maimai2KopRankingPage />, handle: { title: 'KOP' } },
           { path: 'rating', element: <Maimai2RatingPage />, handle: { title: 'Rating' } },
           { path: 'photos', element: <Maimai2PhotosPage />, handle: { title: 'Photos' } },
           { path: 'dxpass', element: <Maimai2DxPassPage />, handle: { title: 'Dxpass' } },
