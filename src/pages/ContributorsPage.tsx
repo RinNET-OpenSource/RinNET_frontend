@@ -109,6 +109,12 @@ export function ContributorsPage() {
               Eternal973
             </a>
           </span>
+          <span className="hstack d-inline-block me-3 mb-1">
+            <a className="text-decoration-none" target="_blank" rel="noreferrer" href="https://github.com/XaviorShen">
+              <img className="avator me-1" src="https://avatars.githubusercontent.com/u/58615985" alt="" />
+              XaviorShen
+            </a>
+          </span>
         </div>
         <h2 className="mb-3">{t('ContributorsPage.Donations')}</h2>
         <div className="mb-3 lh-lg">
